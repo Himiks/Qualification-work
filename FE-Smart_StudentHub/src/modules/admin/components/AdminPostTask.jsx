@@ -12,7 +12,7 @@ function AdminPostTask() {
     priority: "LOW",
   });
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -35,8 +35,9 @@ function AdminPostTask() {
     e.preventDefault();
     try {
       const res = await adminService.postTask(task);
-      navigate("/admin/dashboard");
+        navigate("/admin/dashboard");
     } catch (err) {
+      console.error("Error posting task:", err);
       alert("Error posting task");
     }
   };
@@ -72,7 +73,7 @@ function AdminPostTask() {
           <label className="block font-semibold">Due Date</label>
           <input
             type="date"
-            name="dueDateddd"
+            name="dueDate"
             value={task.dueDate}
             onChange={handleChange}
             className="border p-2 w-full rounded"
