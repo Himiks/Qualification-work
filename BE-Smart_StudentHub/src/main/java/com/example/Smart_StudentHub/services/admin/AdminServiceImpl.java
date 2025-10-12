@@ -71,4 +71,43 @@ public class AdminServiceImpl implements  AdminService {
         Optional<Task> optionalTask = taskRepository.findById(id);
         return optionalTask.map(Task::getTaskDTO).orElse(null);
     }
+
+    @Override
+    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(taskDTO.getEmployeeId());
+        if(optionalTask.isPresent() && optionalUser.isPresent()){
+            Task task = optionalTask.get();
+            task.setTitle(taskDTO.getTitle());
+            task.setDescription(taskDTO.getDescription());
+            task.setPriority(taskDTO.getPriority());
+            task.setDueDate(taskDTO.getDueDate());
+            task.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDTO.getTaskStatus())));
+            task.setUser(optionalUser.get());
+            return taskRepository.save(task).getTaskDTO();
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<TaskDTO> searchTasksByUserTitle(String title) {
+        return taskRepository.findAllByTitleContaining(title)
+                .stream()
+                .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                .map(Task::getTaskDTO)
+                .collect(Collectors.toList());
+
+    }
+
+
+    private TaskStatus mapStringToTaskStatus(String status) {
+        return switch (status) {
+            case "PENDING" -> TaskStatus.PENDING;
+            case "IN_PROGRESS" -> TaskStatus.IN_PROGRESS;
+            case "COMPLETED" -> TaskStatus.COMPLETED;
+            case "DEFERRED" -> TaskStatus.DEFERRED;
+            default -> TaskStatus.CANCELLED;
+        };
+    }
 }

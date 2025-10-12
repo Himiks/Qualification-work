@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import adminService from "../services/adminService";
 
 function AdminDashboard() {
   const [tasks, setTasks] = useState([]);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  // 🔹 Получение всех задач
   const fetchTasks = async () => {
     try {
       const res = await adminService.getTasks();
@@ -17,20 +21,45 @@ function AdminDashboard() {
     }
   };
 
+  // 🔹 Удаление задачи
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
     try {
       await adminService.deleteTask(id);
-      setTasks(tasks.filter((t) => t.id !== id)); // удалить из списка без обновления страницы
+      setTasks(tasks.filter((t) => t.id !== id)); 
     } catch (err) {
       console.error("Error deleting task:", err);
       alert("Failed to delete task.");
     }
   };
 
+  // 🔹 Переход на редактирование
+  const handleEdit = (id) => {
+    navigate(`/admin/task/${id}/edit`);
+  };
+
+  // 🔹 Поиск задач по title
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    if (value.trim() === "") {
+      fetchTasks();
+      return;
+    }
+
+    try {
+      const res = await adminService.searchTask(value);
+      setTasks(res);
+    } catch (err) {
+      console.error("Error searching tasks:", err);
+    }
+  };
+
+  // 🔹 Цвет для приоритета
   const getPriorityColor = (priority) => {
-    switch (priority) {
+    switch (priority.toUpperCase()) {
       case "HIGH":
         return "text-red-600 bg-red-100";
       case "MEDIUM":
@@ -42,8 +71,9 @@ function AdminDashboard() {
     }
   };
 
+  // 🔹 Цвет для статуса
   const getStatusColor = (status) => {
-    switch (status) {
+    switch (status.toUpperCase()) {
       case "COMPLETED":
         return "text-green-600 bg-green-100";
       case "IN_PROGRESS":
@@ -57,7 +87,18 @@ function AdminDashboard() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">📋 All Tasks</h2>
+      {/* 🔹 Поиск */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+        <h2 className="text-3xl font-bold text-gray-800">📋 All Tasks</h2>
+
+        <input
+          type="text"
+          value={search}
+          onChange={handleSearch}
+          placeholder="Enter keyword to search..."
+          className="border border-gray-300 rounded-lg p-2 w-full sm:w-64 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+        />
+      </div>
 
       {tasks.length === 0 ? (
         <p className="text-gray-500 text-lg text-center mt-10">
@@ -70,14 +111,23 @@ function AdminDashboard() {
               key={task.id}
               className="border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 bg-white p-5 flex flex-col justify-between relative"
             >
-              {/* Кнопка удаления */}
-              <button
-                onClick={() => handleDelete(task.id)}
-                className="absolute top-3 right-3 text-red-500 hover:text-red-700"
-                title="Delete Task"
-              >
-                🗑️
-              </button>
+              {/* Кнопки редактирования и удаления */}
+              <div className="absolute top-3 right-3 flex gap-2">
+                <button
+                  onClick={() => handleEdit(task.id)}
+                  className="text-blue-500 hover:text-blue-700"
+                  title="Edit Task"
+                >
+                  ✏️
+                </button>
+                <button
+                  onClick={() => handleDelete(task.id)}
+                  className="text-red-500 hover:text-red-700"
+                  title="Delete Task"
+                >
+                  🗑️
+                </button>
+              </div>
 
               {/* Заголовок */}
               <div>
@@ -92,9 +142,7 @@ function AdminDashboard() {
               {/* Информация */}
               <div className="text-sm text-gray-700 space-y-1 mt-auto">
                 <p>
-                  <span className="font-semibold text-gray-800">
-                    📅 Due Date:
-                  </span>{" "}
+                  <span className="font-semibold text-gray-800">📅 Due Date:</span>{" "}
                   {new Date(task.dueDate).toLocaleDateString()}
                 </p>
                 <p>
@@ -128,4 +176,3 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
-
