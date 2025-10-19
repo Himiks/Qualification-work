@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import adminService from "../services/adminService";
+import React, { useState } from "react";
+import employeeService from "../services/employeeService";
 import { useNavigate } from "react-router-dom";
 
-function AdminPostTask() {
-  const [users, setUsers] = useState([]);
+function EmployeePostTask() {
   const [task, setTask] = useState({
-    employeeId: "",
     title: "",
     description: "",
     dueDate: "",
@@ -13,18 +11,6 @@ function AdminPostTask() {
   });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await adminService.getUsers();
-        setUsers(res);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-    };
-    fetchUsers();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,9 +20,9 @@ function AdminPostTask() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await adminService.postTask(task);
+      await employeeService.postTask(task);
       alert("✅ Task created successfully!");
-      navigate("/admin/dashboard");
+      navigate("/employee/dashboard");
     } catch (err) {
       console.error("Error posting task:", err);
       alert("❌ Failed to post task");
@@ -47,7 +33,7 @@ function AdminPostTask() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex justify-center items-start py-12 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-2xl p-8 border border-gray-100">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          📝 Create New Task
+          ✏️ Create New Task
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -114,32 +100,11 @@ function AdminPostTask() {
             </select>
           </div>
 
-          {/* Assign Employee */}
-          <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Assign to Employee
-            </label>
-            <select
-              name="employeeId"
-              value={task.employeeId}
-              onChange={handleChange}
-              className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
-              required
-            >
-              <option value="">Select employee</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name || u.fullName || u.username} ({u.email})
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* Buttons */}
           <div className="flex justify-between mt-6">
             <button
               type="button"
-              onClick={() => navigate("/admin/dashboard")}
+              onClick={() => navigate("/employee/dashboard")}
               className="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300 transition-all"
             >
               ← Back
@@ -148,7 +113,7 @@ function AdminPostTask() {
               type="submit"
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md"
             >
-              🚀 Create Task
+              🚀 Post Task
             </button>
           </div>
         </form>
@@ -157,4 +122,4 @@ function AdminPostTask() {
   );
 }
 
-export default AdminPostTask;
+export default EmployeePostTask;

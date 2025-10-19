@@ -1,18 +1,24 @@
 package com.example.Smart_StudentHub.services.admin;
 
 
+import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
 import com.example.Smart_StudentHub.dto.UserDto;
+import com.example.Smart_StudentHub.entities.Comment;
 import com.example.Smart_StudentHub.entities.Task;
 import com.example.Smart_StudentHub.entities.User;
 import com.example.Smart_StudentHub.enums.TaskStatus;
 import com.example.Smart_StudentHub.enums.UserRole;
+import com.example.Smart_StudentHub.repositories.CommentRepository;
 import com.example.Smart_StudentHub.repositories.TaskRepository;
 import com.example.Smart_StudentHub.repositories.UserRepository;
+import com.example.Smart_StudentHub.utils.JwtUtils;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +29,13 @@ public class AdminServiceImpl implements  AdminService {
     private final UserRepository userRepository;
 
     private final TaskRepository taskRepository;
+
+
+    private final JwtUtils jwtUtils;
+
+
+    private final CommentRepository commentRepository;
+
 
     @Override
     public List<UserDto> getUsers() {
@@ -35,7 +48,7 @@ public class AdminServiceImpl implements  AdminService {
 
     @Override
     public TaskDTO createTask(TaskDTO taskDTO) {
-        Optional<User> optionalUser = userRepository.findById(taskDTO.getEmployeeId());
+            Optional<User> optionalUser = userRepository.findById(taskDTO.getEmployeeId());
 
         if(optionalUser.isPresent()){
             Task task = new Task();
@@ -98,6 +111,29 @@ public class AdminServiceImpl implements  AdminService {
                 .map(Task::getTaskDTO)
                 .collect(Collectors.toList());
 
+    }
+
+
+
+    @Override
+    public CommentDTO createComment(Long taskId, String content) {
+      Optional<Task> optionalTask = taskRepository.findById(taskId);
+      User user = jwtUtils.getLoggedInUser();
+      if(optionalTask.isPresent() && user != null ){
+          Comment comment = new Comment();
+          comment.setCreatedAt(new Date());
+          comment.setContent(content);
+          comment.setTask(optionalTask.get());
+          comment.setUser(user);
+          return commentRepository.save(comment).getCommentDTO();
+
+      }
+      throw new EntityNotFoundException("Task not found");
+    }
+
+    @Override
+    public List<CommentDTO> getCommentsByTaskId(Long taskId) {
+        return commentRepository.findAllByTaskId(taskId).stream().map(Comment::getCommentDTO).collect(Collectors.toList());
     }
 
 

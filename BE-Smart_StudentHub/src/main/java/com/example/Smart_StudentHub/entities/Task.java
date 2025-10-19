@@ -3,6 +3,7 @@ package com.example.Smart_StudentHub.entities;
 
 import com.example.Smart_StudentHub.dto.TaskDTO;
 import com.example.Smart_StudentHub.enums.TaskStatus;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class Task {
     private String priority;
 
     private TaskStatus taskStatus;
+    
+    @Enumerated(EnumType.STRING)
+    private TaskTechnique technique;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -1,6 +1,7 @@
 package com.example.Smart_StudentHub.controller.admin;
 
 
+import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
 import com.example.Smart_StudentHub.services.admin.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +65,23 @@ public class AdminController {
     public ResponseEntity<List<TaskDTO>> searchTask(@PathVariable String title) {
         return ResponseEntity.ok(adminService.searchTasksByUserTitle(title));
     }
+
+
+    @PostMapping("/task/comment/{taskId}")
+    public ResponseEntity<CommentDTO> createComment(@PathVariable Long taskId, @RequestParam String content) {
+        CommentDTO createdCommentDTO =  adminService.createComment(taskId, content);
+
+        if(createdCommentDTO == null)return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCommentDTO);
+
+    }
+
+
+    @GetMapping("/comments/{taskId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByTaskId(@PathVariable Long taskId) {
+        return ResponseEntity.ok(adminService.getCommentsByTaskId(taskId));
+    }
+
+
 
 }

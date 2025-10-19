@@ -113,20 +113,29 @@ function AdminDashboard() {
             >
               {/* Кнопки редактирования и удаления */}
               <div className="absolute top-3 right-3 flex gap-2">
-                <button
-                  onClick={() => handleEdit(task.id)}
-                  className="text-blue-500 hover:text-blue-700"
-                  title="Edit Task"
-                >
-                  ✏️
-                </button>
-                <button
-                  onClick={() => handleDelete(task.id)}
-                  className="text-red-500 hover:text-red-700"
-                  title="Delete Task"
-                >
-                  🗑️
-                </button>
+
+                        <button
+                            onClick={() => navigate(`/admin/task/${task.id}/details`)}
+                            className="text-purple-500 hover:text-purple-700"
+                            title="View Details">
+                                 👁️
+                        </button>
+
+
+                            <button
+                            onClick={() => handleEdit(task.id)}
+                                className="text-blue-500 hover:text-blue-700"
+                                title="Edit Task"
+                                >
+                                ✏️
+                                </button>
+                            <button
+                                onClick={() => handleDelete(task.id)}
+                                className="text-red-500 hover:text-red-700"
+                                title="Delete Task"
+                                >
+                                🗑️
+                            </button>
               </div>
 
               {/* Заголовок */}

@@ -1,5 +1,6 @@
 package com.example.Smart_StudentHub.services.admin;
 
+import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
 import com.example.Smart_StudentHub.dto.UserDto;
 
@@ -20,6 +21,10 @@ public interface AdminService {
    TaskDTO updateTask(Long id,TaskDTO taskDTO);
 
    List<TaskDTO> searchTasksByUserTitle(String title);
+
+   CommentDTO createComment(Long taskId, String comment);
+
+   List<CommentDTO> getCommentsByTaskId(Long taskId);
 
 }
 
