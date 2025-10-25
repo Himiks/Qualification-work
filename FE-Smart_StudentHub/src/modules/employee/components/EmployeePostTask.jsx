@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import employeeService from "../services/employeeService";
+import { getAllTechniques } from "../../technique/services/techniqueService";
 import { useNavigate } from "react-router-dom";
 
 function EmployeePostTask() {
@@ -8,9 +9,23 @@ function EmployeePostTask() {
     description: "",
     dueDate: "",
     priority: "LOW",
+    technique: "NONE",
   });
 
+  const [techniques, setTechniques] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTechniques = async () => {
+      try {
+        const data = await getAllTechniques();
+        setTechniques(data);
+      } catch (err) {
+        console.error("Error fetching techniques:", err);
+      }
+    };
+    fetchTechniques();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,11 +52,8 @@ function EmployeePostTask() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Title */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Title
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Title</label>
             <input
               name="title"
               value={task.title}
@@ -52,11 +64,8 @@ function EmployeePostTask() {
             />
           </div>
 
-          {/* Description */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Description</label>
             <textarea
               name="description"
               value={task.description}
@@ -67,11 +76,8 @@ function EmployeePostTask() {
             />
           </div>
 
-          {/* Due Date */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Due Date
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Due Date</label>
             <input
               type="date"
               name="dueDate"
@@ -82,11 +88,8 @@ function EmployeePostTask() {
             />
           </div>
 
-          {/* Priority */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Priority
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Priority</label>
             <select
               name="priority"
               value={task.priority}
@@ -97,10 +100,28 @@ function EmployeePostTask() {
               <option value="LOW">LOW</option>
               <option value="MEDIUM">MEDIUM</option>
               <option value="HIGH">HIGH</option>
+              <option value="MINOR">MINOR</option>
             </select>
           </div>
 
-          {/* Buttons */}
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Technique</label>
+            <select
+              name="technique"
+              value={task.technique}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
+              required
+            >
+              <option value="NONE">None</option>
+              {techniques.map((t) => (
+                <option key={t.id} value={t.name}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex justify-between mt-6">
             <button
               type="button"

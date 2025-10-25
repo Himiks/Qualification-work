@@ -135,6 +135,25 @@ function AdminPostTask() {
             </select>
           </div>
 
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">
+              Technique
+            </label>
+            <select
+              name="technique"
+              value={task.technique || "NONE"}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
+              required
+            >
+              <option value="NONE">None</option>
+              <option value="POMODORO">Pomodoro</option>
+              <option value="EISENHOWER">Eisenhower Matrix</option>
+              <option value="TIME_BLOCKING">Time Blocking</option>
+              <option value="DEEP_WORK">Deep Work</option>
+            </select>
+          </div>
+
           {/* Buttons */}
           <div className="flex justify-between mt-6">
             <button

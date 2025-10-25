@@ -2,6 +2,7 @@ package com.example.Smart_StudentHub.dto;
 
 
 import com.example.Smart_StudentHub.enums.TaskStatus;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
 import lombok.Data;
 
 import java.util.Date;
@@ -24,6 +25,10 @@ public class TaskDTO {
     private Long employeeId;
 
     private String employeeName;
+
+
+    private TaskTechnique technique;
+
 
 
 

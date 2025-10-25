@@ -113,7 +113,7 @@ function EmployeeDashboard() {
             >
               {/* Кнопки редактирования и удаления */}
               <div className="absolute top-3 right-3 flex gap-2">
-
+                      
                         <button
                             onClick={() => navigate(`/employee/task/${task.id}/details`)}
                             className="text-purple-500 hover:text-purple-700"
@@ -160,21 +160,40 @@ function EmployeeDashboard() {
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getPriorityColor(
-                      task.priority
-                    )}`}
-                  >
-                    {task.priority}
-                  </span>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                      task.taskStatus
-                    )}`}
-                  >
-                    {task.taskStatus}
-                  </span>
-                </div>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${getPriorityColor(
+                        task.priority
+                      )}`}
+                    >
+                      {task.priority}
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                        task.taskStatus
+                      )}`}
+                    >
+                      {task.taskStatus}
+                    </span>
+
+                    {/* Кнопка техники */}
+                    <button
+                          onClick={() => {
+                              if (task.technique && task.technique !== "NONE" && task.technique !== "EISENHOWER") {
+                                navigate(`/techniques/${task.technique.toLowerCase()}/${task.id}`);
+                              } else if (task.technique === "EISENHOWER") {
+                                navigate(`/techniques/${task.technique.toLowerCase()}/${task.id}`);
+                              }
+                            }}
+                          className={`ml-2 text-xs px-2 py-1 rounded shadow-sm transition-all ${
+                            task.technique && task.technique !== "NONE"
+                              ? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          }`}
+                        >
+                          ▶ Start
+                    </button>
+
+                  </div>
               </div>
             </div>
           ))}

@@ -6,6 +6,7 @@ import com.example.Smart_StudentHub.entities.Comment;
 import com.example.Smart_StudentHub.entities.Task;
 import com.example.Smart_StudentHub.entities.User;
 import com.example.Smart_StudentHub.enums.TaskStatus;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
 import com.example.Smart_StudentHub.repositories.CommentRepository;
 import com.example.Smart_StudentHub.repositories.TaskRepository;
 import com.example.Smart_StudentHub.repositories.UserRepository;
@@ -29,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final CommentRepository commentRepository;
 
-    private final UserRepository userRepository;
+
 
     @Override
     public List<TaskDTO> getTaskByUserId() {
@@ -59,6 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             task.setDueDate(taskDTO.getDueDate());
             task.setTaskStatus(TaskStatus.IN_PROGRESS);
             task.setUser(user);
+            task.setTechnique(TaskTechnique.valueOf(String.valueOf(taskDTO.getTechnique())));
             return taskRepository.save(task).getTaskDTO();
 
         }
@@ -97,7 +99,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             task.setPriority(taskDTO.getPriority());
             task.setDueDate(taskDTO.getDueDate());
             task.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDTO.getTaskStatus())));
-            return taskRepository.save(task).getTaskDTO();
+            task.setTechnique(TaskTechnique.valueOf(String.valueOf(taskDTO.getTechnique())));
+        return taskRepository.save(task).getTaskDTO();
 
 
     }

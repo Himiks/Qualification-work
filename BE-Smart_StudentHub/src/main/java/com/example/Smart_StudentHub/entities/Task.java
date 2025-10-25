@@ -29,7 +29,7 @@ public class Task {
     private String priority;
 
     private TaskStatus taskStatus;
-    
+
     @Enumerated(EnumType.STRING)
     private TaskTechnique technique;
 
@@ -51,6 +51,7 @@ public class Task {
         taskDTO.setDueDate(this.dueDate);
         taskDTO.setPriority(this.priority);
         taskDTO.setTaskStatus(this.taskStatus);
+        taskDTO.setTechnique(this.technique);
 
         return taskDTO;
 

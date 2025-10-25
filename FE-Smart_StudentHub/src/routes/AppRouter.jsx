@@ -10,6 +10,9 @@ import AdminViewTaskDetails from "../modules/admin/components/AdminViewTaskDetai
 import EmployeeViewTaskDetails from "../modules/employee/components/EmployeeViewTaskDetails";
 import Navbar from "../layout/Navbar";
 import EmployeePostTask from "../modules/employee/components/EmployeePostTask";
+import TechniquesPage from "../layout/TechniquesPage";
+import TechniqueDetail from "../layout/TechniqueDetail";
+import Eisenhower from "../modules/components/Eisenhower";
 
 function AppRouter() {
   return (
@@ -20,6 +23,7 @@ function AppRouter() {
         {/* 🔐 Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
+        <Route path="/techniques" element={<TechniquesPage />} />
 
         {/* 👑 Admin */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -33,6 +37,8 @@ function AppRouter() {
          <Route path="/employee/task" element={<EmployeePostTask />} />
         <Route path="/employee/task/:id/edit" element={<EmployeeUpdateTask />} />
         <Route path="/employee/task/:id/details" element={<EmployeeViewTaskDetails />} />
+        <Route path="/techniques/:techniqueName/:taskId" element={<TechniqueDetail />} />
+        <Route path="/techniques/:techniqueName" element={<Eisenhower />} />
       </Routes>
     </Router>
   );

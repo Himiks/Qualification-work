@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import employeeService from "../services/employeeService";
+import { getAllTechniques } from "../../technique/services/techniqueService";
 
 function EmployeeUpdateTask() {
   const { id } = useParams();
@@ -12,19 +13,15 @@ function EmployeeUpdateTask() {
     dueDate: "",
     priority: "LOW",
     taskStatus: "PENDING",
+    technique: "NONE",
   });
 
-  const priorities = ["LOW", "MEDIUM", "HIGH"];
-  const statuses = [
-    "PENDING",
-    "IN_PROGRESS",
-    "DEFERRED",
-    "COMPLETED",
-    "CANCELLED",
-  ];
+  const [techniques, setTechniques] = useState([]);
+  const priorities = ["LOW", "MEDIUM", "HIGH", "MINOR"];
+  const statuses = ["PENDING", "IN_PROGRESS", "DEFERRED", "COMPLETED", "CANCELLED"];
 
   useEffect(() => {
-    const fetchTask = async () => {
+    const fetchData = async () => {
       try {
         const taskData = await employeeService.getTaskById(id);
         setTask({
@@ -33,12 +30,16 @@ function EmployeeUpdateTask() {
           dueDate: taskData.dueDate ? taskData.dueDate.split("T")[0] : "",
           priority: taskData.priority || "LOW",
           taskStatus: taskData.taskStatus || "PENDING",
+          technique: taskData.technique || "NONE",
         });
+
+        const techniquesData = await getAllTechniques();
+        setTechniques(techniquesData);
       } catch (err) {
-        console.error("Error fetching task:", err);
+        console.error("Error fetching task or techniques:", err);
       }
     };
-    fetchTask();
+    fetchData();
   }, [id]);
 
   const handleChange = (e) => {
@@ -68,9 +69,7 @@ function EmployeeUpdateTask() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Title */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Title
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Title</label>
             <input
               name="title"
               value={task.title}
@@ -83,9 +82,7 @@ function EmployeeUpdateTask() {
 
           {/* Description */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Description</label>
             <textarea
               name="description"
               value={task.description}
@@ -98,9 +95,7 @@ function EmployeeUpdateTask() {
 
           {/* Due Date */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Due Date
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Due Date</label>
             <input
               type="date"
               name="dueDate"
@@ -113,9 +108,7 @@ function EmployeeUpdateTask() {
 
           {/* Priority */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Priority
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Priority</label>
             <select
               name="priority"
               value={task.priority}
@@ -131,11 +124,27 @@ function EmployeeUpdateTask() {
             </select>
           </div>
 
+          {/* Technique */}
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Technique</label>
+            <select
+              name="technique"
+              value={task.technique}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none"
+            >
+              <option value="NONE">None</option>
+              {techniques.map((t) => (
+                <option key={t.id} value={t.name}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Task Status */}
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Task Status
-            </label>
+            <label className="block font-semibold text-gray-700 mb-1">Task Status</label>
             <select
               name="taskStatus"
               value={task.taskStatus}

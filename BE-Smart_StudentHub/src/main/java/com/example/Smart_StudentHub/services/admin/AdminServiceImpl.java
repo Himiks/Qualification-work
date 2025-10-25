@@ -58,6 +58,7 @@ public class AdminServiceImpl implements  AdminService {
             task.setDueDate(taskDTO.getDueDate());
             task.setTaskStatus(TaskStatus.IN_PROGRESS);
             task.setUser(optionalUser.get());
+            task.setTechnique(taskDTO.getTechnique());
             return taskRepository.save(task).getTaskDTO();
 
         }
@@ -97,6 +98,7 @@ public class AdminServiceImpl implements  AdminService {
             task.setDueDate(taskDTO.getDueDate());
             task.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDTO.getTaskStatus())));
             task.setUser(optionalUser.get());
+            task.setTechnique(taskDTO.getTechnique());
             return taskRepository.save(task).getTaskDTO();
 
         }

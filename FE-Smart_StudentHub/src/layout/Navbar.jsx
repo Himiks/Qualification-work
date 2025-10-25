@@ -31,17 +31,20 @@ function Navbar() {
     : "Smart Student Hub";
 
   const navLinks = [];
-  if (isAdminLoggedIn) {
-    navLinks.push(
-      { to: "/admin/dashboard", label: "Dashboard" },
-      { to: "/admin/task", label: "Post Task" }
-    );
-  } else if (isEmployeeLoggedIn) {
-    navLinks.push(
-      { to: "/employee/dashboard", label: "Dashboard" },
-      { to: "/employee/task", label: "Post Task" }
-    );
-  }
+ if (isAdminLoggedIn) {
+  navLinks.push(
+    { to: "/admin/dashboard", label: "Dashboard" },
+    { to: "/admin/task", label: "Post Task" },
+    { to: "/techniques", label: "Techniques" } 
+  );
+} else if (isEmployeeLoggedIn) {
+  navLinks.push(
+    { to: "/employee/dashboard", label: "Dashboard" },
+    { to: "/employee/task", label: "Post Task" },
+    { to: "/techniques", label: "Techniques" } 
+  );
+}
+
 
   const linkClass = (to) =>
     `block px-3 py-2 rounded transition-colors ${
