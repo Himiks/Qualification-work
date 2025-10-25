@@ -9,7 +9,6 @@ import com.example.Smart_StudentHub.enums.TaskStatus;
 import com.example.Smart_StudentHub.enums.TaskTechnique;
 import com.example.Smart_StudentHub.repositories.CommentRepository;
 import com.example.Smart_StudentHub.repositories.TaskRepository;
-import com.example.Smart_StudentHub.repositories.UserRepository;
 import com.example.Smart_StudentHub.utils.JwtUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +80,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
+    }
+    @Override
+    public List<TaskDTO> getTasksByTechnique(TaskTechnique technique) {
+
+        User user = jwtUtils.getLoggedInUser();
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+
+        return taskRepository.findAllByUserIdAndTechnique(user.getId(), technique)
+                .stream()
+                .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                .map(Task::getTaskDTO)
+                .collect(Collectors.toList());
     }
 
 

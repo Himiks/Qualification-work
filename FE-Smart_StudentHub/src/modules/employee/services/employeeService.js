@@ -5,6 +5,14 @@ const BASE_URL = "http://localhost:8080/api/employee";
 
 
 
+
+const getAllTasksByTechniqueName = async (techniqueName) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.get(`${BASE_URL}/tasks/technique/${encodeURIComponent(techniqueName)}`, { headers });
+  return response.data;
+};
+
 const getAllTasksByUserId = async () => {
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
@@ -69,5 +77,5 @@ const getTaskById = async (id) => {
 };
 
 
-const employeeService = { getAllTasksByUserId, getCommentsByTaskId, createComment, getTaskById, postTask, deleteTask, searchTask, updateTask };
+const employeeService = { getAllTasksByUserId, getCommentsByTaskId, createComment, getTaskById, postTask, deleteTask, searchTask, updateTask, getAllTasksByTechniqueName };
 export default employeeService;

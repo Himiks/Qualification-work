@@ -2,6 +2,7 @@ package com.example.Smart_StudentHub.services.employee;
 
 import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
 
 import java.util.List;
 
@@ -27,5 +28,6 @@ public interface EmployeeService {
 
   void deleteTask(Long id);
 
+  List<TaskDTO> getTasksByTechnique(TaskTechnique technique);
 
 }

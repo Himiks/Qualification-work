@@ -2,6 +2,7 @@ package com.example.Smart_StudentHub.controller.employee;
 
 import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
 import com.example.Smart_StudentHub.services.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -71,5 +72,17 @@ public class EmployeeController {
     @GetMapping("/task/{id}")
     public ResponseEntity<TaskDTO> getTaskById( @PathVariable  Long id) {
         return ResponseEntity.ok(employeeService.getTaskById(id));
+    }
+
+    @GetMapping("/tasks/technique/{technique}")
+    public ResponseEntity<List<TaskDTO>> getTasksByTechnique(@PathVariable String technique) {
+        try {
+            TaskTechnique taskTechnique = TaskTechnique.valueOf(technique.toUpperCase());
+                return ResponseEntity.ok(employeeService.getTasksByTechnique(taskTechnique));
+
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
     }
 }
