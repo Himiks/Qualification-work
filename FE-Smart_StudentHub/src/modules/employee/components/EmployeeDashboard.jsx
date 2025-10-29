@@ -154,10 +154,6 @@ function EmployeeDashboard() {
                   <span className="font-semibold text-gray-800">📅 Due Date:</span>{" "}
                   {new Date(task.dueDate).toLocaleDateString()}
                 </p>
-                <p>
-                  <span className="font-semibold text-gray-800">👤 Employee:</span>{" "}
-                  {task.employeeName}
-                </p>
 
                 <div className="flex items-center gap-2 mt-2">
                     <span

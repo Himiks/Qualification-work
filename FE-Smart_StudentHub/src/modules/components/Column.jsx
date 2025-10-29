@@ -3,22 +3,22 @@ import { useDroppable } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
 
 export default function Column({ column, tasks }) {
-  const { setNodeRef } = useDroppable({
-    id: column.id,
-  });
+  const { setNodeRef } = useDroppable({ id: column.id });
 
   return (
-    <div className="flex w-80 flex-col rounded-lg bg-neutral-800 p-4">
-      <h2 className="mb-4 font-semibold text-neutral-100 text-center">
+    <div
+      ref={setNodeRef}
+      className="flex flex-col w-80 bg-white rounded-2xl shadow-md border border-gray-200 transition-all hover:shadow-xl"
+    >
+      <div className="bg-indigo-600 text-white py-3 px-4 rounded-t-2xl text-center font-semibold">
         {column.title}
-      </h2>
-      <div
-        ref={setNodeRef}
-        className="flex flex-1 flex-col gap-4"
-      >
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
+      </div>
+      <div className="flex flex-col gap-3 p-4 overflow-y-auto max-h-[75vh]">
+        {tasks.length === 0 ? (
+          <p className="text-center text-gray-400 italic">No tasks</p>
+        ) : (
+          tasks.map((task) => <TaskCard key={task.id} task={task} />)
+        )}
       </div>
     </div>
   );
