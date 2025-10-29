@@ -24,3 +24,14 @@ dist-ssr
 *.sw?
 .idea/
 
+package-lock.json
+yarn.lock
+.pnpm-lock.yaml
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.cache
+package.json
+
