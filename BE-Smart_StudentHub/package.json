@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "dayjs": "^1.11.18",
-    "framer-motion": "^12.23.24",
-    "jspdf": "^3.0.3",
-    "jspdf-autotable": "^5.0.2",
-    "recharts": "^3.3.0"
-  }
-}
