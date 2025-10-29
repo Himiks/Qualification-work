@@ -34,4 +34,5 @@ yarn.lock
 .env.production.local
 .cache
 package.json
+node_modules
 
