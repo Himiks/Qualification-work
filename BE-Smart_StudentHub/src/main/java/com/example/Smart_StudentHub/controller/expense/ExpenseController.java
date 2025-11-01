@@ -55,5 +55,18 @@ public class ExpenseController {
     }
 
 
+    @DeleteMapping("/{expenseId}")
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId) {
+        try {
+            expenseService.deleteExpense(expenseId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
 
 }

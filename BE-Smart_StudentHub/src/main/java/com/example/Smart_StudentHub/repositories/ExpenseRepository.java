@@ -6,10 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByUserId(Long userId);
         List<Expense> findAllByUserIdAndCategory(Long userId, String category);
         List<Expense> findAllByUserIdAndDateBetween(Long userId, Date start, Date end);
+    Optional<Expense> findByUserIdAndDateAndCategoryAndDescriptionAndAmount(
+            Long userId, Date date, String category, String description, Double amount
+    );
 
 }

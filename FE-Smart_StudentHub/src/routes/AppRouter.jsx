@@ -13,6 +13,7 @@ import EmployeePostTask from "../modules/employee/components/EmployeePostTask";
 import TechniquesPage from "../layout/TechniquesPage";
 import TechniqueDetail from "../layout/TechniqueDetail";
 import Eisenhower from "../modules/components/Eisenhower";
+import ExpensesDashboard from "../modules/expense/components/ExpensesDashboard";
 
 function AppRouter() {
   return (
@@ -39,6 +40,7 @@ function AppRouter() {
         <Route path="/employee/task/:id/details" element={<EmployeeViewTaskDetails />} />
         <Route path="/techniques/:techniqueName/:taskId" element={<TechniqueDetail />} />
         <Route path="/techniques/:techniqueName" element={<Eisenhower />} />
+        <Route path="/expenses" element={<ExpensesDashboard />} />
       </Routes>
     </Router>
   );

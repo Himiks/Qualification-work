@@ -11,4 +11,5 @@ public interface ExpenseService {
     List<ExpenseDTO> getAllExpensesByUser(Long userId);
     List<ExpenseDTO> getExpensesByCategory(Long userId, String category);
     List<ExpenseDTO> getExpensesByDateRange(Long userId, Date start, Date end);
+    void deleteExpense(Long expenseId) throws Exception;
 }

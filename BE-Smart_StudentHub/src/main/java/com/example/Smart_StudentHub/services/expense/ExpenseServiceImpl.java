@@ -42,8 +42,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
             for (Row row : sheet) {
                 if (row == null || row.getRowNum() == 0) continue;
-
-
                 if (isRowEmpty(row)) continue;
 
 
@@ -53,7 +51,6 @@ public class ExpenseServiceImpl implements ExpenseService {
                     if (dateCell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(dateCell)) {
                         date = dateCell.getDateCellValue();
                     } else {
-
                         String dateStr = dataFormatter.formatCellValue(dateCell).trim();
                         if (!dateStr.isEmpty()) {
                             date = parseDateString(dateStr);
@@ -63,10 +60,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 
                 String category = getCellString(row.getCell(1), dataFormatter);
-
-
                 String description = getCellString(row.getCell(2), dataFormatter);
-
 
                 Double amount = 0.0;
                 Cell amountCell = row.getCell(3);
@@ -77,6 +71,17 @@ public class ExpenseServiceImpl implements ExpenseService {
                         String amtStr = dataFormatter.formatCellValue(amountCell).trim();
                         amount = parseDoubleLenient(amtStr);
                     }
+                }
+
+                boolean exists = expenseRepository
+                        .findByUserIdAndDateAndCategoryAndDescriptionAndAmount(
+                                userId, date, category, description, amount
+                        )
+                        .isPresent();
+
+                if (exists) {
+                    System.out.println("Duplicate found — skipping row: " + description);
+                    continue;
                 }
 
 
@@ -171,6 +176,14 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .map(Expense::getExpenseDTO)
                 .toList();
     }
+
+    @Override
+    public void deleteExpense(Long expenseId) throws Exception {
+        Expense expense = expenseRepository.findById(expenseId)
+                .orElseThrow(() -> new Exception("Expense not found"));
+        expenseRepository.delete(expense);
+    }
+
 
 
 }
