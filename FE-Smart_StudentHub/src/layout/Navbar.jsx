@@ -35,20 +35,22 @@ function Navbar() {
   const navLinks = [];
 
   if (isAdminLoggedIn) {
-    navLinks.push(
-      { to: "/admin/dashboard", label: "Dashboard" },
-      { to: "/admin/task", label: "Post Task" },
-      { to: "/techniques", label: "Techniques" },
-      { to: "/expenses", label: "Expenses" }
-    );
-  } else if (isEmployeeLoggedIn) {
-    navLinks.push(
-      { to: "/employee/dashboard", label: "Dashboard" },
-      { to: "/employee/task", label: "Post Task" },
-      { to: "/techniques", label: "Techniques" },
-      { to: "/expenses", label: "Expenses" }
-    );
-  }
+  navLinks.push(
+    { to: "/admin/dashboard", label: "Dashboard" },
+    { to: "/admin/task", label: "Post Task" },
+    { to: "/techniques", label: "Techniques" },
+    { to: "/folders", label: "Folders" }, 
+    { to: "/expenses", label: "Expenses" }
+  );
+} else if (isEmployeeLoggedIn) {
+  navLinks.push(
+    { to: "/employee/dashboard", label: "Dashboard" },
+    { to: "/employee/task", label: "Post Task" },
+    { to: "/techniques", label: "Techniques" },
+    { to: "/folders", label: "Folders" }, 
+    { to: "/expenses", label: "Expenses" }
+  );
+}
 
   const linkClass = (to) =>
     `relative px-4 py-2 font-medium transition-all duration-300 

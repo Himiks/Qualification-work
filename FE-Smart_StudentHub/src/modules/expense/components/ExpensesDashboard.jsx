@@ -184,7 +184,7 @@ export default function ExpensesDashboard({ userIdProp }) {
           </div>
         </div>
 
-        {/* Filters */}
+    
         <div className="flex gap-4 mb-4 flex-wrap">
           <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="border p-2 rounded">
             {categories.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -241,7 +241,7 @@ export default function ExpensesDashboard({ userIdProp }) {
           <div className="p-4 border rounded">
             <h4 className="font-medium mb-2">By Category</h4>
             <div style={{ width: "100%", height: 240 }}>
-              <PieChart width={550} height={440}>
+              <PieChart width={550} height={300}>
                 <Pie
                   data={stats.byCategory}
                   dataKey="amount"

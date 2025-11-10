@@ -14,6 +14,7 @@ import TechniquesPage from "../layout/TechniquesPage";
 import TechniqueDetail from "../layout/TechniqueDetail";
 import Eisenhower from "../modules/components/Eisenhower";
 import ExpensesDashboard from "../modules/expense/components/ExpensesDashboard";
+import FoldersDashboard from "../modules/folder/components/FoldersDashboard";
 
 function AppRouter() {
   return (
@@ -41,6 +42,8 @@ function AppRouter() {
         <Route path="/techniques/:techniqueName/:taskId" element={<TechniqueDetail />} />
         <Route path="/techniques/:techniqueName" element={<Eisenhower />} />
         <Route path="/expenses" element={<ExpensesDashboard />} />
+        <Route path="/folders" element={<FoldersDashboard />} />
+        
       </Routes>
     </Router>
   );
