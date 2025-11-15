@@ -13,7 +13,7 @@ function AdminViewTaskDetails() {
     fetchComments();
   }, []);
 
-  // 🔹 Получаем задачу
+
   const fetchTask = async () => {
     try {
       const res = await adminService.getTaskById(id);
@@ -23,7 +23,7 @@ function AdminViewTaskDetails() {
     }
   };
 
-  // 🔹 Получаем комментарии из базы
+  
   const fetchComments = async () => {
     try {
       const res = await adminService.getCommentsByTaskId(id);
@@ -33,7 +33,7 @@ function AdminViewTaskDetails() {
     }
   };
 
-  // 🔹 Добавляем новый комментарий
+
   const handleAddComment = async () => {
     if (!comment.trim()) return alert("Comment cannot be empty");
     try {
@@ -65,7 +65,7 @@ function AdminViewTaskDetails() {
         </div>
       </div>
 
-      {/* 🔹 Комментарии */}
+     
       <div className="mt-8">
         <h3 className="text-lg font-semibold mb-3 text-gray-800">💬 Comments</h3>
 

@@ -15,6 +15,7 @@ import TechniqueDetail from "../layout/TechniqueDetail";
 import Eisenhower from "../modules/components/Eisenhower";
 import ExpensesDashboard from "../modules/expense/components/ExpensesDashboard";
 import FoldersDashboard from "../modules/folder/components/FoldersDashboard";
+import AdminViewAllUsers from "../modules/admin/components/AdminViewAllUsers";
 
 function AppRouter() {
   return (
@@ -22,19 +23,20 @@ function AppRouter() {
       <Navbar />
 
       <Routes>
-        {/* 🔐 Auth */}
+        {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/techniques" element={<TechniquesPage />} />
 
-        {/* 👑 Admin */}
+        {/* Admin */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/task" element={<AdminPostTask />} />
         <Route path="/admin/task/:id/edit" element={<AdminUpdateTask />} />
         <Route path="/admin/task/:id/details" element={<AdminViewTaskDetails />} />
+        <Route path="/admin/users" element={<AdminViewAllUsers />} />
 
 
-        {/* 👷 Employee */}
+        {/* Employee */}
         <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
          <Route path="/employee/task" element={<EmployeePostTask />} />
         <Route path="/employee/task/:id/edit" element={<EmployeeUpdateTask />} />

@@ -58,7 +58,7 @@ function Signup() {
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
+          
           <div>
             <label className="block text-gray-700 mb-1">Name</label>
             <input
@@ -73,7 +73,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Email */}
+         
           <div>
             <label className="block text-gray-700 mb-1">Email</label>
             <input
@@ -89,7 +89,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Password */}
+          
           <div>
             <label className="block text-gray-700 mb-1">Password</label>
             <div className="relative">
@@ -114,7 +114,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Confirm Password */}
+          
           <div>
             <label className="block text-gray-700 mb-1">Confirm Password</label>
             <input

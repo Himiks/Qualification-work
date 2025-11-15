@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import storageService from "../auth/services/storageService";
@@ -40,7 +39,8 @@ function Navbar() {
     { to: "/admin/task", label: "Post Task" },
     { to: "/techniques", label: "Techniques" },
     { to: "/folders", label: "Folders" }, 
-    { to: "/expenses", label: "Expenses" }
+    { to: "/expenses", label: "Expenses" },
+    { to: "/admin/users", label: "Users" }
   );
 } else if (isEmployeeLoggedIn) {
   navLinks.push(
@@ -65,7 +65,7 @@ function Navbar() {
       className="sticky top-0 z-50 backdrop-blur-lg bg-gradient-to-r from-slate-900/80 via-blue-900/70 to-slate-900/80 border-b border-cyan-500/20 shadow-[0_0_15px_rgba(56,189,248,0.2)]"
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-3">
-        {/* Title */}
+        
         <motion.span
           whileHover={{ scale: 1.05, textShadow: "0px 0px 15px rgba(56,189,248,0.7)" }}
           className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-indigo-400 drop-shadow"
@@ -73,7 +73,7 @@ function Navbar() {
           {title}
         </motion.span>
 
-        {/* Hamburger */}
+        
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="sm:hidden text-cyan-400 focus:outline-none"
@@ -81,7 +81,7 @@ function Navbar() {
           {menuOpen ? <HiX size={28} /> : <HiMenu size={28} />}
         </button>
 
-        {/* Desktop menu */}
+        
         <div className="hidden sm:flex items-center gap-6">
           {!isAdminLoggedIn && !isEmployeeLoggedIn ? (
             <>
@@ -120,7 +120,7 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile dropdown menu */}
+      
       <AnimatePresence>
         {menuOpen && (
           <motion.div

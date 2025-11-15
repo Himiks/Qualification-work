@@ -4,7 +4,7 @@ const BLOCKS = ["Morning", "Afternoon", "Evening"];
 
 function TimeBlocking() {
   const [goals, setGoals] = useState(() => {
-    // Загрузка из localStorage, чтобы сохранялось после обновления
+  
     const saved = localStorage.getItem("timeBlockingGoals");
     return saved ? JSON.parse(saved) : [];
   });
@@ -77,7 +77,7 @@ function TimeBlocking() {
         ))}
       </div>
 
-      {/* Правая колонка — панель управления задачами */}
+      
       <div className="flex-shrink-0 w-full md:w-[380px] bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-2 text-center">
           📝 Add Goal

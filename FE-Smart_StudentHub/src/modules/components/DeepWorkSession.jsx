@@ -9,7 +9,7 @@ function DeepWorkSession() {
 
   const LOCAL_STORAGE_KEY = "deepWorkGoals";
 
-  // Загружаем задачи из localStorage при монтировании
+ 
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
@@ -21,13 +21,13 @@ function DeepWorkSession() {
     }
   }, []);
 
-  // Функция для сохранения целей в localStorage
+  
   const saveGoals = (updatedGoals) => {
     setGoals(updatedGoals);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedGoals));
   };
 
-  // Таймер
+ 
   useEffect(() => {
     let interval;
     if (isActive && timeLeft > 0) {
@@ -57,7 +57,7 @@ function DeepWorkSession() {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
-  // Работа с подзадачами
+
   const addGoal = () => {
     if (!newGoal.trim()) return;
     const updated = [...goals, { text: newGoal, done: false }];
@@ -79,7 +79,7 @@ function DeepWorkSession() {
 
   return (
     <div className="flex flex-col items-center w-full max-w-3xl mx-auto space-y-8">
-      {/* Таймер */}
+   
       <div className="flex flex-col items-center bg-indigo-50 rounded-2xl shadow-lg p-8 w-full">
         <h2 className="text-3xl font-bold mb-4 text-indigo-700">Deep Work Session</h2>
         <p className="text-5xl font-mono text-gray-800 mb-6">{formatTime(timeLeft)}</p>
@@ -98,7 +98,7 @@ function DeepWorkSession() {
         </p>
       </div>
 
-      {/* Подзадачи */}
+    
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full">
         <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">📝 Goals for this session</h3>
 

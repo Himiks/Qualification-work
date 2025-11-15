@@ -76,7 +76,7 @@ function EmployeeDashboard() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* 🔹 Поиск */}
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 className="text-3xl font-bold text-gray-800">📋 All Tasks</h2>
 
@@ -98,7 +98,7 @@ function EmployeeDashboard() {
               key={task.id}
               className="border border-gray-200 rounded-2xl shadow-sm bg-white p-5 flex flex-col justify-between relative transform transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
-              {/* Кнопки редактирования и удаления */}
+              
               <div className="absolute top-3 right-3 flex gap-2">
                 <button
                   onClick={() => navigate(`/employee/task/${task.id}/details`)}
@@ -123,13 +123,13 @@ function EmployeeDashboard() {
                 </button>
               </div>
 
-              {/* Заголовок */}
+             
               <div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2 truncate">{task.title}</h3>
                 <p className="text-gray-600 text-sm mb-4 line-clamp-3">{task.description}</p>
               </div>
 
-              {/* Информация */}
+             
               <div className="text-sm text-gray-700 space-y-1 mt-auto">
                 <p>
                   <span className="font-semibold text-gray-800">📅 Due Date:</span>{" "}
@@ -152,7 +152,7 @@ function EmployeeDashboard() {
                     {task.taskStatus}
                   </span>
 
-                  {/* Кнопка техники */}
+                  
                   <button
                     onClick={() => {
                       if (task.technique && task.technique !== "NONE") {

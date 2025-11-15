@@ -76,7 +76,7 @@ function AdminUpdateTask() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Title */}
+          
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Title
@@ -91,7 +91,7 @@ function AdminUpdateTask() {
             />
           </div>
 
-          {/* Description */}
+         
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Description
@@ -106,7 +106,7 @@ function AdminUpdateTask() {
             />
           </div>
 
-          {/* Due Date */}
+        
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Due Date
@@ -121,7 +121,7 @@ function AdminUpdateTask() {
             />
           </div>
 
-          {/* Priority */}
+         
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Priority
@@ -140,7 +140,6 @@ function AdminUpdateTask() {
             </select>
           </div>
 
-          {/* Task Status */}
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Task Status
@@ -159,7 +158,7 @@ function AdminUpdateTask() {
             </select>
           </div>
 
-          {/* Employee (read-only) */}
+          
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Assigned Employee
@@ -169,7 +168,7 @@ function AdminUpdateTask() {
             </div>
           </div>
 
-          {/* Submit */}
+         
           <div className="flex justify-between mt-6">
             <button
               type="button"

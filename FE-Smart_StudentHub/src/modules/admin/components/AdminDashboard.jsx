@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import adminService from "../services/adminService";
+import storageService from "../../../auth/services/storageService";
 
 function AdminDashboard() {
   const [tasks, setTasks] = useState([]);
@@ -11,7 +12,7 @@ function AdminDashboard() {
     fetchTasks();
   }, []);
 
-  // 🔹 Получение всех задач
+  
   const fetchTasks = async () => {
     try {
       const res = await adminService.getTasks();
@@ -21,7 +22,7 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 Удаление задачи
+  
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
@@ -34,12 +35,12 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 Переход на редактирование
+ 
   const handleEdit = (id) => {
     navigate(`/admin/task/${id}/edit`);
   };
 
-  // 🔹 Поиск задач по title
+ 
   const handleSearch = async (e) => {
     const value = e.target.value;
     setSearch(value);
@@ -57,7 +58,7 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 Цвет для приоритета
+  
   const getPriorityColor = (priority) => {
     switch (priority.toUpperCase()) {
       case "HIGH":
@@ -71,7 +72,7 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 Цвет для статуса
+  
   const getStatusColor = (status) => {
     switch (status.toUpperCase()) {
       case "COMPLETED":
@@ -85,9 +86,10 @@ function AdminDashboard() {
     }
   };
 
+  if(storageService.getUserRole() === 'ADMIN'){
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* 🔹 Поиск */}
+     
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 className="text-3xl font-bold text-gray-800">📋 All Tasks</h2>
 
@@ -111,7 +113,7 @@ function AdminDashboard() {
               key={task.id}
               className="border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 bg-white p-5 flex flex-col justify-between relative"
             >
-              {/* Кнопки редактирования и удаления */}
+             
               <div className="absolute top-3 right-3 flex gap-2">
 
                         <button
@@ -138,7 +140,7 @@ function AdminDashboard() {
                             </button>
               </div>
 
-              {/* Заголовок */}
+             
               <div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2 truncate">
                   {task.title}
@@ -148,7 +150,7 @@ function AdminDashboard() {
                 </p>
               </div>
 
-              {/* Информация */}
+             
               <div className="text-sm text-gray-700 space-y-1 mt-auto">
                 <p>
                   <span className="font-semibold text-gray-800">📅 Due Date:</span>{" "}
@@ -183,6 +185,21 @@ function AdminDashboard() {
       )}
     </div>
   );
+}else{
+
+    return (
+  <div className="p-6 w-full h-[70vh] flex items-center justify-center">
+    <div className="text-center">
+      <h2 className="text-4xl font-extrabold text-red-600 drop-shadow mb-4">
+        ❌ Access Denied
+      </h2>
+      <p className="text-gray-600 text-lg">
+        You do not have permission to view this page.
+      </p>
+    </div>
+  </div>
+);
+  }
 }
 
 export default AdminDashboard;

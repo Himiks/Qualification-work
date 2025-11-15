@@ -67,7 +67,7 @@ function EmployeeUpdateTask() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Title */}
+         
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Title</label>
             <input
@@ -80,7 +80,7 @@ function EmployeeUpdateTask() {
             />
           </div>
 
-          {/* Description */}
+       
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Description</label>
             <textarea
@@ -93,7 +93,7 @@ function EmployeeUpdateTask() {
             />
           </div>
 
-          {/* Due Date */}
+         
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Due Date</label>
             <input
@@ -106,7 +106,7 @@ function EmployeeUpdateTask() {
             />
           </div>
 
-          {/* Priority */}
+          
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Priority</label>
             <select
@@ -124,7 +124,7 @@ function EmployeeUpdateTask() {
             </select>
           </div>
 
-          {/* Technique */}
+          
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Technique</label>
             <select
@@ -142,7 +142,7 @@ function EmployeeUpdateTask() {
             </select>
           </div>
 
-          {/* Task Status */}
+          
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Task Status</label>
             <select
@@ -160,7 +160,7 @@ function EmployeeUpdateTask() {
             </select>
           </div>
 
-          {/* Buttons */}
+         
           <div className="flex justify-between mt-6">
             <button
               type="button"

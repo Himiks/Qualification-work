@@ -62,7 +62,7 @@ function Login() {
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
+          
           <div>
             <label className="block text-gray-700 mb-1">Email</label>
             <input
@@ -76,7 +76,7 @@ function Login() {
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
-          {/* Password */}
+         
           <div>
             <label className="block text-gray-700 mb-1">Password</label>
             <div className="relative">

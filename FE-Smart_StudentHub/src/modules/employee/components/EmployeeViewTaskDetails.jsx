@@ -13,7 +13,7 @@ function EmployeeViewTaskDetails() {
     fetchComments();
   }, []);
 
-  // 🔹 Получаем задачу
+  
   const fetchTask = async () => {
     try {
       const res = await employeeService.getTaskById(id);
@@ -23,7 +23,7 @@ function EmployeeViewTaskDetails() {
     }
   };
 
-  // 🔹 Получаем комментарии из базы
+  
   const fetchComments = async () => {
     try {
       const res = await employeeService.getCommentsByTaskId(id);
@@ -33,7 +33,7 @@ function EmployeeViewTaskDetails() {
     }
   };
 
-  // 🔹 Добавляем новый комментарий
+  
   const handleAddComment = async () => {
     if (!comment.trim()) return alert("Comment cannot be empty");
     try {
@@ -65,7 +65,7 @@ function EmployeeViewTaskDetails() {
         </div>
       </div>
 
-      {/* 🔹 Комментарии */}
+      
       <div className="mt-8">
         <h3 className="text-lg font-semibold mb-3 text-gray-800">💬 Comments</h3>
 

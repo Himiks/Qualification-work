@@ -85,7 +85,7 @@ function TechniqueDetail() {
           className={`bg-white shadow-2xl rounded-2xl w-full max-w-6xl flex flex-col md:flex-row gap-8 p-6 md:p-8 transition-all duration-700 ease-out
             transform ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         >
-          {/* Левая колонка */}
+          
           <div className="flex-1">
             <h1 className="text-4xl font-bold text-center md:text-left mb-4 text-gray-800">
               ⚙️ {formattedName}
@@ -136,7 +136,7 @@ function TechniqueDetail() {
             )}
           </div>
 
-          {/* Правая колонка */}
+          
           <div className="flex-1 flex flex-col justify-center items-center gap-6">
             {isPomodoro && (
               <>

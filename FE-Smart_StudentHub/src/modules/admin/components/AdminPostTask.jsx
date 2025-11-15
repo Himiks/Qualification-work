@@ -51,7 +51,7 @@ function AdminPostTask() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Title */}
+      
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Title
@@ -66,7 +66,7 @@ function AdminPostTask() {
             />
           </div>
 
-          {/* Description */}
+       
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Description
@@ -81,7 +81,6 @@ function AdminPostTask() {
             />
           </div>
 
-          {/* Due Date */}
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Due Date
@@ -96,7 +95,7 @@ function AdminPostTask() {
             />
           </div>
 
-          {/* Priority */}
+         
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Priority
@@ -114,7 +113,7 @@ function AdminPostTask() {
             </select>
           </div>
 
-          {/* Assign Employee */}
+          
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
               Assign to Employee
@@ -154,7 +153,7 @@ function AdminPostTask() {
             </select>
           </div>
 
-          {/* Buttons */}
+          
           <div className="flex justify-between mt-6">
             <button
               type="button"

@@ -25,6 +25,12 @@ const deleteTask = async (id) => {
   return response.data;
 };
 
+const deleteUser = async (id) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.delete(`${BASE_URL}/user/${id}`, { headers });
+  return response.data;
+}
 
 const getTaskById = async (id) => {
   const token = storageService.getToken();
@@ -77,5 +83,5 @@ const getCommentsByTaskId = async (taskId) => {
   return response.data;
 };
 
-const adminService = { getUsers, postTask, getTasks, deleteTask, getTaskById, updateTask, searchTask, createComment, getCommentsByTaskId };
+const adminService = { getUsers, postTask, getTasks, deleteTask, getTaskById, updateTask, searchTask, createComment, getCommentsByTaskId, deleteUser };
 export default adminService;
