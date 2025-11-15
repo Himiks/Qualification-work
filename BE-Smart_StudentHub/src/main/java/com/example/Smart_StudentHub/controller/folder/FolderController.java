@@ -35,37 +35,37 @@ public class FolderController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    // ✅ Создание папки
+
     @PostMapping
     public FolderDTO createFolder(@RequestBody FolderDTO folderDTO) throws Exception {
         return folderService.createFolder(folderDTO);
     }
 
-    // ✅ Получение всех папок пользователя
+
     @GetMapping
     public List<FolderDTO> getUserFolders(@RequestParam Long userId) {
         return folderService.getUserFolders(userId);
     }
 
-    // ✅ Публичные папки
+
     @GetMapping("/public")
     public List<FolderDTO> getPublicFolders() {
         return folderService.getPublicFolders();
     }
 
-    // ✅ Загрузка файла в папку
+
     @PostMapping("/{id}/upload")
     public FileDTO uploadFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
         return fileService.uploadFile(id, file);
     }
 
-    // ✅ Получение файлов внутри папки
+
     @GetMapping("/{id}/files")
     public List<FileDTO> getFilesInFolder(@PathVariable Long id) {
         return fileService.getFilesInFolder(id);
     }
 
-    // ✅ Скачивание файла (всё в этом же контроллере)
+
     @GetMapping("/file/{id}/download")
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
         FileEntity fileEntity = fileRepository.findById(id)

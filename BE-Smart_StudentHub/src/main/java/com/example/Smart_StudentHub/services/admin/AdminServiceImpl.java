@@ -81,6 +81,11 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
     public TaskDTO getTaskById(Long id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         return optionalTask.map(Task::getTaskDTO).orElse(null);

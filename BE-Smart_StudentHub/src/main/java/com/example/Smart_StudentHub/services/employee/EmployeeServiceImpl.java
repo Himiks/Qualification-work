@@ -7,6 +7,7 @@ import com.example.Smart_StudentHub.entities.Task;
 import com.example.Smart_StudentHub.entities.User;
 import com.example.Smart_StudentHub.enums.TaskStatus;
 import com.example.Smart_StudentHub.enums.TaskTechnique;
+import com.example.Smart_StudentHub.enums.UserRole;
 import com.example.Smart_StudentHub.repositories.CommentRepository;
 import com.example.Smart_StudentHub.repositories.TaskRepository;
 import com.example.Smart_StudentHub.utils.JwtUtils;
@@ -140,12 +141,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<TaskDTO> searchTasksByUserTitle(String title) {
-        return taskRepository.findAllByTitleContaining(title)
-                .stream()
+        User user = jwtUtils.getLoggedInUser();
+
+        if(user == null){
+            throw new EntityNotFoundException("User not found");
+        }
+        boolean isAdmin = user.getUserRole() == UserRole.ADMIN;
+        List<Task> tasks;
+
+        if(isAdmin){
+            tasks = taskRepository.findAllByTitleContaining(title);
+        }else{
+            tasks = taskRepository.findAllByUserIdAndTitleContaining(user.getId(), title);
+        }
+
+        return tasks.stream()
                 .sorted(Comparator.comparing(Task::getDueDate).reversed())
                 .map(Task::getTaskDTO)
                 .collect(Collectors.toList());
-
     }
 
     @Override
