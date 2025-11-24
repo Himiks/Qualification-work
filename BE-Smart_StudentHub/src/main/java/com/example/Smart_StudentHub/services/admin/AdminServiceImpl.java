@@ -3,6 +3,7 @@ package com.example.Smart_StudentHub.services.admin;
 
 import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.dto.UpdateUserDTO;
 import com.example.Smart_StudentHub.dto.UserDto;
 import com.example.Smart_StudentHub.entities.Comment;
 import com.example.Smart_StudentHub.entities.Task;
@@ -15,6 +16,7 @@ import com.example.Smart_StudentHub.repositories.UserRepository;
 import com.example.Smart_StudentHub.utils.JwtUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -30,6 +32,8 @@ public class AdminServiceImpl implements  AdminService {
 
     private final TaskRepository taskRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
 
     private final JwtUtils jwtUtils;
 
@@ -41,9 +45,61 @@ public class AdminServiceImpl implements  AdminService {
     public List<UserDto> getUsers() {
         return userRepository.findAll()
                 .stream()
-                .filter(user -> user.getUserRole() == UserRole.EMPLOYEE)
+                .filter(user -> user.getUserRole() == UserRole.EMPLOYEE || user.getUserRole() == UserRole.ADMIN)
                 .map(User::getUserDto)
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public UserDto updateMyProfile(UpdateUserDTO dto) {
+        User admin = jwtUtils.getLoggedInUser();
+
+        if (admin == null || admin.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        updateFields(admin, dto);
+        userRepository.save(admin);
+        return admin.getUserDto();
+    }
+
+    @Override
+    public UserDto updateUserById(Long id, UpdateUserDTO dto) {
+        User admin = jwtUtils.getLoggedInUser();
+        if (admin.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Only admin can update users");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        updateFields(user, dto);
+        userRepository.save(user);
+
+        return user.getUserDto();
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(User::getUserDto)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+
+
+
+    private void updateFields(User user, UpdateUserDTO dto) {
+
+        if (dto.getName() != null)
+            user.setName(dto.getName());
+
+        if (dto.getEmail() != null)
+            user.setEmail(dto.getEmail());
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank())
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
     }
 
     @Override

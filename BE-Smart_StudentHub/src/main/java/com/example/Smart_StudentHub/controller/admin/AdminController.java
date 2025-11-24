@@ -3,6 +3,8 @@ package com.example.Smart_StudentHub.controller.admin;
 
 import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.dto.UpdateUserDTO;
+import com.example.Smart_StudentHub.dto.UserDto;
 import com.example.Smart_StudentHub.services.admin.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,21 @@ public class AdminController {
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         return ResponseEntity.ok(adminService.getUsers());
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserDto> updateMyProfile(@RequestBody UpdateUserDTO dto) {
+        return ResponseEntity.ok(adminService.updateMyProfile(dto));
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO dto) {
+        return ResponseEntity.ok(adminService.updateUserById(id, dto));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.getUserById(id));
     }
 
 

@@ -161,7 +161,7 @@ function AdminUpdateTask() {
           
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
-              Assigned Employee
+              User
             </label>
             <div className="border border-gray-300 p-3 w-full rounded-lg bg-gray-50 text-gray-800">
               {employeeName}

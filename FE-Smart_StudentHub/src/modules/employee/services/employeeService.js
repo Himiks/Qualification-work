@@ -36,6 +36,13 @@ const deleteTask = async (id) => {
   return response.data;
 };
 
+const updateProfile = async (employeeData) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.put(`${BASE_URL}/profile`, employeeData, { headers });
+  return response.data;
+}
+
 
 const searchTask = async (title) => {
   const token = storageService.getToken();
@@ -77,5 +84,5 @@ const getTaskById = async (id) => {
 };
 
 
-const employeeService = { getAllTasksByUserId, getCommentsByTaskId, createComment, getTaskById, postTask, deleteTask, searchTask, updateTask, getAllTasksByTechniqueName };
+const employeeService = { getAllTasksByUserId, getCommentsByTaskId, createComment, getTaskById, postTask, deleteTask, searchTask, updateTask, getAllTasksByTechniqueName, updateProfile };
 export default employeeService;

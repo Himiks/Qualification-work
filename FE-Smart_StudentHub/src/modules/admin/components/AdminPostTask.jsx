@@ -116,7 +116,7 @@ function AdminPostTask() {
           
           <div>
             <label className="block font-semibold text-gray-700 mb-1">
-              Assign to Employee
+              Assign to User
             </label>
             <select
               name="employeeId"

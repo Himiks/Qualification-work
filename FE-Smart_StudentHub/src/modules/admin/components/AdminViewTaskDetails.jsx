@@ -59,7 +59,7 @@ function AdminViewTaskDetails() {
 
         <div className="space-y-2 text-sm text-gray-600">
           <p><strong>📅 Due Date:</strong> {new Date(task.dueDate).toLocaleDateString()}</p>
-          <p><strong>👤 Employee:</strong> {task.employeeName}</p>
+          <p><strong>👤 User:</strong> {task.employeeName}</p>
           <p><strong>⭐ Priority:</strong> {task.priority}</p>
           <p><strong>⚙️ Status:</strong> {task.taskStatus}</p>
         </div>

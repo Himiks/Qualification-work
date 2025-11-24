@@ -16,6 +16,9 @@ import Eisenhower from "../modules/components/Eisenhower";
 import ExpensesDashboard from "../modules/expense/components/ExpensesDashboard";
 import FoldersDashboard from "../modules/folder/components/FoldersDashboard";
 import AdminViewAllUsers from "../modules/admin/components/AdminViewAllUsers";
+import EmployeeProfile from "../modules/employee/components/EmployeeProfile";
+import AdminProfile from "../modules/admin/components/AdminProfile";
+import AdminEditUser from "../modules/admin/components/AdminEditUser";
 
 function AppRouter() {
   return (
@@ -34,6 +37,10 @@ function AppRouter() {
         <Route path="/admin/task/:id/edit" element={<AdminUpdateTask />} />
         <Route path="/admin/task/:id/details" element={<AdminViewTaskDetails />} />
         <Route path="/admin/users" element={<AdminViewAllUsers />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
+        <Route path="/admin/user/:id/edit" element={<AdminEditUser />} />
+        
+
 
 
         {/* Employee */}
@@ -45,6 +52,7 @@ function AppRouter() {
         <Route path="/techniques/:techniqueName" element={<Eisenhower />} />
         <Route path="/expenses" element={<ExpensesDashboard />} />
         <Route path="/folders" element={<FoldersDashboard />} />
+        <Route path="/employee/profile" element={<EmployeeProfile />} />
         
       </Routes>
     </Router>

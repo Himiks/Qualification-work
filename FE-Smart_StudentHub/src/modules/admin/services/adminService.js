@@ -39,7 +39,27 @@ const getTaskById = async (id) => {
   return response.data;
 };
 
+const getUserById = async (id) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.get(`${BASE_URL}/user/${id}`, { headers });
+  return response.data;
+}
 
+
+const updateUser = async (id, userData) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.put(`${BASE_URL}/user/${id}`, userData, { headers });
+  return response.data;
+}
+
+const updateProfile = async (adminData) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.put(`${BASE_URL}/profile`, adminData, { headers });
+  return response.data;
+}
 
 
 const getTasks = async () => {
@@ -83,5 +103,5 @@ const getCommentsByTaskId = async (taskId) => {
   return response.data;
 };
 
-const adminService = { getUsers, postTask, getTasks, deleteTask, getTaskById, updateTask, searchTask, createComment, getCommentsByTaskId, deleteUser };
+const adminService = { getUsers, postTask, getTasks, deleteTask, getTaskById, updateTask, searchTask, createComment, getCommentsByTaskId, deleteUser, getUserById, updateUser, updateProfile };
 export default adminService;

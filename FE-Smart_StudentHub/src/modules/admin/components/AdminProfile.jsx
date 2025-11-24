@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import employeeService from "../services/employeeService";
 import storageService from "../../../auth/services/storageService";
 import axios from "axios";
+import adminService from "../services/adminService";
 import { useNavigate } from "react-router-dom";
 
-export default function EmployeeProfile() {
+export default function AdminProfile() {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -29,9 +29,10 @@ export default function EmployeeProfile() {
 
   const handleSave = async () => {
     try {
-    await employeeService.updateProfile(form);
-    alert("Profile updated successfully!");
-    storageService.saveUser({
+
+      await adminService.updateProfile(form);
+      alert("Profile updated successfully!");
+      storageService.saveUser({
         ...user,
         name: form.name,
         email: form.email
@@ -44,7 +45,7 @@ export default function EmployeeProfile() {
 
   return (
     <div className="max-w-xl mx-auto p-6 mt-10 bg-white rounded-xl shadow">
-      <h2 className="text-2xl font-bold mb-6 text-center">My Profile</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-red-600">Admin Profile</h2>
 
       <div className="flex flex-col gap-4">
         <input
@@ -74,7 +75,7 @@ export default function EmployeeProfile() {
 
         <button
           onClick={handleSave}
-          className="bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700"
+          className="bg-red-600 text-white p-3 rounded-lg hover:bg-red-700"
         >
           Save Changes
         </button>

@@ -157,7 +157,7 @@ function AdminDashboard() {
                   {new Date(task.dueDate).toLocaleDateString()}
                 </p>
                 <p>
-                  <span className="font-semibold text-gray-800">👤 Employee:</span>{" "}
+                  <span className="font-semibold text-gray-800">👤 User:</span>{" "}
                   {task.employeeName}
                 </p>
 

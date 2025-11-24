@@ -2,6 +2,8 @@ package com.example.Smart_StudentHub.services.employee;
 
 import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.dto.UpdateUserDTO;
+import com.example.Smart_StudentHub.dto.UserDto;
 import com.example.Smart_StudentHub.entities.Comment;
 import com.example.Smart_StudentHub.entities.Task;
 import com.example.Smart_StudentHub.entities.User;
@@ -10,9 +12,11 @@ import com.example.Smart_StudentHub.enums.TaskTechnique;
 import com.example.Smart_StudentHub.enums.UserRole;
 import com.example.Smart_StudentHub.repositories.CommentRepository;
 import com.example.Smart_StudentHub.repositories.TaskRepository;
+import com.example.Smart_StudentHub.repositories.UserRepository;
 import com.example.Smart_StudentHub.utils.JwtUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -28,7 +32,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final JwtUtils jwtUtils;
 
+    private final UserRepository userRepository;
+
     private final CommentRepository commentRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
 
 
@@ -66,6 +74,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return null;
+    }
+
+    public UserDto updateMyProfile(UpdateUserDTO dto) {
+        User user = jwtUtils.getLoggedInUser();
+        if (user == null) return null;
+
+        if (dto.getName() != null) user.setName(dto.getName());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        userRepository.save(user);
+        return user.getUserDto();
     }
 
 

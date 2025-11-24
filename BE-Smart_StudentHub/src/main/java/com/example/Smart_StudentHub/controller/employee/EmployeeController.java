@@ -2,6 +2,7 @@ package com.example.Smart_StudentHub.controller.employee;
 
 import com.example.Smart_StudentHub.dto.CommentDTO;
 import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.dto.UpdateUserDTO;
 import com.example.Smart_StudentHub.enums.TaskTechnique;
 import com.example.Smart_StudentHub.services.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,12 @@ public class EmployeeController {
         TaskDTO updatedTaskDTO = employeeService.updateTask(id, taskDTO);
         if(updatedTaskDTO == null)return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updatedTaskDTO);
+    }
+
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateMyProfile(@RequestBody UpdateUserDTO dto) {
+        return ResponseEntity.ok(employeeService.updateMyProfile(dto));
     }
 
 

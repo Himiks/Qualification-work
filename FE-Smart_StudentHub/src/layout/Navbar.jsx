@@ -40,7 +40,8 @@ function Navbar() {
     { to: "/techniques", label: "Techniques" },
     { to: "/folders", label: "Folders" }, 
     { to: "/expenses", label: "Expenses" },
-    { to: "/admin/users", label: "Users" }
+    { to: "/admin/users", label: "Users" },
+    { to: "/admin/profile", label: "Profile" }
   );
 } else if (isEmployeeLoggedIn) {
   navLinks.push(
@@ -48,7 +49,8 @@ function Navbar() {
     { to: "/employee/task", label: "Post Task" },
     { to: "/techniques", label: "Techniques" },
     { to: "/folders", label: "Folders" }, 
-    { to: "/expenses", label: "Expenses" }
+    { to: "/expenses", label: "Expenses" },
+    { to: "/employee/profile", label: "Profile" }
   );
 }
 
