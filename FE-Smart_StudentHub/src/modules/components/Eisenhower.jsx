@@ -4,10 +4,10 @@ import Column from "./Column";
 import employeeService from "../employee/services/employeeService";
 
 const COLUMNS = [
-  { id: "High", title: "🔥 Important + Urgent → Do immediately" },
-  { id: "Medium", title: "⏰ Important + Not urgent → Schedule" },
-  { id: "Low", title: "🤝 Not important + Urgent → Delegate" },
-  { id: "Minor", title: "🧘 Not important + Not urgent → Eliminate" },
+  { id: "High", title: "Important + Urgent → Do immediately" },
+  { id: "Medium", title: "Important + Not urgent → Schedule" },
+  { id: "Low", title: "Not important + Urgent → Delegate" },
+  { id: "Minor", title: "Not important + Not urgent → Eliminate" },
 ];
 
 export default function Eisenhower() {
@@ -80,9 +80,9 @@ export default function Eisenhower() {
     try {
       const updatedTask = { ...movedTask.raw, priority: newStatus.toUpperCase() };
       await employeeService.updateTask(movedTask.id, updatedTask);
-      console.log(`✅ Task ${movedTask.title} updated to ${newStatus}`);
+      console.log(`Task ${movedTask.title} updated to ${newStatus}`);
     } catch (err) {
-      console.error("❌ Failed to update task:", err);
+      console.error("Failed to update task:", err);
       alert("Failed to update task priority on server!");
       setTasks((prev) =>
         prev.map((task) =>
@@ -117,6 +117,12 @@ export default function Eisenhower() {
           ))}
         </div>
       </DndContext>
+
+      
+      
     </div>
+    
+
+              
   );
 }

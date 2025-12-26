@@ -1,4 +1,3 @@
-// src/modules/expenses/components/FileUploader.jsx
 import React, { useState } from "react";
 import expenseService from "../services/expenseService";
 import storageService from "../../../auth/services/storageService";

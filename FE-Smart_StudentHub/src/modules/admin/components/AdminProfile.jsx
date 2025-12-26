@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import storageService from "../../../auth/services/storageService";
-import axios from "axios";
 import adminService from "../services/adminService";
 import { useNavigate } from "react-router-dom";
 

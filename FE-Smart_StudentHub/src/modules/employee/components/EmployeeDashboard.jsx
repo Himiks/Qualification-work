@@ -78,7 +78,7 @@ function EmployeeDashboard() {
     <div className="p-6 max-w-7xl mx-auto">
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-        <h2 className="text-3xl font-bold text-gray-800">📋 All Tasks</h2>
+        <h2 className="text-3xl font-bold text-gray-800"> All Tasks</h2>
 
         <input
           type="text"
@@ -99,27 +99,27 @@ function EmployeeDashboard() {
               className="border border-gray-200 rounded-2xl shadow-sm bg-white p-5 flex flex-col justify-between relative transform transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
               
-              <div className="absolute top-3 right-3 flex gap-2">
+               <div className="absolute top-3 right-3 flex gap-2">
                 <button
                   onClick={() => navigate(`/employee/task/${task.id}/details`)}
                   className="text-purple-500 hover:text-purple-700"
                   title="View Details"
                 >
-                  👁️
+                  <i className="fa-regular fa-eye transition-transform hover:scale-110"></i>
                 </button>
                 <button
                   onClick={() => handleEdit(task.id)}
                   className="text-blue-500 hover:text-blue-700"
                   title="Edit Task"
                 >
-                  ✏️
+                  <i className="fa-regular fa-pen-to-square"></i>
                 </button>
                 <button
                   onClick={() => handleDelete(task.id)}
                   className="text-red-500 hover:text-red-700"
                   title="Delete Task"
                 >
-                  🗑️
+                  <i className="fa-regular fa-trash-can transition hover:scale-110"></i>
                 </button>
               </div>
 
@@ -131,11 +131,10 @@ function EmployeeDashboard() {
 
              
               <div className="text-sm text-gray-700 space-y-1 mt-auto">
-                <p>
-                  <span className="font-semibold text-gray-800">📅 Due Date:</span>{" "}
+                 <p>
+                  <span className="font-semibold"> <i className="fa-solid fa-clock text-cyan-500 mr-1"></i>Due Date:</span>{" "}
                   {new Date(task.dueDate).toLocaleDateString()}
                 </p>
-
                 <div className="flex items-center gap-2 mt-2">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(

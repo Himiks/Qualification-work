@@ -19,6 +19,7 @@ import AdminViewAllUsers from "../modules/admin/components/AdminViewAllUsers";
 import EmployeeProfile from "../modules/employee/components/EmployeeProfile";
 import AdminProfile from "../modules/admin/components/AdminProfile";
 import AdminEditUser from "../modules/admin/components/AdminEditUser";
+import MainPage from "../layout/MainPage";
 
 function AppRouter() {
   return (
@@ -26,12 +27,11 @@ function AppRouter() {
       <Navbar />
 
       <Routes>
-        {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/techniques" element={<TechniquesPage />} />
+        <Route path="/" element={<MainPage />} />
 
-        {/* Admin */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/task" element={<AdminPostTask />} />
         <Route path="/admin/task/:id/edit" element={<AdminUpdateTask />} />
@@ -43,7 +43,6 @@ function AppRouter() {
 
 
 
-        {/* Employee */}
         <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
          <Route path="/employee/task" element={<EmployeePostTask />} />
         <Route path="/employee/task/:id/edit" element={<EmployeeUpdateTask />} />

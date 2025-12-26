@@ -73,7 +73,6 @@ function Signup() {
             )}
           </div>
 
-         
           <div>
             <label className="block text-gray-700 mb-1">Email</label>
             <input
@@ -89,7 +88,6 @@ function Signup() {
             )}
           </div>
 
-          
           <div>
             <label className="block text-gray-700 mb-1">Password</label>
             <div className="relative">
@@ -106,7 +104,7 @@ function Signup() {
                 onClick={() => setHidePassword(!hidePassword)}
                 className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
               >
-                {hidePassword ? "🙈" : "👁️"}
+                <i className={`fa-solid ${hidePassword ? "fa-eye-slash" : "fa-eye"}`}></i>
               </button>
             </div>
             {errors.password && (
@@ -114,7 +112,6 @@ function Signup() {
             )}
           </div>
 
-          
           <div>
             <label className="block text-gray-700 mb-1">Confirm Password</label>
             <input

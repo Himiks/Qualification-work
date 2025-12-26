@@ -5,7 +5,6 @@ import com.example.Smart_StudentHub.dto.FolderDTO;
 import com.example.Smart_StudentHub.entities.FileEntity;
 import com.example.Smart_StudentHub.entities.Folder;
 import com.example.Smart_StudentHub.repositories.FileRepository;
-import com.example.Smart_StudentHub.repositories.FolderRepository;
 import com.example.Smart_StudentHub.services.file.FileService;
 import com.example.Smart_StudentHub.services.folder.FolderService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class FolderController {
     private final FolderService folderService;
     private final FileService fileService;
     private final FileRepository fileRepository;
-    private final FolderRepository folderRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -45,6 +43,12 @@ public class FolderController {
     @GetMapping
     public List<FolderDTO> getUserFolders(@RequestParam Long userId) {
         return folderService.getUserFolders(userId);
+    }
+
+    @GetMapping("/all")
+    public List<FolderDTO> getFolders() throws IOException {
+        return folderService.getAllFolders();
+
     }
 
 
@@ -63,6 +67,26 @@ public class FolderController {
     @GetMapping("/{id}/files")
     public List<FileDTO> getFilesInFolder(@PathVariable Long id) {
         return fileService.getFilesInFolder(id);
+    }
+
+    @PutMapping("/{id}")
+    public FolderDTO updateFolder(@PathVariable Long id, @RequestBody FolderDTO folderDTO) {
+        return folderService.updateFolder(id, folderDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFolder(@PathVariable Long id) throws IOException {
+        folderService.deleteFolder(id);
+    }
+
+    @PutMapping("/file/{id}")
+    public FileDTO renameFile(@PathVariable Long id, @RequestParam String newName) throws IOException {
+        return fileService.renameFile(id, newName);
+    }
+
+    @DeleteMapping("/file/{id}")
+    public void deleteFile(@PathVariable Long id) throws IOException {
+        fileService.deleteFile(id);
     }
 
 
@@ -92,4 +116,6 @@ public class FolderController {
                 .contentLength(Files.size(filePath))
                 .body(resource);
     }
+
+
 }

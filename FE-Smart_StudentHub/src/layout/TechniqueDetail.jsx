@@ -77,78 +77,94 @@ function TechniqueDetail() {
   const isTimeBlocking = formattedName === "Time Blocking";
   const isEisenhower = formattedName === "Eisenhower";
 
-  return (
+return (
   <>
     {!isEisenhower ? (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex justify-center items-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#ecfeff] px-6 py-20">
         <div
-          className={`bg-white shadow-2xl rounded-2xl w-full max-w-6xl flex flex-col md:flex-row gap-8 p-6 md:p-8 transition-all duration-700 ease-out
-            transform ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+          className={`max-w-7xl mx-auto transition-all duration-700 ${
+            loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
-          
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold text-center md:text-left mb-4 text-gray-800">
-              ⚙️ {formattedName}
-            </h1>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
-            {task && (
-              <>
-                <p className="text-center md:text-left mb-2 text-gray-700 text-lg">
-                  Task: <span className="font-semibold">{task.title}</span>
-                </p>
-                <p className="text-center md:text-left mb-2 text-gray-500 text-md">
-                  Description: <span className="font-semibold">{task.description}</span>
-                </p>
-                <p className="text-center md:text-left mb-4 text-gray-500">
-                  Due Date:{" "}
-                  <span className="font-semibold">
+            <div className="bg-white/70 backdrop-blur-xl border border-gray-200 rounded-3xl p-8 shadow-[0_30px_80px_rgba(79,70,229,0.15)] space-y-8">
+              
+              <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 flex items-center gap-4">
+            <span className="inline-block text-indigo-500">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-8 w-8"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+    />
+  </svg>
+</span>        {formattedName}
+              </h1>
+
+              {task && (
+                <div className="rounded-2xl p-5 bg-gradient-to-br from-indigo-100 to-cyan-100 border border-indigo-200 space-y-2">
+                  <p className="text-lg text-gray-800">
+                    <span className="font-semibold text-indigo-600">Task:</span>{" "}
+                    {task.title}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {task.description || "No description"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Due:{" "}
                     {task.dueDate
                       ? new Date(task.dueDate).toLocaleDateString()
                       : "No date"}
-                  </span>
-                </p>
-              </>
-            )}
+                  </p>
+                </div>
+              )}
 
-            <p className="text-gray-700 mb-6 text-lg">{technique.description}</p>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                {technique.description}
+              </p>
 
-            {stepsArray.length > 0 && (
-              <ul className="mt-6 space-y-3 text-gray-800">
-                {stepsArray.map((step, index) => (
-                  <li
-                    key={index}
-                    className={`flex items-center gap-3 p-2 rounded-lg transition ${
-                      checkedSteps[index]
-                        ? "bg-green-50 line-through text-gray-400"
-                        : "hover:bg-indigo-50"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={!!checkedSteps[index]}
-                      onChange={() => handleStepCheck(index)}
-                      className="w-5 h-5 accent-indigo-500 cursor-pointer"
-                    />
-                    <span>{step.trim()}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+              {stepsArray.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {stepsArray.map((step, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleStepCheck(index)}
+                      className={`flex gap-4 items-start p-4 rounded-2xl border cursor-pointer transition-all
+                        ${
+                          checkedSteps[index]
+                            ? "bg-green-100 border-green-300 text-gray-400 line-through"
+                            : "bg-white border-gray-200 hover:bg-indigo-50 hover:border-indigo-300 hover:scale-[1.03]"
+                        }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!!checkedSteps[index]}
+                        onChange={() => handleStepCheck(index)}
+                        className="mt-1 w-5 h-5 accent-indigo-500"
+                      />
+                      <span className="text-sm text-gray-800 font-medium">
+                        {step.trim()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-          
-          <div className="flex-1 flex flex-col justify-center items-center gap-6">
-            {isPomodoro && (
-              <>
-                <PomodoroTimer />
-                <p className="text-gray-500 text-sm italic text-center mt-2">
-                  Focus for 25 minutes, then take a 5-minute break.
-                </p>
-              </>
-            )}
+            <div className="bg-white/70 backdrop-blur-xl border border-gray-200 rounded-3xl p-8 shadow-[0_30px_80px_rgba(6,182,212,0.15)] flex flex-col items-center justify-center gap-10">
+              {isPomodoro && <PomodoroTimer />}
+              {isDeepWork && <DeepWorkSession />}
+              {isTimeBlocking && <TimeBlocking />}
+            </div>
 
-            {isDeepWork && <DeepWorkSession />}
-            {isTimeBlocking && <TimeBlocking />}
           </div>
         </div>
       </div>

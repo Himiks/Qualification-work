@@ -8,12 +8,14 @@ import com.example.Smart_StudentHub.repositories.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +31,16 @@ public class FolderService {
         Folder folder = folderDTOToEntity(folderDTO);
         folder = folderRepository.save(folder);
 
-        // создаём физическую папку: uploads/{userId}/{folderId}
         Path folderPath = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString());
         Files.createDirectories(folderPath);
 
         return entityToDTO(folder);
+    }
+
+    public List<FolderDTO> getAllFolders() throws IOException {
+        return folderRepository.findAll().stream()
+                .map(this::entityToDTO)
+                .collect(Collectors.toList());
     }
 
     public List<FolderDTO> getUserFolders(Long userId) {
@@ -50,7 +57,6 @@ public class FolderService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 Преобразование Entity → DTO (добавляем файлы!)
     private FolderDTO entityToDTO(Folder folder) {
         FolderDTO dto = new FolderDTO();
         dto.setId(folder.getId());
@@ -63,7 +69,7 @@ public class FolderService {
                     .map(this::fileToDTO)
                     .collect(Collectors.toList()));
         } else {
-            dto.setFiles(new ArrayList<>()); // чтобы на фронте не было null
+            dto.setFiles(new ArrayList<>());
         }
 
         return dto;
@@ -85,5 +91,28 @@ public class FolderService {
         folder.setPublic(dto.isPublic());
         folder.setUserId(dto.getUserId());
         return folder;
+    }
+
+    public FolderDTO updateFolder(Long id, FolderDTO dto){
+        Folder folder = folderRepository.findById(id).orElseThrow(() -> new RuntimeException("Folder not found!"));
+
+        folder.setName(dto.getName());
+        folder.setPublic(dto.isPublic());
+
+        return entityToDTO(folderRepository.save(folder));
+
+    }
+
+    @Transactional
+    public void deleteFolder(Long id) throws IOException {
+        Folder folder = folderRepository.findById(id).orElseThrow(() -> new RuntimeException("Folder not found!"));
+
+        Path path = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString());
+        if (Files.exists(path)) {
+            Files.walk(path)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(p -> p.toFile().delete());
+        }
+        folderRepository.delete(folder);
     }
 }

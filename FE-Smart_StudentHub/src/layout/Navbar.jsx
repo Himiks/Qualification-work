@@ -22,13 +22,13 @@ function Navbar() {
 
   const handleLogout = () => {
     storageService.logout();
-    navigate("/login");
+    navigate("/");
   };
 
   const title = isAdminLoggedIn
     ? "Admin Dashboard"
     : isEmployeeLoggedIn
-    ? "Employee Portal"
+    ? "Personal Portal"
     : "Smart Student Hub";
 
   const navLinks = [];
@@ -68,12 +68,24 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-3">
         
-        <motion.span
-          whileHover={{ scale: 1.05, textShadow: "0px 0px 15px rgba(56,189,248,0.7)" }}
-          className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-indigo-400 drop-shadow"
-        >
-          {title}
-        </motion.span>
+       <motion.span
+      onClick={() => navigate("/")}
+      whileHover={{
+        scale: 1.05,
+        textShadow: "0px 0px 15px rgba(56,189,248,0.7)",
+      }}
+      whileTap={{ scale: 0.95 }}
+      className="
+        cursor-pointer
+        font-extrabold text-2xl
+        text-transparent bg-clip-text
+        bg-gradient-to-r from-cyan-400 via-blue-300 to-indigo-400
+        drop-shadow
+        select-none
+      "
+    >
+      {title}
+    </motion.span>
 
         
         <button

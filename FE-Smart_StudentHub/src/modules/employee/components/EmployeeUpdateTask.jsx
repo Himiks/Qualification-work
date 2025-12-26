@@ -51,11 +51,11 @@ function EmployeeUpdateTask() {
     e.preventDefault();
     try {
       await employeeService.updateTask(id, task);
-      alert("✅ Task updated successfully!");
+      alert("Task updated successfully!");
       navigate("/employee/dashboard");
     } catch (err) {
       console.error("Error updating task:", err);
-      alert("❌ Failed to update task!");
+      alert("Failed to update task!");
     }
   };
 
@@ -63,7 +63,7 @@ function EmployeeUpdateTask() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex justify-center items-start py-12 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-2xl p-8 border border-gray-100">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          ✏️ Update Task
+            <i className="fa-regular fa-pen-to-square"></i> Update Task
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -173,7 +173,7 @@ function EmployeeUpdateTask() {
               type="submit"
               className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all shadow-md"
             >
-              💾 Update Task
+                <i className="fa-solid fa-floppy-disk"></i> Update Task
             </button>
           </div>
         </form>

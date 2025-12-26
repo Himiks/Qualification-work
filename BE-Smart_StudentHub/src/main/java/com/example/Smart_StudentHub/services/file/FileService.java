@@ -8,6 +8,7 @@ import com.example.Smart_StudentHub.repositories.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -67,4 +68,39 @@ public class FileService {
         dto.setFolderId(entity.getFolder().getId());
         return dto;
     }
+
+    public FileDTO renameFile(Long id, String newName) throws IOException {
+        FileEntity file = fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File not found!"));
+
+        if (newName.contains("..") || newName.contains("/")) {
+            throw new RuntimeException("Invalid file name");
+        }
+
+        Folder folder = file.getFolder();
+        Path oldPath = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString(), file.getFileName());
+        Path newPath = oldPath.resolveSibling(newName);
+
+
+
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+        file.setFileName(newName);
+
+        return entityToDTO(fileRepository.save(file));
+    }
+
+    @Transactional
+    public void deleteFile(Long id) throws IOException {
+        FileEntity file = fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File not found!"));
+
+        Folder folder = file.getFolder();
+
+        Path path = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString(), file.getFileName());
+
+        Files.deleteIfExists(path);
+        fileRepository.delete(file);
+    }
+
+
+
 }

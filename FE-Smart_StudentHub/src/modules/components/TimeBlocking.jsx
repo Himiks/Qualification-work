@@ -1,124 +1,129 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const BLOCKS = ["Morning", "Afternoon", "Evening"];
+const BLOCK_TYPES = [
+  { type: "Focus Work", color: "bg-indigo-400" },
+  { type: "Meeting", color: "bg-yellow-400" },
+  { type: "Rest", color: "bg-green-400" },
+];
 
-function TimeBlocking() {
-  const [goals, setGoals] = useState(() => {
-  
-    const saved = localStorage.getItem("timeBlockingGoals");
+function DayPlanner() {
+  const [blocks, setBlocks] = useState(() => {
+    const saved = localStorage.getItem("dayBlocks");
     return saved ? JSON.parse(saved) : [];
   });
-  const [newGoal, setNewGoal] = useState("");
-  const [selectedBlock, setSelectedBlock] = useState("Morning");
+  const [newBlock, setNewBlock] = useState({
+    type: BLOCK_TYPES[0].type,
+    start: "09:00",
+    end: "10:00",
+    description: "",
+  });
 
-  const saveGoals = (updatedGoals) => {
-    setGoals(updatedGoals);
-    localStorage.setItem("timeBlockingGoals", JSON.stringify(updatedGoals));
+  useEffect(() => {
+    localStorage.setItem("dayBlocks", JSON.stringify(blocks));
+  }, [blocks]);
+
+  const addBlock = () => {
+    if (!newBlock.description.trim()) return;
+    setBlocks([...blocks, { ...newBlock }]);
+    setNewBlock({ ...newBlock, description: "" });
   };
 
-  const addGoal = () => {
-    if (!newGoal.trim()) return;
-    const updated = [...goals, { text: newGoal, done: false, block: selectedBlock }];
-    saveGoals(updated);
-    setNewGoal("");
-  };
-
-  const toggleGoal = (index) => {
-    const updated = goals.map((g, i) =>
-      i === index ? { ...g, done: !g.done } : g
-    );
-    saveGoals(updated);
-  };
-
-  const removeGoal = (index) => {
-    const updated = goals.filter((_, i) => i !== index);
-    saveGoals(updated);
+  const removeBlock = (index) => {
+    setBlocks(blocks.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto mt-8 gap-8 px-4">
-      {/* Левая колонка — блоки времени */}
-      <div className="flex-1 min-w-[220px] grid grid-cols-1 gap-6">
-        {BLOCKS.map((block) => (
-          <div
-            key={block}
-            className="bg-indigo-50 rounded-2xl shadow-lg p-6 transition hover:scale-105"
-          >
-            <h3 className="text-xl font-bold mb-3 text-indigo-700">{block}</h3>
-            <ul className="list-decimal ml-6 space-y-2">
-              {goals
-                .filter((g) => g.block === block)
-                .map((goal, i) => (
-                  <li
-                    key={i}
-                    className={`flex justify-between items-center ${
-                      goal.done ? "line-through text-gray-400" : "text-gray-800"
-                    }`}
-                  >
-                    <span>{goal.text}</span>
-                    <div className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        checked={goal.done}
-                        onChange={() => toggleGoal(goals.indexOf(goal))}
-                        className="w-5 h-5 accent-indigo-500"
-                      />
-                      <button
-                        onClick={() => removeGoal(goals.indexOf(goal))}
-                        className="text-red-500 font-bold hover:text-red-700 transition"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      
-      <div className="flex-shrink-0 w-full md:w-[380px] bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-          📝 Add Goal
-        </h3>
-
-        <select
-          value={selectedBlock}
-          onChange={(e) => setSelectedBlock(e.target.value)}
-          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-4"
+    <div className="w-full max-w-3xl mx-auto p-6 space-y-8">
+     <h2 className="flex items-center justify-center text-3xl font-bold text-indigo-700 gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
         >
-          {BLOCKS.map((block) => (
-            <option key={block} value={block}>
-              {block}
-            </option>
-          ))}
-        </select>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        Daily Planner
+      </h2>
+
+      <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow space-y-4">
+        <h3 className="text-xl font-semibold text-gray-700 text-center">Add Block</h3>
 
         <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Add a sub-task..."
-            value={newGoal}
-            onChange={(e) => setNewGoal(e.target.value)}
-            className="flex-grow border border-gray-300 rounded-l-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-          <button
-            onClick={addGoal}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-r-xl transition"
+          <select
+            value={newBlock.type}
+            onChange={(e) => setNewBlock({ ...newBlock, type: e.target.value })}
+            className="flex-1 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            Add
-          </button>
+            {BLOCK_TYPES.map((b) => (
+              <option key={b.type} value={b.type}>{b.type}</option>
+            ))}
+          </select>
+          <input
+            type="time"
+            value={newBlock.start}
+            onChange={(e) => setNewBlock({ ...newBlock, start: e.target.value })}
+            className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+          <input
+            type="time"
+            value={newBlock.end}
+            onChange={(e) => setNewBlock({ ...newBlock, end: e.target.value })}
+            className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
         </div>
 
-        {goals.length === 0 && (
-          <p className="text-gray-400 italic text-center mt-2">
-            No goals yet — add one above.
-          </p>
+        <input
+          type="text"
+          placeholder="Description"
+          value={newBlock.description}
+          onChange={(e) => setNewBlock({ ...newBlock, description: e.target.value })}
+          className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        />
+
+        <button
+          onClick={addBlock}
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold transition"
+        >
+          Add Block
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {blocks.length === 0 ? (
+          <p className="text-gray-400 italic text-center">Your schedule is empty. Add some blocks!</p>
+        ) : (
+          blocks.map((block, i) => {
+            const color = BLOCK_TYPES.find((b) => b.type === block.type)?.color;
+            return (
+              <div
+                key={i}
+                className={`${color} text-white flex justify-between items-center p-3 rounded-xl shadow`}
+              >
+                <div>
+                  <p className="font-semibold">{block.type}</p>
+                  <p>{block.start} - {block.end}</p>
+                  <p className="text-sm">{block.description}</p>
+                </div>
+                <button
+                  onClick={() => removeBlock(i)}
+                  className="text-white font-bold hover:text-red-200"
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
     </div>
   );
 }
 
-export default TimeBlocking;
+export default DayPlanner;

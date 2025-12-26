@@ -43,4 +43,63 @@ const getFilesInFolder = async (folderId) => {
   return res.data;
 };
 
-export default { getUserFolders, getPublicFolders, createFolder, uploadFile, getFilesInFolder };
+
+
+const updateFolder = async (folderId, folderDTO) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const res = await axios.put(`${BASE_URL}/${folderId}`, folderDTO, { headers });
+  return res.data;
+};
+
+const deleteFolder = async (folderId) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  await axios.delete(`${BASE_URL}/${folderId}`, { headers });
+};
+
+
+const renameFile = async (fileId, newName) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const res = await axios.put(
+    `${BASE_URL}/file/${fileId}?newName=${encodeURIComponent(newName)}`,
+    {},
+    { headers }
+  );
+  return res.data;
+};
+
+
+const deleteFile = async (fileId) => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  await axios.delete(`${BASE_URL}/file/${fileId}`, { headers });
+};
+
+const downloadFile = async (fileId) => {
+  const token = storageService.getToken();
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const res = await axios.get(
+    `${BASE_URL}/file/${fileId}/download`,
+    {
+      headers,
+      responseType: "blob",
+    }
+  );
+
+  return res.data;
+};
+
+const getAllFolders = async () => {
+  const token = storageService.getToken();
+  const headers = { Authorization: `Bearer ${token}` };
+  const res = await axios.get(`${BASE_URL}/all`, { headers });
+  return res.data;
+};
+
+export default { getUserFolders, getPublicFolders, createFolder, uploadFile, getFilesInFolder, updateFolder, deleteFolder, renameFile, deleteFile, downloadFile, getAllFolders };

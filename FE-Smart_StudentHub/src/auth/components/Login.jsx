@@ -28,7 +28,6 @@ function Login() {
 
     try {
       const res = await authService.login(form);
-      console.log("Login response:", res);
 
       if (res.userId) {
         const user = {
@@ -76,7 +75,6 @@ function Login() {
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
-         
           <div>
             <label className="block text-gray-700 mb-1">Password</label>
             <div className="relative">
@@ -93,7 +91,7 @@ function Login() {
                 onClick={() => setHidePassword(!hidePassword)}
                 className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
               >
-                {hidePassword ? "🙈" : "👁️"}
+                <i className={`fa-solid ${hidePassword ? "fa-eye-slash" : "fa-eye"}`}></i>
               </button>
             </div>
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}

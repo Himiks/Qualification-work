@@ -39,7 +39,7 @@ function AdminViewAllUsers() {
     return (
       <div className="p-6 max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-          <h2 className="text-3xl font-bold text-gray-800">📋 All Users</h2>
+          <h2 className="text-3xl font-bold text-gray-800">All Users</h2>
         </div>
 
         <div className="overflow-x-auto bg-white rounded-lg shadow-md">
@@ -84,7 +84,7 @@ function AdminViewAllUsers() {
       <div className="p-6 w-full h-[70vh] flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-4xl font-extrabold text-red-600 drop-shadow mb-4">
-            ❌ Access Denied
+             Access Denied
           </h2>
           <p className="text-gray-600 text-lg">
             You do not have permission to view this page.

@@ -1,11 +1,9 @@
 package com.example.Smart_StudentHub.controller.admin;
 
 
-import com.example.Smart_StudentHub.dto.CommentDTO;
-import com.example.Smart_StudentHub.dto.TaskDTO;
-import com.example.Smart_StudentHub.dto.UpdateUserDTO;
-import com.example.Smart_StudentHub.dto.UserDto;
+import com.example.Smart_StudentHub.dto.*;
 import com.example.Smart_StudentHub.services.admin.AdminService;
+import com.example.Smart_StudentHub.services.technique.TechniqueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +16,9 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
     private final AdminService adminService;
+    private  final TechniqueService techniqueService;
+
+
 
 
     @GetMapping("/users")
@@ -103,6 +104,23 @@ public class AdminController {
     @GetMapping("/comments/{taskId}")
     public ResponseEntity<List<CommentDTO>> getCommentsByTaskId(@PathVariable Long taskId) {
         return ResponseEntity.ok(adminService.getCommentsByTaskId(taskId));
+    }
+
+
+    @PostMapping("techniques")
+    public ResponseEntity<TechniqueDTO> createTechnique(@RequestBody TechniqueDTO techniqueDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(techniqueService.createTechnique(techniqueDTO));
+    }
+    @PutMapping("techniques/{id}")
+    public ResponseEntity<TechniqueDTO> updateTechnique(@PathVariable Long id, @RequestBody TechniqueDTO techniqueDTO) {
+        return ResponseEntity.ok(techniqueService.updateTechnique(id, techniqueDTO));
+    }
+
+    @DeleteMapping("techniques/{id}")
+    public ResponseEntity<Void> deleteTechnique(@PathVariable Long id) {
+        techniqueService.deleteTechnique(id);
+        return ResponseEntity.noContent().build();
     }
 
 

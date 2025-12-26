@@ -36,11 +36,11 @@ function EmployeePostTask() {
     e.preventDefault();
     try {
       await employeeService.postTask(task);
-      alert("✅ Task created successfully!");
+      alert("Task created successfully!");
       navigate("/employee/dashboard");
     } catch (err) {
       console.error("Error posting task:", err);
-      alert("❌ Failed to post task");
+      alert("Failed to post task");
     }
   };
 
@@ -48,7 +48,7 @@ function EmployeePostTask() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex justify-center items-start py-12 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-2xl p-8 border border-gray-100">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          ✏️ Create New Task
+          <i className="fa-solid fa-circle-plus text-cyan-500 mr-2 transition-transform duration-200 hover:scale-110"></i> Create New Task
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -134,7 +134,7 @@ function EmployeePostTask() {
               type="submit"
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md"
             >
-              🚀 Post Task
+                <i className="fa-solid fa-floppy-disk"></i> Post Task
             </button>
           </div>
         </form>
