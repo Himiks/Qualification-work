@@ -1,4 +1,4 @@
-package com.example.Smart_StudentHub;
+package com.example.Smart_StudentHub.filter;
 
 import com.example.Smart_StudentHub.config.JwtAuthenticationFilter;
 import com.example.Smart_StudentHub.services.jwt.UserService;
