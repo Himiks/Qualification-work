@@ -1,7 +1,7 @@
 package com.example.Smart_StudentHub.repositories;
 
 
-import com.example.Smart_StudentHub.dto.TaskDTO;
+
 import com.example.Smart_StudentHub.entities.Task;
 import com.example.Smart_StudentHub.enums.TaskTechnique;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import expenseService from "../services/expenseService";
 import storageService from "../../../auth/services/storageService";
+import { toast } from "react-toastify";
 
 export default function FileUploader({ onUploaded, userIdProp }) {
   const [file, setFile] = useState(null);
@@ -12,18 +13,18 @@ export default function FileUploader({ onUploaded, userIdProp }) {
   const handleFile = (e) => setFile(e.target.files[0]);
 
   const handleUpload = async () => {
-    if (!file) return alert("Choose a file first");
-    if (!userId) return alert("User ID not found");
+    if (!file) return toast.error("Choose a file first");
+    if (!userId) return toast.error("User ID not found");
 
     setLoading(true);
     try {
       const result = await expenseService.uploadExpenses(file, userId);
       onUploaded && onUploaded(result);
       setFile(null);
-      alert("Upload finished — expenses imported.");
+      toast.success("Upload finished — expenses imported.");
     } catch (err) {
       console.error(err);
-      alert("Upload failed: " + (err?.response?.data?.message || err.message));
+      toast.error("Upload failed: " + (err?.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }

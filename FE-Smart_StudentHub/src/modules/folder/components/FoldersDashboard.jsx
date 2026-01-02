@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import folderService from "../servises/folderService";
 import storageService from "../../../auth/services/storageService";
+import { toast } from "react-toastify";
 
 function FoldersDashboard() {
   const [folders, setFolders] = useState([]);
@@ -38,12 +39,12 @@ function FoldersDashboard() {
       setFolders(foldersData);
     } catch (err) {
       console.error(err);
-      alert("Failed to fetch folders");
+      toast.error("Failed to fetch folders");
     }
   };
 
   const handleCreateFolder = async () => {
-    if (!newFolderName) return alert("Folder name required");
+    if (!newFolderName) return toast.error("Folder name required");
     try {
       const folderDTO = { name: newFolderName, public: isPublic, userId };
       const newFolder = await folderService.createFolder(folderDTO);
@@ -52,7 +53,7 @@ function FoldersDashboard() {
       setIsPublic(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to create folder");
+      toast.error("Failed to create folder");
     }
   };
 
@@ -72,7 +73,7 @@ function FoldersDashboard() {
       );
     } catch (err) {
       console.error(err);
-      alert("Failed to rename folder");
+      toast.error("Failed to rename folder");
     }
   };
 
@@ -83,7 +84,7 @@ function FoldersDashboard() {
       setFolders((prev) => prev.filter((f) => f.id !== folderId));
     } catch (err) {
       console.error(err);
-      alert("Failed to delete folder");
+      toast.error("Failed to delete folder");
     }
   };
 
@@ -98,7 +99,7 @@ function FoldersDashboard() {
       }));
     } catch (err) {
       console.error(err);
-      alert("Failed to rename file");
+      toast.error("Failed to rename file");
     }
   };
 
@@ -112,12 +113,12 @@ function FoldersDashboard() {
       }));
     } catch (err) {
       console.error(err);
-      alert("Failed to delete file");
+      toast.error("Failed to delete file");
     }
   };
 
   const handleUploadFile = async () => {
-    if (!selectedFile) return alert("Select a file first");
+    if (!selectedFile) return toast.error("Select a file first");
     try {
       setLoadingUpload(true);
       await folderService.uploadFile(currentFolder.id, selectedFile);
@@ -126,7 +127,7 @@ function FoldersDashboard() {
       setSelectedFile(null);
     } catch (err) {
       console.error(err);
-      alert("Failed to upload file");
+      toast.error("Failed to upload file");
     } finally {
       setLoadingUpload(false);
     }
@@ -145,7 +146,7 @@ function FoldersDashboard() {
       link.remove();
     } catch (err) {
       console.error(err);
-      alert("Failed to download file");
+      toast.error("Failed to download file");
     } finally {
       setDownloading((prev) => ({ ...prev, [fileId]: false }));
     }

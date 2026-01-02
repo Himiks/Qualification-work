@@ -18,6 +18,7 @@ import { motion } from "framer-motion";
 import jsPDF from "jspdf";
 import * as htmlToImage from "html-to-image";
 import storageService from "../../../auth/services/storageService";
+import { toast } from "react-toastify";
 
 const COLORS = ["#4f46e5", "#ef4444", "#f59e0b", "#10b981", "#6366f1", "#a78bfa"];
 
@@ -193,7 +194,7 @@ export default function ExpensesDashboard({ userIdProp }) {
 
   const exportPDF = async () => {
     const element = containerRef.current;
-    if (!element) return alert("No content");
+    if (!element) return toast.error("No content");
 
     try {
       const dataUrl = await htmlToImage.toPng(element, { cacheBust: true });
@@ -205,7 +206,7 @@ export default function ExpensesDashboard({ userIdProp }) {
       pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save("expenses-report.pdf");
     } catch (err) {
-      alert("Export failed");
+      toast.error("Export failed");
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import adminService from "../services/adminService";
 import storageService from "../../../auth/services/storageService";
+import { toast } from "react-toastify";
 
 function AdminDashboard() {
   const [tasks, setTasks] = useState([]);
@@ -28,7 +29,7 @@ function AdminDashboard() {
       setTasks(tasks.filter((t) => t.id !== id));
     } catch (err) {
       console.error("Error deleting task:", err);
-      alert("Failed to delete task.");
+      toast.error("Failed to delete task.");
     }
   };
 

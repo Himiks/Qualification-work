@@ -51,6 +51,17 @@ public class AdminController {
 
     }
 
+    @PutMapping("/comment/{id}")
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, @RequestParam String content) {
+        return ResponseEntity.ok(adminService.updateComment(id, content));
+    }
+
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        adminService.deleteComment(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @GetMapping("/tasks")
     public ResponseEntity<?> getAllTasks() {

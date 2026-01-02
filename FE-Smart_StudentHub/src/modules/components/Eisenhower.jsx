@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { DndContext } from "@dnd-kit/core";
 import Column from "./Column";
 import employeeService from "../employee/services/employeeService";
+import { toast } from "react-toastify";
+
 
 const COLUMNS = [
   { id: "High", title: "Important + Urgent → Do immediately" },
@@ -83,7 +85,7 @@ export default function Eisenhower() {
       console.log(`Task ${movedTask.title} updated to ${newStatus}`);
     } catch (err) {
       console.error("Failed to update task:", err);
-      alert("Failed to update task priority on server!");
+      toast.error("Failed to update task priority on server!");
       setTasks((prev) =>
         prev.map((task) =>
           task.id === taskId ? { ...task, status: oldStatus } : task

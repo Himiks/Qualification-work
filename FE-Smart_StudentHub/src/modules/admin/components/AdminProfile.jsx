@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import storageService from "../../../auth/services/storageService";
 import adminService from "../services/adminService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function AdminProfile() {
   const [form, setForm] = useState({
@@ -30,14 +31,14 @@ export default function AdminProfile() {
     try {
 
       await adminService.updateProfile(form);
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
       storageService.saveUser({
         ...user,
         name: form.name,
         email: form.email
       });
     } catch (err) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + err.message);
     }
     navigate('/admin/dashboard');
   };

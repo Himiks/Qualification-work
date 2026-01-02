@@ -104,22 +104,19 @@ public class AdminServiceImpl implements  AdminService {
 
     @Override
     public TaskDTO createTask(TaskDTO taskDTO) {
-            Optional<User> optionalUser = userRepository.findById(taskDTO.getEmployeeId());
+        User admin = jwtUtils.getLoggedInUser();
 
-        if(optionalUser.isPresent()){
             Task task = new Task();
             task.setTitle(taskDTO.getTitle());
             task.setDescription(taskDTO.getDescription());
             task.setPriority(taskDTO.getPriority());
             task.setDueDate(taskDTO.getDueDate());
             task.setTaskStatus(TaskStatus.IN_PROGRESS);
-            task.setUser(optionalUser.get());
             task.setTechnique(taskDTO.getTechnique());
+            task.setUser(admin);
             return taskRepository.save(task).getTaskDTO();
 
-        }
 
-        return null;
     }
 
     @Override
@@ -165,6 +162,38 @@ public class AdminServiceImpl implements  AdminService {
         }
         return null;
     }
+
+    @Override
+    public CommentDTO updateComment(Long commentId, String content) {
+        User user = jwtUtils.getLoggedInUser();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(user.getId())
+                && user.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        comment.setContent(content);
+        return commentRepository.save(comment).getCommentDTO();
+    }
+
+    @Override
+    public void deleteComment(Long commentId) {
+        User user = jwtUtils.getLoggedInUser();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(user.getId())
+                && user.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        commentRepository.delete(comment);
+    }
+
 
     @Override
     public List<TaskDTO> searchTasksByUserTitle(String title) {

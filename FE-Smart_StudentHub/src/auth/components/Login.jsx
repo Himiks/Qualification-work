@@ -2,6 +2,7 @@ import { useState } from "react";
 import authService from "../services/authService";
 import storageService from "../services/storageService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -45,11 +46,11 @@ function Login() {
         }
         
       } else {
-        alert("Invalid credentials.");
+        toast.error("Invalid credentials");
       }
     } catch (err) {
       console.error(err);
-      alert("Login failed. Check your credentials.");
+      toast.error("Login failed. Check your credentials");
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import employeeService from "../services/employeeService";
 import { getAllTechniques } from "../../technique/services/techniqueService";
+import { toast } from "react-toastify";
 
 function EmployeeUpdateTask() {
   const { id } = useParams();
@@ -51,11 +52,11 @@ function EmployeeUpdateTask() {
     e.preventDefault();
     try {
       await employeeService.updateTask(id, task);
-      alert("Task updated successfully!");
+      toast.success("Task updated successfully!");
       navigate("/employee/dashboard");
     } catch (err) {
       console.error("Error updating task:", err);
-      alert("Failed to update task!");
+      toast.error("Failed to update task!");
     }
   };
 

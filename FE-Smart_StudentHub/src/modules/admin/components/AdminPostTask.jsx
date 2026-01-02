@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import adminService from "../services/adminService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function AdminPostTask() {
   const [users, setUsers] = useState([]);
   const [task, setTask] = useState({
-    employeeId: "",
     title: "",
     description: "",
     dueDate: "",
     priority: "LOW",
+    technique: "NONE",
   });
 
   const navigate = useNavigate();
@@ -35,11 +36,11 @@ function AdminPostTask() {
     e.preventDefault();
     try {
       await adminService.postTask(task);
-      alert(" Task created successfully!");
+      toast.success("Task created successfully!");
       navigate("/admin/dashboard");
     } catch (err) {
       console.error("Error posting task:", err);
-      alert(" Failed to post task");
+      toast.error("Failed to post task");
     }
   };
 
@@ -110,27 +111,6 @@ function AdminPostTask() {
               <option value="LOW">LOW</option>
               <option value="MEDIUM">MEDIUM</option>
               <option value="HIGH">HIGH</option>
-            </select>
-          </div>
-
-          
-          <div>
-            <label className="block font-semibold text-gray-700 mb-1">
-              Assign to User
-            </label>
-            <select
-              name="employeeId"
-              value={task.employeeId}
-              onChange={handleChange}
-              className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
-              required
-            >
-              <option value="">Select employee</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name || u.fullName || u.username} ({u.email})
-                </option>
-              ))}
             </select>
           </div>
 

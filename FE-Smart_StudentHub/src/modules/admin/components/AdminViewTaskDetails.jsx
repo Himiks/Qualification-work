@@ -8,6 +8,8 @@ function AdminViewTaskDetails() {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [sending, setSending] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentText, setEditingCommentText] = useState("");
 
   useEffect(() => {
     fetchTask();
@@ -46,6 +48,35 @@ function AdminViewTaskDetails() {
     }
   };
 
+  const handleEditComment = (c) => {
+    setEditingCommentId(c.id);
+    setEditingCommentText(c.content);
+  };
+
+  const handleSaveComment = async (commentId) => {
+    try {
+      await adminService.updateComment(commentId, editingCommentText);
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId ? { ...c, content: editingCommentText } : c
+        )
+      );
+      setEditingCommentId(null);
+      setEditingCommentText("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await adminService.deleteComment(commentId);
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (!task) {
     return (
       <div className="flex justify-center items-center h-[60vh] text-gray-500">
@@ -57,7 +88,6 @@ function AdminViewTaskDetails() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8">
-      
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
           <i className="fa-solid fa-clipboard-check text-cyan-500"></i>
@@ -70,13 +100,8 @@ function AdminViewTaskDetails() {
       </div>
 
       <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 space-y-4">
-        <h3 className="text-2xl font-semibold text-gray-800">
-          {task.title}
-        </h3>
-
-        <p className="text-gray-600 leading-relaxed">
-          {task.description}
-        </p>
+        <h3 className="text-2xl font-semibold text-gray-800">{task.title}</h3>
+        <p className="text-gray-600 leading-relaxed">{task.description}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-sm">
           <InfoItem
@@ -102,7 +127,7 @@ function AdminViewTaskDetails() {
         </div>
       </div>
 
-
+  
       <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6">
         <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800">
           <i className="fa-solid fa-comments text-cyan-500"></i>
@@ -110,24 +135,68 @@ function AdminViewTaskDetails() {
         </h3>
 
         <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
-          {comments.length > 0 ? (
-            comments.map((c, i) => (
-              <div
-                key={i}
-                className="bg-gray-50 border border-gray-200 rounded-2xl p-4"
-              >
-                <p className="text-gray-800">{c.content}</p>
-                <p className="text-xs text-gray-500 text-right mt-2">
-                  <i className="fa-regular fa-clock mr-1"></i>
-                  {new Date(c.createdAt).toLocaleString()}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 italic">
+          {comments.length === 0 && (
+            <p className="text-gray-500 italic text-center">
               No comments yet. Be the first to comment.
             </p>
           )}
+          {comments.map((c) => (
+            <div
+              key={c.id}
+              className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex justify-between items-start"
+            >
+              {editingCommentId === c.id ? (
+                <div className="flex-1 flex gap-2">
+                  <input
+                    type="text"
+                    value={editingCommentText}
+                    onChange={(e) => setEditingCommentText(e.target.value)}
+                    className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                  />
+                  <button
+                    onClick={() => handleSaveComment(c.id)}
+                    className="text-green-500 hover:text-green-700"
+                    title="Save"
+                  >
+                    <i className="fa-solid fa-check"></i>
+                  </button>
+                  <button
+                    onClick={() => setEditingCommentId(null)}
+                    className="text-gray-400 hover:text-gray-600"
+                    title="Cancel"
+                  >
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex-1">
+                    <p className="text-gray-800">{c.content}</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      <i className="fa-regular fa-clock mr-1"></i>
+                      {new Date(c.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEditComment(c)}
+                      className="text-blue-500 hover:text-blue-700"
+                      title="Edit Comment"
+                    >
+                      <i className="fa-solid fa-pen"></i>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteComment(c.id)}
+                      className="text-red-500 hover:text-red-700"
+                      title="Delete Comment"
+                    >
+                      <i className="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="flex gap-3 mt-4">

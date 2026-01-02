@@ -36,5 +36,10 @@ public interface AdminService {
 
    List<CommentDTO> getCommentsByTaskId(Long taskId);
 
+    CommentDTO updateComment(Long commentId, String content);
+
+    void deleteComment(Long commentId);
+
+
 }
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
+import { toast } from "react-toastify";
 
 function Signup() {
   const navigate = useNavigate();
@@ -42,11 +43,11 @@ function Signup() {
       if (res.id) {
         navigate("/login");
       } else {
-        alert("Signup failed. Try again.");
+        toast.error("Signup failed. Try again.");
       }
     } catch (err) {
       console.error(err);
-      alert("Signup failed. Try again.");
+      toast.error("Signup failed. Try again.");
     }
   };
 

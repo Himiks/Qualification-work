@@ -3,6 +3,7 @@ import employeeService from "../services/employeeService";
 import storageService from "../../../auth/services/storageService";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function EmployeeProfile() {
   const [form, setForm] = useState({
@@ -30,14 +31,14 @@ export default function EmployeeProfile() {
   const handleSave = async () => {
     try {
     await employeeService.updateProfile(form);
-    alert("Profile updated successfully!");
+    toast.success("Profile updated successfully!");
     storageService.saveUser({
         ...user,
         name: form.name,
         email: form.email
       });
     } catch (err) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + err.message);
     }
     navigate('/admin/dashboard');
   };

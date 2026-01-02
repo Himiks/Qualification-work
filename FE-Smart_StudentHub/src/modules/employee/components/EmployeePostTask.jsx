@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import employeeService from "../services/employeeService";
 import { getAllTechniques } from "../../technique/services/techniqueService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function EmployeePostTask() {
   const [task, setTask] = useState({
@@ -36,11 +37,11 @@ function EmployeePostTask() {
     e.preventDefault();
     try {
       await employeeService.postTask(task);
-      alert("Task created successfully!");
+      toast.success("Task created successfully!");
       navigate("/employee/dashboard");
     } catch (err) {
       console.error("Error posting task:", err);
-      alert("Failed to post task");
+      toast.error("Failed to post task");
     }
   };
 

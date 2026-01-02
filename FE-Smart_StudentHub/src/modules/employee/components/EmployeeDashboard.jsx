@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import employeeService from "../services/employeeService";
+import { toast } from "react-toastify";
 
 function EmployeeDashboard() {
   const [tasks, setTasks] = useState([]);
@@ -16,7 +17,7 @@ function EmployeeDashboard() {
       const res = await employeeService.getAllTasksByUserId();
       setTasks(res);
     } catch (err) {
-      console.error("Error fetching tasks:", err);
+      toast.error("Error fetching tasks:", err);
     }
   };
 
@@ -26,8 +27,8 @@ function EmployeeDashboard() {
       await employeeService.deleteTask(id);
       setTasks(tasks.filter((t) => t.id !== id));
     } catch (err) {
-      console.error("Error deleting task:", err);
-      alert("Failed to delete task.");
+      toast.error("Error deleting task:", err);
+      toast.error("Failed to delete task.");
     }
   };
 
@@ -44,7 +45,7 @@ function EmployeeDashboard() {
       const res = await employeeService.searchTask(value);
       setTasks(res);
     } catch (err) {
-      console.error("Error searching tasks:", err);
+      toast.error("Error searching tasks:", err);
     }
   };
 

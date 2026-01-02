@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import adminService from '../services/adminService'
 import storageService from '../../../auth/services/storageService';
+import { toast } from 'react-toastify';
 
 function AdminViewAllUsers() {
   const [users, setUsers] = useState([]);
@@ -27,7 +28,7 @@ function AdminViewAllUsers() {
       setUsers(users.filter((u) => u.id !== id));
     } catch (err) {
       console.error("Error deleting user:", err);
-      alert("Failed to delete user.");
+      toast.error("Failed to delete user.");
     }
   };
 

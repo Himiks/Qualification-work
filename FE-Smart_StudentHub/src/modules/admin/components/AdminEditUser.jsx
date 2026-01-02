@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import adminService from "../services/adminService";
+import { toast } from "react-toastify";
 
 export default function AdminEditUser() {
   const { id } = useParams();
@@ -18,7 +19,7 @@ export default function AdminEditUser() {
         setForm({ name: userData.name, email: userData.email, password: "" });
       } catch (err) {
         console.error(err);
-        alert("Failed to load user data");
+        toast.error("Failed to load user data");
       }
     };
     fetchUser();
@@ -30,11 +31,11 @@ export default function AdminEditUser() {
   const handleSave = async () => {
     try {
       await adminService.updateUser(id, form);
-      alert("User updated successfully!");
+      toast.success("User updated successfully!");
       navigate("/admin/users");
     } catch (err) {
       console.error(err);
-      alert("Failed to update user");
+      toast.error("Failed to update user");
     }
   };
 

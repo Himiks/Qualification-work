@@ -121,6 +121,38 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public CommentDTO updateComment(Long commentId, String content) {
+        User user = jwtUtils.getLoggedInUser();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(user.getId())
+                && user.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        comment.setContent(content);
+        return commentRepository.save(comment).getCommentDTO();
+    }
+
+    @Override
+    public void deleteComment(Long commentId) {
+        User user = jwtUtils.getLoggedInUser();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(user.getId())
+                && user.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        commentRepository.delete(comment);
+    }
+
+
 
     @Override
     public TaskDTO getTaskById(Long id) {

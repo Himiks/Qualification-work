@@ -34,4 +34,9 @@ public interface EmployeeService {
 
   List<TaskDTO> getTasksByTechnique(TaskTechnique technique);
 
+  CommentDTO updateComment(Long commentId, String content);
+
+  void deleteComment(Long commentId);
+
+
 }
