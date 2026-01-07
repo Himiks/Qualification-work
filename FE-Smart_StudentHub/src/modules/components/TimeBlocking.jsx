@@ -1,36 +1,38 @@
 import React, { useState, useEffect } from "react";
 
-const BLOCK_TYPES = [
+const BLOCK_TYPES = [ // Define block types with colors
   { type: "Focus Work", color: "bg-indigo-400" },
   { type: "Meeting", color: "bg-yellow-400" },
   { type: "Rest", color: "bg-green-400" },
 ];
 
-function DayPlanner() {
-  const [blocks, setBlocks] = useState(() => {
-    const saved = localStorage.getItem("dayBlocks");
+function DayPlanner() { // Main component for daily planner
+  const [blocks, setBlocks] = useState(() => { // Load blocks from localStorage
+    const saved = localStorage.getItem("dayBlocks");// get saved blocks
     return saved ? JSON.parse(saved) : [];
   });
-  const [newBlock, setNewBlock] = useState({
+  const [newBlock, setNewBlock] = useState({ // State for new block input
     type: BLOCK_TYPES[0].type,
     start: "09:00",
     end: "10:00",
     description: "",
   });
 
-  useEffect(() => {
+  useEffect(() => { // Save blocks to localStorage on change
     localStorage.setItem("dayBlocks", JSON.stringify(blocks));
   }, [blocks]);
 
-  const addBlock = () => {
-    if (!newBlock.description.trim()) return;
+  const addBlock = () => { // Add new block to the list
+    if (!newBlock.description.trim()) return; // require description
     setBlocks([...blocks, { ...newBlock }]);
     setNewBlock({ ...newBlock, description: "" });
   };
 
-  const removeBlock = (index) => {
+  const removeBlock = (index) => { // Remove block by index
     setBlocks(blocks.filter((_, i) => i !== index));
   };
+
+  // Render the component
 
   return (
     <div className="w-full max-w-3xl mx-auto p-6 space-y-8">
@@ -58,7 +60,7 @@ function DayPlanner() {
         <div className="flex gap-2">
           <select
             value={newBlock.type}
-            onChange={(e) => setNewBlock({ ...newBlock, type: e.target.value })}
+            onChange={(e) => setNewBlock({ ...newBlock, type: e.target.value })} // Block type selector
             className="flex-1 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
             {BLOCK_TYPES.map((b) => (
@@ -68,13 +70,13 @@ function DayPlanner() {
           <input
             type="time"
             value={newBlock.start}
-            onChange={(e) => setNewBlock({ ...newBlock, start: e.target.value })}
+            onChange={(e) => setNewBlock({ ...newBlock, start: e.target.value })} // Start time input
             className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
           <input
             type="time"
             value={newBlock.end}
-            onChange={(e) => setNewBlock({ ...newBlock, end: e.target.value })}
+            onChange={(e) => setNewBlock({ ...newBlock, end: e.target.value })} // End time input
             className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
         </div>
@@ -83,12 +85,12 @@ function DayPlanner() {
           type="text"
           placeholder="Description"
           value={newBlock.description}
-          onChange={(e) => setNewBlock({ ...newBlock, description: e.target.value })}
+          onChange={(e) => setNewBlock({ ...newBlock, description: e.target.value })} // Description input
           className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
         <button
-          onClick={addBlock}
+          onClick={addBlock} // Add block button
           className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold transition"
         >
           Add Block
@@ -96,7 +98,7 @@ function DayPlanner() {
       </div>
 
       <div className="space-y-3">
-        {blocks.length === 0 ? (
+        {blocks.length === 0 ? ( // No blocks message
           <p className="text-gray-400 italic text-center">Your schedule is empty. Add some blocks!</p>
         ) : (
           blocks.map((block, i) => {
@@ -112,7 +114,7 @@ function DayPlanner() {
                   <p className="text-sm">{block.description}</p>
                 </div>
                 <button
-                  onClick={() => removeBlock(i)}
+                  onClick={() => removeBlock(i)} // Remove block button
                   className="text-white font-bold hover:text-red-200"
                 >
                   ✕

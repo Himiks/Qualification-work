@@ -41,7 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public List<TaskDTO> getTaskByUserId() {
+    public List<TaskDTO> getTaskByUserId() {     // Retrieves all tasks assigned to the currently logged-in user, sorted by due date descending
         User user = jwtUtils.getLoggedInUser();
         if(user != null){
             return taskRepository.findAllByUserId(user.getId())
@@ -57,8 +57,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO) {
-        User user = jwtUtils.getLoggedInUser();
+    public TaskDTO createTask(TaskDTO taskDTO) { //      Creates a new task assigned to the currently logged-in user
+        User user = jwtUtils.getLoggedInUser(); //     Sets default task status to IN_PROGRESS
 
         if(user != null){
             Task task = new Task();
@@ -76,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return null;
     }
 
-    public UserDto updateMyProfile(UpdateUserDTO dto) {
+    public UserDto updateMyProfile(UpdateUserDTO dto) {     // Updates the currently logged-in user’s profile (name, email, password)
         User user = jwtUtils.getLoggedInUser();
         if (user == null) return null;
 
@@ -93,7 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public List<TaskDTO> getAllTasks() {
+    public List<TaskDTO> getAllTasks() {     // Retrieves all tasks in the system, sorted by due date descending
         return taskRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Task::getDueDate).reversed())
@@ -102,11 +102,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteTask(Long id) {
+    public void deleteTask(Long id) {     // Deletes a task by ID
         taskRepository.deleteById(id);
     }
     @Override
-    public List<TaskDTO> getTasksByTechnique(TaskTechnique technique) {
+    public List<TaskDTO> getTasksByTechnique(TaskTechnique technique) {     // Retrieves tasks for the logged-in user filtered by a specific technique
 
         User user = jwtUtils.getLoggedInUser();
         if (user == null) {
@@ -122,7 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public CommentDTO updateComment(Long commentId, String content) {
+    public CommentDTO updateComment(Long commentId, String content) {     // Updates a comment’s content if the logged-in user is the author or an admin
         User user = jwtUtils.getLoggedInUser();
 
         Comment comment = commentRepository.findById(commentId)
@@ -138,7 +138,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId) {     // Deletes a comment if the logged-in user is the author or an admin
         User user = jwtUtils.getLoggedInUser();
 
         Comment comment = commentRepository.findById(commentId)
@@ -155,13 +155,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public TaskDTO getTaskById(Long id) {
+    public TaskDTO getTaskById(Long id) {     // Retrieves a task by ID and returns it as a DTO; returns null if not found
         Optional<Task> optionalTask = taskRepository.findById(id);
         return optionalTask.map(Task::getTaskDTO).orElse(null);
     }
 
     @Override
-    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
+    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {     // Updates an existing task’s details for the logged-in user
         Optional<Task> optionalTask = taskRepository.findById(id);
             Task task = optionalTask.get();
             task.setTitle(taskDTO.getTitle());
@@ -177,7 +177,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public CommentDTO createComment(Long taskId, String content) {
+    public CommentDTO createComment(Long taskId, String content) {     // Creates a new comment for a task for the currently logged-in user
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         User user = jwtUtils.getLoggedInUser();
         if(optionalTask.isPresent() && user != null ){
@@ -195,7 +195,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public List<TaskDTO> searchTasksByUserTitle(String title) {
+    public List<TaskDTO> searchTasksByUserTitle(String title) {     // Searches tasks by title for the logged-in user (or all tasks if admin)
         User user = jwtUtils.getLoggedInUser();
 
         if(user == null){
@@ -217,12 +217,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<CommentDTO> getCommentsByTaskId(Long taskId) {
+    public List<CommentDTO> getCommentsByTaskId(Long taskId) {     // Retrieves all comments for a given task ID and returns them as DTOs
         return commentRepository.findAllByTaskId(taskId).stream().map(Comment::getCommentDTO).collect(Collectors.toList());
     }
 
 
-    private TaskStatus mapStringToTaskStatus(String status) {
+    private TaskStatus mapStringToTaskStatus(String status) {     // Maps a string to a TaskStatus enum value
         return switch (status) {
             case "PENDING" -> TaskStatus.PENDING;
             case "IN_PROGRESS" -> TaskStatus.IN_PROGRESS;

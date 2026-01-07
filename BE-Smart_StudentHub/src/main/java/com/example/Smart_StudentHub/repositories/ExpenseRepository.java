@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+public interface ExpenseRepository extends JpaRepository<Expense, Long> { // expense database interface
     List<Expense> findByUserId(Long userId);
         List<Expense> findAllByUserIdAndCategory(Long userId, String category);
         List<Expense> findAllByUserIdAndDateBetween(Long userId, Date start, Date end);

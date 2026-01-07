@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FolderDTO {
+public class FolderDTO { // dto for folder
     private Long id;
     private String name;
     private boolean isPublic;

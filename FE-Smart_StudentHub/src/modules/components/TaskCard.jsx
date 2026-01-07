@@ -2,21 +2,21 @@ import React, { useState, useLayoutEffect, useRef } from "react";
 import { useDraggable } from "@dnd-kit/core";
 
 export default function TaskCard({ task }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: task.id,
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ // Initialize draggable with task ID
+    id: task.id, // Unique identifier for the draggable item
   });
 
-  const cardRef = useRef(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const cardRef = useRef(null); // Reference to the card element
+  const [size, setSize] = useState({ width: 0, height: 0 }); // State to store card size
 
-  useLayoutEffect(() => {
-    if (cardRef.current && !isDragging) {
-      const rect = cardRef.current.getBoundingClientRect();
-      setSize({ width: rect.width, height: rect.height });
-    }
+  useLayoutEffect(() => { // Measure card size when not dragging
+    if (cardRef.current && !isDragging) { // only measure when not dragging
+      const rect = cardRef.current.getBoundingClientRect(); // get size
+      setSize({ width: rect.width, height: rect.height }); // update state
+    } // if dragging, size remains unchanged
   }, [isDragging]);
 
-  const style = {
+  const style = { // Dynamic styles for the card
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
@@ -26,10 +26,10 @@ export default function TaskCard({ task }) {
     height: isDragging ? `${size.height}px` : "auto",
     pointerEvents: isDragging ? "none" : "auto",
   };
-
+// Render the task card
   return (
     <div
-      ref={(node) => {
+      ref={(node) => { // Set both dnd-kit and local refs
         setNodeRef(node);
         cardRef.current = node;
       }}

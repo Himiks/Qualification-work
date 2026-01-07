@@ -5,35 +5,35 @@ import employeeService from "../employee/services/employeeService";
 import { toast } from "react-toastify";
 
 
-const COLUMNS = [
+const COLUMNS = [ // Eisenhower matrix columns
   { id: "High", title: "Important + Urgent → Do immediately" },
   { id: "Medium", title: "Important + Not urgent → Schedule" },
   { id: "Low", title: "Not important + Urgent → Delegate" },
   { id: "Minor", title: "Not important + Not urgent → Eliminate" },
 ];
 
-export default function Eisenhower() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function Eisenhower() { // Eisenhower matrix component
+  const [tasks, setTasks] = useState([]); // Tasks state
+  const [loading, setLoading] = useState(true); // Loading state
 
-  useEffect(() => {
-    const fetchTasks = async () => {
+  useEffect(() => { // Load tasks on mount
+    const fetchTasks = async () => { // Fetch tasks function
       try {
-        const pathParts = window.location.pathname.split("/");
-        const techniqueName = pathParts[pathParts.length - 2];
+        const pathParts = window.location.pathname.split("/"); // Extract technique name from URL
+        const techniqueName = pathParts[pathParts.length - 2]; // Assuming URL ends with /technique/:techniqueName/eisenhower
         if (!techniqueName) return;
 
-        const taskList = await employeeService.getAllTasksByTechniqueName(techniqueName);
+        const taskList = await employeeService.getAllTasksByTechniqueName(techniqueName); // Fetch tasks by technique name
 
-        if (!Array.isArray(taskList)) {
+        if (!Array.isArray(taskList)) { // Validate response
           console.error("Expected an array but got:", taskList);
           setTasks([]);
           return;
         }
 
-        const formattedTasks = taskList.map((taskData) => {
+        const formattedTasks = taskList.map((taskData) => { // Format tasks for Eisenhower matrix
           let status = "Low";
-          switch (taskData.priority?.toLowerCase()) {
+          switch (taskData.priority?.toLowerCase()) { // Map priority to status
             case "high": status = "High"; break;
             case "medium": status = "Medium"; break;
             case "low": status = "Low"; break;
@@ -41,7 +41,7 @@ export default function Eisenhower() {
             default: status = "Low";
           }
 
-          return {
+          return { // Return formatted task object
             id: String(taskData.id),
             title: taskData.title,
             description: taskData.description || "No description",
@@ -50,7 +50,7 @@ export default function Eisenhower() {
           };
         });
 
-        setTasks(formattedTasks);
+        setTasks(formattedTasks); // Update tasks state
       } catch (err) {
         console.error("Error loading tasks:", err);
         setTasks([]);
@@ -59,35 +59,35 @@ export default function Eisenhower() {
       }
     };
     fetchTasks();
-  }, []);
+  }, []); // Empty dependency array to run once on mount
 
-  async function handleDragEnd(event) {
+  async function handleDragEnd(event) { // Handle drag end event
     const { active, over } = event;
     if (!over) return;
 
-    const taskId = active.id;
-    const newStatus = over.id;
-    const movedTask = tasks.find((t) => t.id === taskId);
-    if (!movedTask) return;
+    const taskId = active.id; // ID of dragged task
+    const newStatus = over.id; // ID of target column
+    const movedTask = tasks.find((t) => t.id === taskId); // Find moved task
+    if (!movedTask) return; 
 
-    const oldStatus = movedTask.status;
+    const oldStatus = movedTask.status; // Previous status
     if (oldStatus === newStatus) return;
 
-    setTasks((prev) =>
-      prev.map((task) =>
+    setTasks((prev) => // Optimistically update task status
+      prev.map((task) => // Update task status in state
         task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
 
     try {
-      const updatedTask = { ...movedTask.raw, priority: newStatus.toUpperCase() };
-      await employeeService.updateTask(movedTask.id, updatedTask);
+      const updatedTask = { ...movedTask.raw, priority: newStatus.toUpperCase() }; // Prepare updated task data
+      await employeeService.updateTask(movedTask.id, updatedTask); // Send update to server
       console.log(`Task ${movedTask.title} updated to ${newStatus}`);
     } catch (err) {
       console.error("Failed to update task:", err);
       toast.error("Failed to update task priority on server!");
       setTasks((prev) =>
-        prev.map((task) =>
+        prev.map((task) => // Revert task status on failure
           task.id === taskId ? { ...task, status: oldStatus } : task
         )
       );
@@ -95,7 +95,8 @@ export default function Eisenhower() {
   }
 
   if (loading) {
-    return (
+    // Show loading state
+    return ( 
       <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
         Loading Eisenhower matrix...
       </div>
@@ -108,13 +109,13 @@ export default function Eisenhower() {
         Eisenhower Matrix
       </h2>
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd}> {/* Drag-and-drop context */}
         <div className="flex flex-wrap justify-center gap-8">
           {COLUMNS.map((column) => (
             <Column
               key={column.id}
               column={column}
-              tasks={tasks.filter((task) => task.status === column.id)}
+              tasks={tasks.filter((task) => task.status === column.id)} // Filter tasks by column
             />
           ))}
         </div>

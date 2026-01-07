@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Technique {
+public class Technique { // technique entity for the database
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

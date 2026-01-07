@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Folder {
+public class Folder { // folder entity for the database
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TechniqueRepository extends JpaRepository<Technique, Long> {
+public interface TechniqueRepository extends JpaRepository<Technique, Long> {// technique database interface
     Optional<Technique> findByNameIgnoreCase(String name);
 }

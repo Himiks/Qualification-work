@@ -26,24 +26,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter; // validates jwt for every request
 
-    private final UserService userService;
+    private final UserService userService; // provides a user from the database
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { // defines all security rules
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(request -> {
+                .csrf(AbstractHttpConfigurer::disable) // disables protections as tokens are used
+                .cors(cors -> cors.configurationSource(request -> { // configuring cors so Frontend could call Backend
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
                     corsConfig.setAllowedOriginPatterns(java.util.List.of("*"));
                     corsConfig.setAllowedMethods(java.util.List.of("GET","POST","PUT","DELETE","OPTIONS"));
                     corsConfig.setAllowedHeaders(java.util.List.of("*"));
-                    corsConfig.setAllowCredentials(true);
+                    corsConfig.setAllowCredentials(true); // allows cookies/authorization headers to be sent
                     return corsConfig;
                 }))
-                .authorizeHttpRequests(request -> request
+                .authorizeHttpRequests(request -> request // authorization rules
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority(UserRole.ADMIN.name())
                         .requestMatchers("/api/employees/**").hasAuthority(UserRole.EMPLOYEE.name())
@@ -52,9 +52,9 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/folders/**").hasAnyAuthority(UserRole.ADMIN.name(), UserRole.EMPLOYEE.name())
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // not to use sessions
+                .authenticationProvider(authenticationProvider()) // loading user details and checking password during login
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // ensures each request is using valid token
 
         return http.build();
     }
@@ -63,19 +63,19 @@ public class WebSecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    } // hashes passwords
 
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService.userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(); // security provider
+        authProvider.setUserDetailsService(userService.userDetailsService()); // fetches user from db
+        authProvider.setPasswordEncoder(passwordEncoder()); // checks password hashes
         return authProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception { // performs login
         return config.getAuthenticationManager();
 
     }

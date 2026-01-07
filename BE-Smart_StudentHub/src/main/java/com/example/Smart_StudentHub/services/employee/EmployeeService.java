@@ -8,7 +8,7 @@ import com.example.Smart_StudentHub.enums.TaskTechnique;
 
 import java.util.List;
 
-public interface EmployeeService {
+public interface EmployeeService { // employee service layer
 
   List<TaskDTO> getTaskByUserId();
 

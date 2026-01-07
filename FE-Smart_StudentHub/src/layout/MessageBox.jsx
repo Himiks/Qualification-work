@@ -3,15 +3,15 @@ import { useState, useEffect } from "react";
 export default function MessageBox({ message, type = "info", duration = 3000, onClose }) {
   const [show, setShow] = useState(true);
 
-  useEffect(() => {
+  useEffect(() => { // Auto close after duration
     const timer = setTimeout(() => {
       setShow(false);
       onClose?.();
     }, duration);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer); // Cleanup on unmount
   }, [duration, onClose]);
 
-  if (!show) return null;
+  if (!show) return null; // Don't render if not showing
 
   const colors = {
     success: "bg-green-500",

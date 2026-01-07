@@ -30,27 +30,27 @@ function formatAmount(n) {
   });
 }
 
-export default function ExpensesDashboard({ userIdProp }) {
-  const [expenses, setExpenses] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [categoryFilter, setCategoryFilter] = useState("All");
-  const [monthFilter, setMonthFilter] = useState("All");
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState({ key: "date", dir: "desc" });
+export default function ExpensesDashboard({ userIdProp }) { // Main dashboard component
+  const [expenses, setExpenses] = useState([]);  // All expenses
+  const [filtered, setFiltered] = useState([]); // Filtered expenses
+  const [categoryFilter, setCategoryFilter] = useState("All"); // Category filter
+  const [monthFilter, setMonthFilter] = useState("All"); // Month filter
+  const [search, setSearch] = useState(""); // Search input
+  const [sortBy, setSortBy] = useState({ key: "date", dir: "desc" }); // Sorting
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1); // Pagination
+  const itemsPerPage = 10; // Items per page
 
-  const containerRef = useRef(null);
+  const containerRef = useRef(null); // Ref for PDF export
   const userId =
     userIdProp || (storageService.getUser ? storageService.getUser()?.id : null);
 
-  useEffect(() => {
+  useEffect(() => { //  Fetch expenses on mount or userId change
     if (!userId) return;
     fetchAll();
   }, [userId]);
 
-  const fetchAll = async () => {
+  const fetchAll = async () => { // Fetch all expenses
     try {
       const data = await expenseService.getAllExpensesByUser(userId);
       const normalized = data.map((e) => ({
@@ -64,32 +64,32 @@ export default function ExpensesDashboard({ userIdProp }) {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => { // Apply filters, search, and sorting
     let list = [...expenses];
 
    
-    if (categoryFilter !== "All") {
+    if (categoryFilter !== "All") { // Filter by category
       list = list.filter(
         (e) =>
           (e.category || "").toLowerCase() === categoryFilter.toLowerCase()
       );
     }
 
-    
-    if (monthFilter !== "All") {
+     
+    if (monthFilter !== "All") { // Filter by month
       list = list.filter((e) => {
         if (!e.date) return false;
-        const d = new Date(e.date);
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+        const d = new Date(e.date); // Expense date
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart( 
           2,
           "0"
         )}`;
-        return key === monthFilter;
+        return key === monthFilter; // Match month filter
       });
     }
 
     
-    if (search.trim()) {
+    if (search.trim()) { // Apply search filter
       const s = search.trim().toLowerCase();
       list = list.filter(
         (e) =>
@@ -100,17 +100,17 @@ export default function ExpensesDashboard({ userIdProp }) {
     }
 
 
-    list.sort((a, b) => {
-      const key = sortBy.key;
-      const dir = sortBy.dir === "asc" ? 1 : -1;
+    list.sort((a, b) => { // Apply sorting
+      const key = sortBy.key; // Sort key
+      const dir = sortBy.dir === "asc" ? 1 : -1; // Direction multiplier
 
       if (key === "date") {
-        const da = a.date ? new Date(a.date) : 0;
-        const db = b.date ? new Date(b.date) : 0;
-        return (da - db) * dir;
+        const da = a.date ? new Date(a.date) : 0; // Expense date
+        const db = b.date ? new Date(b.date) : 0; // Expense date
+        return (da - db) * dir; // Sort by date
       }
 
-      if (key === "amount") {
+      if (key === "amount") { // Sort by amount
         return (Number(a.amount || 0) - Number(b.amount || 0)) * dir;
       }
 
@@ -119,64 +119,65 @@ export default function ExpensesDashboard({ userIdProp }) {
 
     setFiltered(list);
     setCurrentPage(1);
-  }, [expenses, categoryFilter, monthFilter, search, sortBy]);
+  }, [expenses, categoryFilter, monthFilter, search, sortBy]); // Re-run on dependencies
 
 
-  const paginatedFiltered = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filtered.slice(start, start + itemsPerPage);
-  }, [filtered, currentPage]);
+  const paginatedFiltered = useMemo(() => { // Paginate filtered expenses
+    const start = (currentPage - 1) * itemsPerPage; // Calculate start index
+    return filtered.slice(start, start + itemsPerPage); // Return paginated items
+  }, [filtered, currentPage]); // Recompute on filtered or page change
 
-  const stats = useMemo(() => {
-    const total = filtered.reduce((s, e) => s + Number(e.amount || 0), 0);
-    const avg = filtered.length ? total / filtered.length : 0;
+  const stats = useMemo(() => { // Compute statistics
+    const total = filtered.reduce((s, e) => s + Number(e.amount || 0), 0); // Total amount
+    const avg = filtered.length ? total / filtered.length : 0; // Average amount
 
    
-    const byCat = {};
+    const byCat = {}; // Expenses by category
     for (const e of filtered) {
-      const c = e.category || "Uncategorized";
-      byCat[c] = (byCat[c] || 0) + Number(e.amount || 0);
+      const c = e.category || "Uncategorized"; // Category name
+      byCat[c] = (byCat[c] || 0) + Number(e.amount || 0); // Sum by category
     }
 
-    const topCategory = Object.entries(byCat).sort((a, b) => b[1] - a[1])[0];
+    const topCategory = Object.entries(byCat).sort((a, b) => b[1] - a[1])[0];// Top category
 
+    // Return computed stats
     return {
       total,
       avg,
       topCategory: topCategory
-        ? { name: topCategory[0], amount: topCategory[1] }
+        ? { name: topCategory[0], amount: topCategory[1] } // Top category details
         : null,
-      byCategory: Object.entries(byCat).map(([name, amount]) => ({
+      byCategory: Object.entries(byCat).map(([name, amount]) => ({ // Format for pie chart
         name,
         amount,
       })),
     };
   }, [filtered]);
 
-  const lineData = useMemo(() => {
+  const lineData = useMemo(() => { // Prepare data for line chart
     const map = {};
-    for (const e of filtered) {
+    for (const e of filtered) { // Aggregate by month
       if (!e.date) continue;
       const d = new Date(e.date);
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart( 
         2,
         "0"
       )}`;
-      map[key] = (map[key] || 0) + Number(e.amount || 0);
+      map[key] = (map[key] || 0) + Number(e.amount || 0); // Sum amounts
     }
     return Object.entries(map)
       .sort()
-      .map(([month, amount]) => ({ month, amount }));
+      .map(([month, amount]) => ({ month, amount })); // Format for line chart
   }, [filtered]);
 
-  const categories = useMemo(() => {
+  const categories = useMemo(() => { // Unique categories for filter
     const set = new Set(
       expenses.map((e) => e.category || "Uncategorized")
     );
     return ["All", ...set];
   }, [expenses]);
 
-  const months = useMemo(() => {
+  const months = useMemo(() => { // Unique months for filter
     const set = new Set(
       expenses
         .map((e) => {
@@ -189,10 +190,10 @@ export default function ExpensesDashboard({ userIdProp }) {
         })
         .filter(Boolean)
     );
-    return ["All", ...Array.from(set).sort().reverse()];
+    return ["All", ...Array.from(set).sort().reverse()]; // Sort months descending
   }, [expenses]);
 
-  const exportPDF = async () => {
+  const exportPDF = async () => { // Export dashboard to PDF
     const element = containerRef.current;
     if (!element) return toast.error("No content");
 
@@ -210,6 +211,7 @@ export default function ExpensesDashboard({ userIdProp }) {
     }
   };
 
+  // Render the dashboard
   return (
     <div className="p-4 sm:p-6 space-y-6">
       <FileUploader onUploaded={fetchAll} userIdProp={userId} />
@@ -222,12 +224,12 @@ export default function ExpensesDashboard({ userIdProp }) {
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)} // Search input handler
               placeholder="Search..."
               className="border p-2 rounded w-full"
             />
             <button
-              onClick={exportPDF}
+              onClick={exportPDF} // Export PDF handler
               className="bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700 whitespace-nowrap"
             >
               Export PDF
@@ -239,20 +241,20 @@ export default function ExpensesDashboard({ userIdProp }) {
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-4">
           <select
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
+            onChange={(e) => setCategoryFilter(e.target.value)} // Category filter handler
             className="border p-2 rounded w-full sm:w-auto"
           >
-            {categories.map((c) => (
+            {categories.map((c) => ( // Category options
               <option key={c}>{c}</option>
             ))}
           </select>
 
           <select
-            value={monthFilter}
-            onChange={(e) => setMonthFilter(e.target.value)}
+            value={monthFilter} // Month filter
+            onChange={(e) => setMonthFilter(e.target.value)} // Month filter handler
             className="border p-2 rounded w-full sm:w-auto"
           >
-            {months.map((m) => (
+            {months.map((m) => ( // Month options
               <option key={m} value={m}>
                 {m === "All" ? "All months" : m}
               </option>
@@ -260,9 +262,9 @@ export default function ExpensesDashboard({ userIdProp }) {
           </select>
 
           <select
-            value={sortBy.key + "_" + sortBy.dir}
+            value={sortBy.key + "_" + sortBy.dir} // Sort by selector
             onChange={(e) => {
-              const [k, d] = e.target.value.split("_");
+              const [k, d] = e.target.value.split("_"); // Sort by handler
               setSortBy({ key: k, dir: d });
             }}
             className="border p-2 rounded w-full sm:w-auto"
@@ -278,16 +280,16 @@ export default function ExpensesDashboard({ userIdProp }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="p-4 border rounded">
             <h4 className="text-gray-600 text-sm">Total</h4>
-            <div className="text-2xl font-bold">{formatAmount(stats.total)}</div>
+            <div className="text-2xl font-bold">{formatAmount(stats.total)}</div> {/* Total amount */}
           </div>
 
           <div className="p-4 border rounded">
             <h4 className="text-gray-600 text-sm">Top category</h4>
             {stats.topCategory ? (
               <>
-                <div className="font-semibold">{stats.topCategory.name}</div>
+                <div className="font-semibold">{stats.topCategory.name}</div> {/* Top category name */}
                 <div className="text-gray-500 text-sm">
-                  {formatAmount(stats.topCategory.amount)}
+                  {formatAmount(stats.topCategory.amount)} {/* Top category amount */}
                 </div>
               </>
             ) : (
@@ -299,14 +301,14 @@ export default function ExpensesDashboard({ userIdProp }) {
             <h4 className="text-gray-600 text-sm">Trend</h4>
 
             <div className="w-full h-24">
-              <ResponsiveContainer>
-                <LineChart data={lineData}>
-                  <XAxis dataKey="month" hide />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="amount" stroke="#4f46e5" />
-                </LineChart>
-              </ResponsiveContainer>
+              <ResponsiveContainer> {/* Line chart for trend */}
+                <LineChart data={lineData}> {/* Line chart data */}
+                  <XAxis dataKey="month" hide /> {/* X axis */}
+                  <YAxis hide /> {/* Y axis */}
+                  <Tooltip /> {/* Tooltip */}
+                  <Line type="monotone" dataKey="amount" stroke="#4f46e5" /> {/* Line */}
+                </LineChart> {/* End LineChart */}
+              </ResponsiveContainer> {/* End ResponsiveContainer */}
             </div>
           </div>
         </div>
@@ -319,9 +321,9 @@ export default function ExpensesDashboard({ userIdProp }) {
             <h4 className="text-gray-700 font-medium mb-2">By Category</h4>
 
             <div className="w-full h-80">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
+              <ResponsiveContainer> {/* Pie chart for categories */}
+                <PieChart> {/* Pie chart */}
+                  <Pie 
                     data={stats.byCategory}
                     dataKey="amount"
                     nameKey="name"
@@ -338,10 +340,10 @@ export default function ExpensesDashboard({ userIdProp }) {
                     ))}
                   </Pie>
 
-                  <Tooltip formatter={(v) => formatAmount(v)} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+                  <Tooltip formatter={(v) => formatAmount(v)} /> {/* Tooltip */}
+                  <Legend /> {/* Legend */}
+                </PieChart> {/* End PieChart */}
+              </ResponsiveContainer> {/* End ResponsiveContainer */}
             </div>
           </div>
 
@@ -362,7 +364,7 @@ export default function ExpensesDashboard({ userIdProp }) {
                 </thead>
 
                 <tbody>
-                  {paginatedFiltered.map((e) => (
+                  {paginatedFiltered.map((e) => ( // Map through filtered expenses
                     <motion.tr
                       key={e.id}
                       initial={{ opacity: 0 }}
@@ -370,7 +372,7 @@ export default function ExpensesDashboard({ userIdProp }) {
                       className="border-b"
                     >
                       <td className="py-2">
-                        {e.date ? format(new Date(e.date), "yyyy-MM-dd") : "—"}
+                        {e.date ? format(new Date(e.date), "yyyy-MM-dd") : "—"} {/* Format date */}
                       </td>
 
                       <td className="py-2">{e.category || "—"}</td>
@@ -382,7 +384,7 @@ export default function ExpensesDashboard({ userIdProp }) {
 
                       <td className="py-2 text-center">
                         <button
-                          onClick={async () => {
+                          onClick={async () => { // Delete expense handler
                             if (!confirm("Delete?")) return;
                             await expenseService.deleteExpense(e.id);
                             setExpenses((p) => p.filter((x) => x.id !== e.id));
@@ -399,7 +401,7 @@ export default function ExpensesDashboard({ userIdProp }) {
             </div>
 
             
-            {filtered.length > itemsPerPage && (
+            {filtered.length > itemsPerPage && ( // Pagination controls
               <div className="flex justify-end gap-3 mt-3 text-sm">
                 <button
                   disabled={currentPage === 1}

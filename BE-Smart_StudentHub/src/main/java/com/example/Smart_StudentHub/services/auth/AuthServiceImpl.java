@@ -19,6 +19,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
+    // Runs once at application startup
+    // Checks if an ADMIN user exists; if not, creates a default admin account
     @PostConstruct
     public void createAnAdminAccount(){
         Optional<User> optionalUser = userRepository.findByUserRole(UserRole.ADMIN);
@@ -37,6 +39,8 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    // Creates a new user with EMPLOYEE role, hashes the password
+    // Saves user to the database and returns as a DTO
     @Override
     public UserDto signupUser(SignupRequest signupRequest) {
         User user = new User();
@@ -49,6 +53,8 @@ public class AuthServiceImpl implements AuthService {
         return createdUser.getUserDto();
     }
 
+    // Checks if a user already exists in the database with the given email
+    // Returns true if email is already taken
     @Override
     public boolean hasUserWithEmail(String email) {
        return userRepository.findFirstByEmail(email).isPresent();

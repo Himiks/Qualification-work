@@ -17,7 +17,7 @@ public class TechniqueServiceImpl implements TechniqueService {
     private final TechniqueRepository techniqueRepository;
 
     @Override
-    public List<TechniqueDTO> getAllTechniques() {
+    public List<TechniqueDTO> getAllTechniques() {     // Returns a list of all techniques in the system as DTOs
         return techniqueRepository.findAll()
                 .stream()
                 .map(Technique::getTechniqueDTO)
@@ -25,14 +25,14 @@ public class TechniqueServiceImpl implements TechniqueService {
     }
 
     @Override
-    public TechniqueDTO getTechniqueByName(String name) {
+    public TechniqueDTO getTechniqueByName(String name) {     // Retrieves a technique by its name (case-insensitive) or throws an exception if not found
         return techniqueRepository.findByNameIgnoreCase(name)
                 .map(Technique::getTechniqueDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Technique not found: " + name));
     }
 
     @Override
-    public TechniqueDTO createTechnique(TechniqueDTO dto) {
+    public TechniqueDTO createTechnique(TechniqueDTO dto) {     // Creates a new technique in the database and returns it as a DTO
         Technique technique = new Technique();
         technique.setName(dto.getName());
         technique.setDescription(dto.getDescription());
@@ -41,7 +41,7 @@ public class TechniqueServiceImpl implements TechniqueService {
     }
 
     @Override
-    public TechniqueDTO updateTechnique(Long id, TechniqueDTO dto) {
+    public TechniqueDTO updateTechnique(Long id, TechniqueDTO dto) {     // Updates an existing technique’s description and steps by ID, then returns the updated DTO
         Technique technique = techniqueRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Technique not found"));
 
         technique.setDescription(dto.getDescription());
@@ -52,7 +52,7 @@ public class TechniqueServiceImpl implements TechniqueService {
     @Override
     public void deleteTechnique(Long id) {
         techniqueRepository.deleteById(id);
-    }
+    }     // Deletes a technique by its ID from the database
 
 
 }

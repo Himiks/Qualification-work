@@ -6,26 +6,26 @@ import { motion, AnimatePresence } from "framer-motion";
 
 function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(storageService.isAdminLoggedIn());
-  const [isEmployeeLoggedIn, setIsEmployeeLoggedIn] = useState(storageService.isEmployeeLoggedIn());
-  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation(); // Get current path
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(storageService.isAdminLoggedIn()); // Check admin login status
+  const [isEmployeeLoggedIn, setIsEmployeeLoggedIn] = useState(storageService.isEmployeeLoggedIn()); // Check employee login status
+  const [menuOpen, setMenuOpen] = useState(false); // Mobile menu state
 
-  useEffect(() => {
+  useEffect(() => { // Listen for auth changes
     const handleAuthChange = () => {
-      setIsAdminLoggedIn(storageService.isAdminLoggedIn());
-      setIsEmployeeLoggedIn(storageService.isEmployeeLoggedIn());
+      setIsAdminLoggedIn(storageService.isAdminLoggedIn()); // Update admin login status
+      setIsEmployeeLoggedIn(storageService.isEmployeeLoggedIn()); // Update employee login status
     };
-    window.addEventListener("authChange", handleAuthChange);
+    window.addEventListener("authChange", handleAuthChange); // Listen for auth changes
     return () => window.removeEventListener("authChange", handleAuthChange);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = () => { // Logout handler
     storageService.logout();
     navigate("/");
   };
 
-  const title = isAdminLoggedIn
+  const title = isAdminLoggedIn // Dynamic title based on role
     ? "Admin Dashboard"
     : isEmployeeLoggedIn
     ? "Personal Portal"
@@ -33,7 +33,7 @@ function Navbar() {
 
   const navLinks = [];
 
-  if (isAdminLoggedIn) {
+  if (isAdminLoggedIn) { // Admin links
   navLinks.push(
     { to: "/admin/dashboard", label: "Dashboard" },
     { to: "/admin/task", label: "Post Task" },
@@ -43,7 +43,7 @@ function Navbar() {
     { to: "/admin/users", label: "Users" },
     { to: "/admin/profile", label: "Profile" }
   );
-} else if (isEmployeeLoggedIn) {
+} else if (isEmployeeLoggedIn) { // Employee links
   navLinks.push(
     { to: "/employee/dashboard", label: "Dashboard" },
     { to: "/employee/task", label: "Post Task" },
@@ -54,13 +54,13 @@ function Navbar() {
   );
 }
 
-  const linkClass = (to) =>
+  const linkClass = (to) => // Dynamic link styles
     `relative px-4 py-2 font-medium transition-all duration-300 
      ${location.pathname === to ? "text-cyan-400" : "text-white/90 hover:text-cyan-300"}
      group`;
 
-  return (
-    <motion.nav
+  return ( // Navbar component
+    <motion.nav 
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -85,10 +85,10 @@ function Navbar() {
       "
     >
       {title}
-    </motion.span>
+    </motion.span> {/** Dynamic title based on role */}
 
         
-        <button
+        <button // Mobile menu toggle
           onClick={() => setMenuOpen(!menuOpen)}
           className="sm:hidden text-cyan-400 focus:outline-none"
         >
@@ -106,7 +106,7 @@ function Navbar() {
                 Login
               </Link>
             </>
-          ) : (
+          ) : ( // Logged in links
             <>
               {navLinks.map((link) => (
                 <div key={link.to} className="relative">
@@ -121,7 +121,7 @@ function Navbar() {
                   </Link>
                 </div>
               ))}
-              <motion.button
+              <motion.button // Logout button
                 whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleLogout}
@@ -135,7 +135,7 @@ function Navbar() {
       </div>
 
       
-      <AnimatePresence>
+      <AnimatePresence> {/* Mobile menu animation */}
         {menuOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
@@ -156,7 +156,7 @@ function Navbar() {
                 </>
               ) : (
                 <>
-                  {navLinks.map((link) => (
+                  {navLinks.map((link) => ( // Logged in mobile links
                     <Link
                       key={link.to}
                       to={link.to}
@@ -166,7 +166,7 @@ function Navbar() {
                       {link.label}
                     </Link>
                   ))}
-                  <button
+                  <button // Mobile logout button
                     onClick={() => {
                       handleLogout();
                       setMenuOpen(false);
@@ -180,7 +180,7 @@ function Navbar() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>{/* End mobile menu animation */}
     </motion.nav>
   );
 }

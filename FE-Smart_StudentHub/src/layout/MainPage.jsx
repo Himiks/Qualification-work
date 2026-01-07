@@ -3,14 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import storageService from "../auth/services/storageService";
 
 function MainPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // for redirecting to dashboard
 
-  const token = storageService.getToken();
-  const role = storageService.getUserRole(); 
+  const token = storageService.getToken(); // check if user is logged in
+  const role = storageService.getUserRole();  // get user role
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!token; // boolean flag
 
-  const handleDashboardRedirect = () => {
+  const handleDashboardRedirect = () => { // redirect based on role
     if (role === "ADMIN") {
       navigate("/admin/dashboard");
     } else if (role === "EMPLOYEE") {
@@ -20,7 +20,8 @@ function MainPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-blue-50">
-      
+
+      {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-6 pt-24 pb-20 text-center">
         <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight">
           Smart <span className="text-cyan-500">Student</span> Hub
@@ -59,6 +60,7 @@ function MainPage() {
         </div>
       </section>
 
+        {/* Features Section */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <FeatureCard
@@ -83,8 +85,8 @@ function MainPage() {
           />
         </div>
       </section>
-
-      <section className="bg-white py-20 border-t">
+      {/* Testimonials Section */}
+      <section className="bg-gray-50 py-20 border-t">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-gray-800">
             Why Smart Student Hub?
@@ -109,6 +111,8 @@ function MainPage() {
   );
 }
 
+
+{/* Feature Card Component */}
 function FeatureCard({ icon, title, text }) {
   return (
     <div className="bg-white rounded-2xl p-6 shadow hover:shadow-xl transition transform hover:-translate-y-1 flex flex-col items-center text-center">

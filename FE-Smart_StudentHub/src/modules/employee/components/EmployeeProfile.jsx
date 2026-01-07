@@ -5,17 +5,17 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export default function EmployeeProfile() {
-  const [form, setForm] = useState({
+export default function EmployeeProfile() { // Employee profile component
+  const [form, setForm] = useState({ // Form state
     name: "",
     email: "",
     password: ""
   });
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Navigation hook
 
-  const user = storageService.getUser();
+  const user = storageService.getUser(); // Get current user
 
-  useEffect(() => {
+  useEffect(() => { // Populate form with user data on mount
     if (user) {
       setForm({
         name: user.name,
@@ -25,12 +25,12 @@ export default function EmployeeProfile() {
     }
   }, []);
 
-  const handleChange = (e) =>
+  const handleChange = (e) => // Handle form input changes
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSave = async () => {
+  const handleSave = async () => { // Save updated profile
     try {
-    await employeeService.updateProfile(form);
+    await employeeService.updateProfile(form); // API call to update profile
     toast.success("Profile updated successfully!");
     storageService.saveUser({
         ...user,
@@ -43,6 +43,7 @@ export default function EmployeeProfile() {
     navigate('/admin/dashboard');
   };
 
+  // Render the profile form
   return (
     <div className="max-w-xl mx-auto p-6 mt-10 bg-white rounded-xl shadow">
       <h2 className="text-2xl font-bold mb-6 text-center">My Profile</h2>
@@ -50,7 +51,7 @@ export default function EmployeeProfile() {
       <div className="flex flex-col gap-4">
         <input
           name="name"
-          value={form.name}
+          value={form.name} // User name
           onChange={handleChange}
           placeholder="Name"
           className="p-3 border rounded-lg"
@@ -58,7 +59,7 @@ export default function EmployeeProfile() {
 
         <input
           name="email"
-          value={form.email}
+          value={form.email} // User email
           onChange={handleChange}
           placeholder="Email"
           className="p-3 border rounded-lg"
@@ -67,14 +68,14 @@ export default function EmployeeProfile() {
         <input
           name="password"
           type="password"
-          value={form.password}
+          value={form.password} // New password
           onChange={handleChange}
           placeholder="New Password (optional)"
           className="p-3 border rounded-lg"
         />
 
         <button
-          onClick={handleSave}
+          onClick={handleSave} // Save updated profile
           className="bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700"
         >
           Save Changes

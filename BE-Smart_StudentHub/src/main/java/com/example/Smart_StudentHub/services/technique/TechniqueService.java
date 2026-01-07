@@ -4,7 +4,7 @@ import com.example.Smart_StudentHub.dto.TechniqueDTO;
 
 import java.util.List;
 
-public interface TechniqueService {
+public interface TechniqueService { // technique service layer
     List<TechniqueDTO> getAllTechniques();
     TechniqueDTO getTechniqueByName(String name);
     TechniqueDTO createTechnique(TechniqueDTO dto);

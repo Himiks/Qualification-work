@@ -156,4 +156,113 @@ class EmployeeControllerTest {
 
         assertEquals(400, response.getStatusCodeValue());
     }
+
+    @Test
+    void createTask_emptyTitleOrDescription_returnsBadRequest() {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTitle("");
+        taskDTO.setDescription("");
+
+        when(employeeService.createTask(taskDTO)).thenReturn(null);
+
+        ResponseEntity<TaskDTO> response = employeeController.createTask(taskDTO);
+
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    void updateTask_emptyTitleOrDescription_returnsNotFound() {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTitle("");
+        taskDTO.setDescription("");
+
+        when(employeeService.updateTask(1L, taskDTO)).thenReturn(null);
+
+        ResponseEntity<?> response = employeeController.updateTask(1L, taskDTO);
+
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void updateMyProfile_changeName_success() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setName("New Name");
+
+        UserDto updatedUser = new UserDto();
+        updatedUser.setName("New Name");
+
+        when(employeeService.updateMyProfile(dto)).thenReturn(updatedUser);
+
+        ResponseEntity<?> response = employeeController.updateMyProfile(dto);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("New Name", ((UserDto) response.getBody()).getName());
+        verify(employeeService, times(1)).updateMyProfile(dto);
+    }
+
+    @Test
+    void updateMyProfile_changeEmail_success() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setEmail("newemail@example.com");
+
+        UserDto updatedUser = new UserDto();
+        updatedUser.setEmail("newemail@example.com");
+
+        when(employeeService.updateMyProfile(dto)).thenReturn(updatedUser);
+
+        ResponseEntity<?> response = employeeController.updateMyProfile(dto);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("newemail@example.com", ((UserDto) response.getBody()).getEmail());
+        verify(employeeService, times(1)).updateMyProfile(dto);
+    }
+
+    @Test
+    void updateMyProfile_changePassword_success() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setPassword("newPassword");
+
+        UserDto updatedUser = new UserDto();
+        updatedUser.setName("Existing Name");
+
+        when(employeeService.updateMyProfile(dto)).thenReturn(updatedUser);
+
+        ResponseEntity<?> response = employeeController.updateMyProfile(dto);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(updatedUser, response.getBody());
+        verify(employeeService, times(1)).updateMyProfile(dto);
+    }
+
+    @Test
+    void updateMyProfile_noChanges_keepsSameData() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+
+        UserDto updatedUser = new UserDto();
+        updatedUser.setName("Existing Name");
+        updatedUser.setEmail("existing@example.com");
+
+        when(employeeService.updateMyProfile(dto)).thenReturn(updatedUser);
+
+        ResponseEntity<?> response = employeeController.updateMyProfile(dto);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Existing Name", ((UserDto) response.getBody()).getName());
+        assertEquals("existing@example.com", ((UserDto) response.getBody()).getEmail());
+        verify(employeeService, times(1)).updateMyProfile(dto);
+    }
+
+    @Test
+    void updateMyProfile_invalidEmailOrPassword_returnsError() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setEmail("invalid-email");
+        dto.setPassword("");
+
+        when(employeeService.updateMyProfile(dto)).thenThrow(new IllegalArgumentException("Invalid input"));
+
+        assertThrows(IllegalArgumentException.class, () -> employeeController.updateMyProfile(dto));
+
+        verify(employeeService, times(1)).updateMyProfile(dto);
+    }
+
 }

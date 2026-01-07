@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class FileEntity {
+public class FileEntity { // file entity for the database
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

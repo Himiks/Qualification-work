@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Entity
 @Data
-public class Expense {
+public class Expense { // expense entity for the database
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -23,75 +23,75 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/folders")
+@RequestMapping("/api/folders") // api folders
 @RequiredArgsConstructor
 public class FolderController {
-    private final FolderService folderService;
-    private final FileService fileService;
-    private final FileRepository fileRepository;
+    private final FolderService folderService; // folder service layer
+    private final FileService fileService; // file service layer
+    private final FileRepository fileRepository; // file repository layer
 
     @Value("${file.upload-dir}")
-    private String uploadDir;
+    private String uploadDir; // path to file where folders and files are saved
 
 
     @PostMapping
-    public FolderDTO createFolder(@RequestBody FolderDTO folderDTO) throws Exception {
+    public FolderDTO createFolder(@RequestBody FolderDTO folderDTO) throws Exception { // creates folder
         return folderService.createFolder(folderDTO);
     }
 
 
     @GetMapping
-    public List<FolderDTO> getUserFolders(@RequestParam Long userId) {
+    public List<FolderDTO> getUserFolders(@RequestParam Long userId) { // gets user folders
         return folderService.getUserFolders(userId);
     }
 
     @GetMapping("/all")
-    public List<FolderDTO> getFolders() throws IOException {
+    public List<FolderDTO> getFolders() throws IOException { // gets a folder
         return folderService.getAllFolders();
 
     }
 
 
     @GetMapping("/public")
-    public List<FolderDTO> getPublicFolders() {
+    public List<FolderDTO> getPublicFolders() { // gets public folders
         return folderService.getPublicFolders();
     }
 
 
     @PostMapping("/{id}/upload")
-    public FileDTO uploadFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+    public FileDTO uploadFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException { // uploads a file
         return fileService.uploadFile(id, file);
     }
 
 
     @GetMapping("/{id}/files")
-    public List<FileDTO> getFilesInFolder(@PathVariable Long id) {
+    public List<FileDTO> getFilesInFolder(@PathVariable Long id) { // gets files in a folder
         return fileService.getFilesInFolder(id);
     }
 
     @PutMapping("/{id}")
-    public FolderDTO updateFolder(@PathVariable Long id, @RequestBody FolderDTO folderDTO) {
+    public FolderDTO updateFolder(@PathVariable Long id, @RequestBody FolderDTO folderDTO) { // updates folder
         return folderService.updateFolder(id, folderDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFolder(@PathVariable Long id) throws IOException {
+    public void deleteFolder(@PathVariable Long id) throws IOException { // deletes folder
         folderService.deleteFolder(id);
     }
 
     @PutMapping("/file/{id}")
-    public FileDTO renameFile(@PathVariable Long id, @RequestParam String newName) throws IOException {
+    public FileDTO renameFile(@PathVariable Long id, @RequestParam String newName) throws IOException { // rename a file
         return fileService.renameFile(id, newName);
     }
 
     @DeleteMapping("/file/{id}")
-    public void deleteFile(@PathVariable Long id) throws IOException {
+    public void deleteFile(@PathVariable Long id) throws IOException { // deletes a file
         fileService.deleteFile(id);
     }
 
 
     @GetMapping("/file/{id}/download")
-    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException { // downloads a file
         FileEntity fileEntity = fileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("File not found in database"));
 

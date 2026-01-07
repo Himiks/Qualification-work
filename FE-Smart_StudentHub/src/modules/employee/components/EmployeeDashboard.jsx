@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import employeeService from "../services/employeeService";
 import { toast } from "react-toastify";
 
-function EmployeeDashboard() {
-  const [tasks, setTasks] = useState([]);
-  const [search, setSearch] = useState("");
-  const navigate = useNavigate();
+function EmployeeDashboard() { // Employee dashboard component
+  const [tasks, setTasks] = useState([]); // All tasks state
+  const [search, setSearch] = useState(""); // Search input state
+  const navigate = useNavigate(); // Navigation hook
 
-  useEffect(() => {
+  useEffect(() => { // Fetch tasks on component mount
     fetchTasks();
   }, []);
 
-  const fetchTasks = async () => {
+  const fetchTasks = async () => { // Fetch all tasks
     try {
       const res = await employeeService.getAllTasksByUserId();
       setTasks(res);
@@ -21,7 +21,7 @@ function EmployeeDashboard() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id) => { // Delete task handler
     if (!window.confirm("Are you sure you want to delete this task?")) return;
     try {
       await employeeService.deleteTask(id);
@@ -32,9 +32,9 @@ function EmployeeDashboard() {
     }
   };
 
-  const handleEdit = (id) => navigate(`/employee/task/${id}/edit`);
+  const handleEdit = (id) => navigate(`/employee/task/${id}/edit`);   // Edit task handler
 
-  const handleSearch = async (e) => {
+  const handleSearch = async (e) => { // Search input handler
     const value = e.target.value;
     setSearch(value);
     if (value.trim() === "") {
@@ -42,14 +42,14 @@ function EmployeeDashboard() {
       return;
     }
     try {
-      const res = await employeeService.searchTask(value);
+      const res = await employeeService.searchTask(value); // API call to search tasks
       setTasks(res);
     } catch (err) {
       toast.error("Error searching tasks:", err);
     }
   };
 
-  const getPriorityColor = (priority) => {
+  const getPriorityColor = (priority) => { // Get color class based on priority
     if (priority === "MEDIUM")
       return "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-md";
     switch (priority?.toUpperCase()) {
@@ -62,7 +62,7 @@ function EmployeeDashboard() {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status) => { // Get color class based on status
     if (status === "IN_PROGRESS")
       return "bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-md";
     switch (status?.toUpperCase()) {
@@ -75,6 +75,7 @@ function EmployeeDashboard() {
     }
   };
 
+  // Render the employee dashboard
   return (
     <div className="p-6 max-w-7xl mx-auto">
 
@@ -84,7 +85,7 @@ function EmployeeDashboard() {
         <input
           type="text"
           value={search}
-          onChange={handleSearch}
+          onChange={handleSearch} // Search input handler
           placeholder="Enter keyword to search..."
           className="border border-gray-300 rounded-lg p-2 w-full sm:w-64 focus:ring-2 focus:ring-blue-400 focus:outline-none"
         />
@@ -94,7 +95,7 @@ function EmployeeDashboard() {
         <p className="text-gray-500 text-lg text-center mt-10">No tasks found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.map((task) => (
+          {tasks.map((task) => ( // Map through tasks
             <div
               key={task.id}
               className="border border-gray-200 rounded-2xl shadow-sm bg-white p-5 flex flex-col justify-between relative transform transition-all duration-300 hover:shadow-xl hover:scale-105"
@@ -102,21 +103,21 @@ function EmployeeDashboard() {
               
                <div className="absolute top-3 right-3 flex gap-2">
                 <button
-                  onClick={() => navigate(`/employee/task/${task.id}/details`)}
+                  onClick={() => navigate(`/employee/task/${task.id}/details`)} // View details handler
                   className="text-purple-500 hover:text-purple-700"
                   title="View Details"
                 >
                   <i className="fa-regular fa-eye transition-transform hover:scale-110"></i>
                 </button>
                 <button
-                  onClick={() => handleEdit(task.id)}
+                  onClick={() => handleEdit(task.id)} // Edit task handler
                   className="text-blue-500 hover:text-blue-700"
                   title="Edit Task"
                 >
                   <i className="fa-regular fa-pen-to-square"></i>
                 </button>
                 <button
-                  onClick={() => handleDelete(task.id)}
+                  onClick={() => handleDelete(task.id)} // Delete task handler
                   className="text-red-500 hover:text-red-700"
                   title="Delete Task"
                 >
@@ -126,26 +127,26 @@ function EmployeeDashboard() {
 
              
               <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2 truncate">{task.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{task.description}</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2 truncate">{task.title}</h3> {/* Task title */}
+                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{task.description}</p> {/* Task description */}
               </div>
 
              
               <div className="text-sm text-gray-700 space-y-1 mt-auto">
                  <p>
-                  <span className="font-semibold"> <i className="fa-solid fa-clock text-cyan-500 mr-1"></i>Due Date:</span>{" "}
+                  <span className="font-semibold"> <i className="fa-solid fa-clock text-cyan-500 mr-1"></i>Due Date:</span>{" "} {/* Due Date */}
                   {new Date(task.dueDate).toLocaleDateString()}
                 </p>
                 <div className="flex items-center gap-2 mt-2">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor( // Priority color
                       task.priority
                     )}`}
                   >
                     {task.priority}
                   </span>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor( // Status color
                       task.taskStatus
                     )}`}
                   >
@@ -155,7 +156,7 @@ function EmployeeDashboard() {
                   
                   <button
                     onClick={() => {
-                      if (task.technique && task.technique !== "NONE") {
+                      if (task.technique && task.technique !== "NONE") { // Start technique handler
                         navigate(`/techniques/${task.technique.toLowerCase()}/${task.id}`);
                       }
                     }}
@@ -166,7 +167,7 @@ function EmployeeDashboard() {
                     }`}
                   >
                     ▶ Start
-                  </button>
+                  </button> {/* Start technique button */}
                 </div>
               </div>
             </div>

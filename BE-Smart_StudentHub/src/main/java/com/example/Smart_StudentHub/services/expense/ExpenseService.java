@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.util.List;
 
-public interface ExpenseService {
+public interface ExpenseService { // expense service layer
     List<ExpenseDTO> uploadExcel(MultipartFile file, Long userId) throws Exception;
     List<ExpenseDTO> getAllExpensesByUser(Long userId);
     List<ExpenseDTO> getExpensesByCategory(Long userId, String category);

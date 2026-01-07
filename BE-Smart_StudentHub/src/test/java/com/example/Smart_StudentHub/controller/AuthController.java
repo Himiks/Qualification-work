@@ -12,6 +12,7 @@ import org.mockito.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,6 +89,19 @@ class AuthControllerTest {
     }
 
 
+    @Test
+    void signupUser_creationFailsEmail() {
+        SignupRequest request = new SignupRequest();
+        request.setEmail("test.com");
+
+        when(authService.hasUserWithEmail(request.getEmail())).thenReturn(false);
+        when(authService.signupUser(request)).thenReturn(null);
+
+        var response = authController.signupUser(request);
+
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("User not created", response.getBody());
+    }
 
 
     @Test
@@ -101,4 +115,71 @@ class AuthControllerTest {
 
         assertThrows(BadCredentialsException.class, () -> authController.login(request));
     }
+
+
+    @Test
+    void login_invalidEmail() {
+        AuthenticationRequest request = new AuthenticationRequest();
+        request.setEmail("invalid@test.com");
+        request.setPassword("password");
+
+        UserDetailsService userDetailsServiceMock = mock(UserDetailsService.class);
+
+        when(userService.userDetailsService()).thenReturn(userDetailsServiceMock);
+
+        when(userDetailsServiceMock.loadUserByUsername(request.getEmail()))
+                .thenThrow(new RuntimeException("User is not found"));
+
+        assertThrows(RuntimeException.class, () -> authController.login(request));
+    }
+
+
+    @Test
+    void login_withoutCredentials() {
+        AuthenticationRequest request = new AuthenticationRequest();
+        request.setEmail("");
+        request.setPassword("");
+
+        doThrow(BadCredentialsException.class).when(authenticationManager)
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+
+        assertThrows(BadCredentialsException.class, () -> authController.login(request));
+    }
+
+    @Test
+    void signupUser_weakPassword() {
+        SignupRequest request = new SignupRequest();
+        request.setEmail("test2@test.com");
+        request.setName("Test User");
+        request.setPassword("123");
+
+        when(authService.hasUserWithEmail(request.getEmail())).thenReturn(false);
+
+        when(authService.signupUser(request)).thenReturn(null);
+
+        var response = authController.signupUser(request);
+
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("User not created", response.getBody());
+    }
+
+    @Test
+    void signupUser_invalidEmail() {
+        SignupRequest request = new SignupRequest();
+        request.setEmail("invalid-email");
+        request.setName("Test User");
+        request.setPassword("password");
+
+        when(authService.hasUserWithEmail(request.getEmail())).thenReturn(false);
+
+        when(authService.signupUser(request)).thenReturn(null);
+
+        var response = authController.signupUser(request);
+
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("User not created", response.getBody());
+    }
+
+
+
 }

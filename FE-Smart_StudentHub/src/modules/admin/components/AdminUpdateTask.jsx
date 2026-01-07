@@ -3,15 +3,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import adminService from "../services/adminService";
 import { getAllTechniques } from "../../technique/services/techniqueService";
 import { toast } from "react-toastify";
+import storageService from "../../../auth/services/storageService";
+
 
 function AdminUpdateTask() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams(); // Get task ID from URL
+  const navigate = useNavigate(); // Navigation hook
 
-  const [users, setUsers] = useState([]);
-  const [techniques, setTechniques] = useState([]);
+  const [users, setUsers] = useState([]);   // List of users
+  const [techniques, setTechniques] = useState([]); // List of techniques
 
-  const [task, setTask] = useState({
+  const [task, setTask] = useState({ // Task state
     employeeId: "",
     title: "",
     description: "",
@@ -21,19 +23,19 @@ function AdminUpdateTask() {
     technique: "NONE",
   });
 
-  const priorities = ["LOW", "MEDIUM", "HIGH"];
-  const statuses = ["PENDING", "IN_PROGRESS", "DEFERRED", "COMPLETED", "CANCELLED"];
+  const priorities = ["LOW", "MEDIUM", "HIGH"]; // Priority options
+  const statuses = ["PENDING", "IN_PROGRESS", "DEFERRED", "COMPLETED", "CANCELLED"]; // Status options
 
-  useEffect(() => {
+  useEffect(() => { // Fetch task, users, and techniques on mount
     const fetchData = async () => {
       try {
-        const [taskData, usersData, techniquesData] = await Promise.all([
-          adminService.getTaskById(id),
-          adminService.getUsers(),
-          getAllTechniques(),
+        const [taskData, usersData, techniquesData] = await Promise.all([ // Fetch all necessary data
+          adminService.getTaskById(id), // Fetch task by ID
+          adminService.getUsers(), // Fetch all users
+          getAllTechniques(), // Fetch all techniques
         ]);
 
-        setTask({
+        setTask({ // Populate task state
           employeeId: taskData.employeeId || "",
           title: taskData.title || "",
           description: taskData.description || "",
@@ -43,25 +45,25 @@ function AdminUpdateTask() {
           technique: taskData.technique || "NONE",
         });
 
-        setUsers(usersData || []);
-        setTechniques(techniquesData || []);
+        setUsers(usersData || []); // Populate users state
+        setTechniques(techniquesData || []); // Populate techniques state
       } catch (err) {
         console.error("Error fetching data:", err);
       }
     };
 
-    fetchData();
+    fetchData(); // Call fetchData
   }, [id]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) => { // Handle form input changes
     const { name, value } = e.target;
-    setTask({ ...task, [name]: value });
+    setTask({ ...task, [name]: value }); // Update task state
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { // Handle form submission
     e.preventDefault();
     try {
-      await adminService.updateTask(id, task);
+      await adminService.updateTask(id, task); // API call to update task
       toast.success("Task updated successfully!");
       navigate("/admin/dashboard");
     } catch (err) {
@@ -70,27 +72,44 @@ function AdminUpdateTask() {
     }
   };
 
-  const employeeName =
-    users.find((u) => u.id === task.employeeId)?.name ||
-    users.find((u) => u.id === task.employeeId)?.fullName ||
-    users.find((u) => u.id === task.employeeId)?.username ||
+  const employeeName = // Get employee name for display
+    users.find((u) => u.id === task.employeeId)?.name || // Full name
+    users.find((u) => u.id === task.employeeId)?.fullName || // Alternative full name
+    users.find((u) => u.id === task.employeeId)?.username || // Username
     "Unknown";
 
+
+    if (storageService.getUserRole() !== "ADMIN") { // Access control
+    return (
+      <div className="p-6 w-full h-[70vh] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-4xl font-extrabold text-red-600 drop-shadow mb-4">
+            Access Denied
+          </h2>
+          <p className="text-gray-600 text-lg">
+            You do not have permission to view this page.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+    // Render the update task form
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex justify-center items-start py-12 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-2xl p-8 border border-gray-100">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          <i className="fa-regular fa-pen-to-square"></i> Update Task (Admin)
+          <i className="fa-regular fa-pen-to-square"></i> Update Task (Admin) 
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5"> {/* Task update form */}
 
           <div>
             <label className="block font-semibold text-gray-700 mb-1">Title</label>
             <input
               name="title"
-              value={task.title}
-              onChange={handleChange}
+              value={task.title} // Task title
+              onChange={handleChange} 
               className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               required
             />
@@ -100,7 +119,7 @@ function AdminUpdateTask() {
             <label className="block font-semibold text-gray-700 mb-1">Description</label>
             <textarea
               name="description"
-              value={task.description}
+              value={task.description} // Task description
               onChange={handleChange}
               className="border border-gray-300 p-3 w-full rounded-lg h-28 resize-none focus:ring-2 focus:ring-blue-400 outline-none"
               required
@@ -112,7 +131,7 @@ function AdminUpdateTask() {
             <input
               type="date"
               name="dueDate"
-              value={task.dueDate}
+              value={task.dueDate} // Task due date
               onChange={handleChange}
               className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               required
@@ -124,10 +143,10 @@ function AdminUpdateTask() {
             <select
               name="priority"
               value={task.priority}
-              onChange={handleChange}
+              onChange={handleChange} // Task priority
               className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
             >
-              {priorities.map((p) => (
+              {priorities.map((p) => ( // Priority options
                 <option key={p} value={p}>{p}</option>
               ))}
             </select>
@@ -138,11 +157,11 @@ function AdminUpdateTask() {
             <select
               name="technique"
               value={task.technique}
-              onChange={handleChange}
+              onChange={handleChange} // Task technique
               className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
             >
               <option value="NONE">None</option>
-              {techniques.map((t) => (
+              {techniques.map((t) => ( // Technique options
                 <option key={t.id} value={t.name}>
                   {t.name}
                 </option>
@@ -156,10 +175,10 @@ function AdminUpdateTask() {
             <select
               name="taskStatus"
               value={task.taskStatus}
-              onChange={handleChange}
+              onChange={handleChange} // Task status
               className="border border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
             >
-              {statuses.map((s) => (
+              {statuses.map((s) => ( // Task status options
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
@@ -185,7 +204,7 @@ function AdminUpdateTask() {
               className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 shadow-md"
             >
                 <i className="fa-solid fa-floppy-disk"></i> Save Changes
-            </button>
+            </button> {/* Submit button */}
           </div>
 
         </form>

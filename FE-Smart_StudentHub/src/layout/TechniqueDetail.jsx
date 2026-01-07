@@ -8,29 +8,29 @@ import TimeBlocking from "../modules/components/TimeBlocking";
 import Eisenhower from "../modules/components/Eisenhower";
 
 function TechniqueDetail() {
-  const { techniqueName, taskId } = useParams();
-  const [technique, setTechnique] = useState(null);
-  const [task, setTask] = useState(null);
-  const [checkedSteps, setCheckedSteps] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [loaded, setLoaded] = useState(false);
+  const { techniqueName, taskId } = useParams(); // taskId is optional
+  const [technique, setTechnique] = useState(null); // Technique details
+  const [task, setTask] = useState(null); // Task details
+  const [checkedSteps, setCheckedSteps] = useState({}); // Track checked steps
+  const [loading, setLoading] = useState(true); // Loading state
+  const [loaded, setLoaded] = useState(false); // For transition effect
 
-  useEffect(() => {
+  useEffect(() => { // Load technique and task data
     const loadData = async () => {
       try {
         const techData = await getTechniqueByName(techniqueName);
         setTechnique(techData);
 
-        if (taskId) {
+        if (taskId) { // If taskId is provided, fetch task details
           const taskData = await employeeService.getTaskById(taskId);
           setTask(taskData);
         }
 
-        const savedSteps = localStorage.getItem(`checkedSteps_${techniqueName}`);
+        const savedSteps = localStorage.getItem(`checkedSteps_${techniqueName}`); // Load saved steps
         if (savedSteps) {
-          setCheckedSteps(JSON.parse(savedSteps));
+          setCheckedSteps(JSON.parse(savedSteps)); // Parse and set checked steps
         }
-      } catch (err) {
+      } catch (err) { // Handle errors
         console.error("Error loading data:", err);
       } finally {
         setLoading(false);
@@ -38,16 +38,16 @@ function TechniqueDetail() {
       }
     };
 
-    loadData();
+    loadData(); // Invoke data loading
   }, [techniqueName, taskId]);
 
-  const handleStepCheck = (index) => {
+  const handleStepCheck = (index) => { // Toggle step checked state
     const updated = { ...checkedSteps, [index]: !checkedSteps[index] };
     setCheckedSteps(updated);
     localStorage.setItem(`checkedSteps_${techniqueName}`, JSON.stringify(updated));
   };
 
-  if (loading) {
+  if (loading) { // Show loading state
     return (
       <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
         Loading technique details...
@@ -55,7 +55,7 @@ function TechniqueDetail() {
     );
   }
 
-  if (!technique) {
+  if (!technique) { // Handle technique not found
     return (
       <div className="text-center text-red-500 mt-10 text-xl">
         Technique not found
@@ -63,23 +63,23 @@ function TechniqueDetail() {
     );
   }
 
-  const formattedName = technique.name
+  const formattedName = technique.name // Format technique name
     .toLowerCase()
     .replace(/_/g, " ")
     .replace(/\b\w/g, (l) => l.toUpperCase());
 
-  const stepsArray = Array.isArray(technique.steps)
+  const stepsArray = Array.isArray(technique.steps) // Handle steps format
     ? technique.steps
-    : technique.steps?.split(/\d+\.\s/).filter(Boolean) || [];
+    : technique.steps?.split(/\d+\.\s/).filter(Boolean) || []; // Split by numbered list
 
-  const isPomodoro = formattedName === "Pomodoro";
+  const isPomodoro = formattedName === "Pomodoro"; // Determine which component to show
   const isDeepWork = formattedName === "Deep Work";
   const isTimeBlocking = formattedName === "Time Blocking";
   const isEisenhower = formattedName === "Eisenhower";
 
 return (
   <>
-    {!isEisenhower ? (
+    {!isEisenhower ? ( // Show technique details unless Eisenhower
       <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#ecfeff] px-6 py-20">
         <div
           className={`max-w-7xl mx-auto transition-all duration-700 ${
@@ -106,7 +106,7 @@ return (
       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
     />
   </svg>
-</span>        {formattedName}
+</span>        {formattedName} 
               </h1>
 
               {task && (
@@ -160,16 +160,16 @@ return (
             </div>
 
             <div className="bg-white/70 backdrop-blur-xl border border-gray-200 rounded-3xl p-8 shadow-[0_30px_80px_rgba(6,182,212,0.15)] flex flex-col items-center justify-center gap-10">
-              {isPomodoro && <PomodoroTimer />}
-              {isDeepWork && <DeepWorkSession />}
-              {isTimeBlocking && <TimeBlocking />}
+              {isPomodoro && <PomodoroTimer />} {/* Pomodoro Timer */}
+              {isDeepWork && <DeepWorkSession />} {/* Deep Work Session */}
+              {isTimeBlocking && <TimeBlocking />} {/* Time Blocking */}
             </div>
 
           </div>
         </div>
       </div>
     ) : (
-      <Eisenhower />
+      <Eisenhower /> // Eisenhower component
     )}
   </>
 );

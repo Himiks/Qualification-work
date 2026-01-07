@@ -26,12 +26,15 @@ function AppRouter() {
     <Router>
       <Navbar />
 
+      {/* Routes for all */}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/techniques" element={<TechniquesPage />} />
         <Route path="/" element={<MainPage />} />
 
+
+       {/* Routes for admin */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/task" element={<AdminPostTask />} />
         <Route path="/admin/task/:id/edit" element={<AdminUpdateTask />} />
@@ -42,7 +45,7 @@ function AppRouter() {
         
 
 
-
+         {/* Routes for user */}
         <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
          <Route path="/employee/task" element={<EmployeePostTask />} />
         <Route path="/employee/task/:id/edit" element={<EmployeeUpdateTask />} />

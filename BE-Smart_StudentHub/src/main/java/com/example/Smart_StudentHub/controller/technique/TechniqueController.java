@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/techniques")
+@RequestMapping("/api/techniques") // api technique
 @RequiredArgsConstructor
 public class TechniqueController {
-    private final TechniqueService techniqueService;
+    private final TechniqueService techniqueService; // technique service layer
 
 
     @GetMapping
-    public ResponseEntity<List<TechniqueDTO>> getAllTechniques() {
+    public ResponseEntity<List<TechniqueDTO>> getAllTechniques() { // gets all techniques
         return ResponseEntity.ok(techniqueService.getAllTechniques());
     }
 
     @GetMapping("/technique/{name}")
-    public ResponseEntity<TechniqueDTO> getTechniqueByName(@PathVariable String name) {
+    public ResponseEntity<TechniqueDTO> getTechniqueByName(@PathVariable String name) { // gets technique by a name
         return ResponseEntity.ok(techniqueService.getTechniqueByName(name));
     }
 

@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("/api/employee") // employee api
 @RequiredArgsConstructor
 public class EmployeeController {
-    private final EmployeeService employeeService;
+    private final EmployeeService employeeService; // service layer
 
 
 
     @PostMapping("/task")
-    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) { // create task
         TaskDTO createdTaskDTO =  employeeService.createTask(taskDTO);
 
         if(createdTaskDTO == null)return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -30,7 +30,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/comment/{id}")
-    public ResponseEntity<CommentDTO> updateComment(
+    public ResponseEntity<CommentDTO> updateComment( // updates comment
             @PathVariable Long id,
             @RequestParam String content
     ) {
@@ -38,7 +38,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/comment/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) { // deletes comment
         employeeService.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
@@ -46,19 +46,19 @@ public class EmployeeController {
 
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<TaskDTO>> getTasksByUserId(){
+    public ResponseEntity<List<TaskDTO>> getTasksByUserId(){ // gets a task by id
        return ResponseEntity.ok(employeeService.getTaskByUserId());
     }
 
 
     @DeleteMapping("/task/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) { // deletes task
         employeeService.deleteTask(id);
         return ResponseEntity.ok(null);
     }
 
     @PutMapping("/task/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) { // updates task
         TaskDTO updatedTaskDTO = employeeService.updateTask(id, taskDTO);
         if(updatedTaskDTO == null)return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updatedTaskDTO);
@@ -66,18 +66,18 @@ public class EmployeeController {
 
 
     @PutMapping("/profile")
-    public ResponseEntity<?> updateMyProfile(@RequestBody UpdateUserDTO dto) {
+    public ResponseEntity<?> updateMyProfile(@RequestBody UpdateUserDTO dto) { // updates profile of a user
         return ResponseEntity.ok(employeeService.updateMyProfile(dto));
     }
 
 
     @GetMapping("/tasks/search/{title}")
-    public ResponseEntity<List<TaskDTO>> searchTask(@PathVariable String title) {
+    public ResponseEntity<List<TaskDTO>> searchTask(@PathVariable String title) { // searches a task
         return ResponseEntity.ok(employeeService.searchTasksByUserTitle(title));
     }
 
     @PostMapping("/task/comment/{taskId}")
-    public ResponseEntity<CommentDTO> createComment(@PathVariable Long taskId, @RequestParam String content) {
+    public ResponseEntity<CommentDTO> createComment(@PathVariable Long taskId, @RequestParam String content) { // create comment
         CommentDTO createdCommentDTO =  employeeService.createComment(taskId, content);
 
         if(createdCommentDTO == null)return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -86,18 +86,18 @@ public class EmployeeController {
     }
 
     @GetMapping("/comments/{taskId}")
-    public ResponseEntity<List<CommentDTO>> getCommentsByTaskId(@PathVariable Long taskId) {
+    public ResponseEntity<List<CommentDTO>> getCommentsByTaskId(@PathVariable Long taskId) { // get comment by task id
         return ResponseEntity.ok(employeeService.getCommentsByTaskId(taskId));
     }
 
 
     @GetMapping("/task/{id}")
-    public ResponseEntity<TaskDTO> getTaskById( @PathVariable  Long id) {
+    public ResponseEntity<TaskDTO> getTaskById( @PathVariable  Long id) { // get a task by id
         return ResponseEntity.ok(employeeService.getTaskById(id));
     }
 
     @GetMapping("/tasks/technique/{technique}")
-    public ResponseEntity<List<TaskDTO>> getTasksByTechnique(@PathVariable String technique) {
+    public ResponseEntity<List<TaskDTO>> getTasksByTechnique(@PathVariable String technique) { // gets a task by technique
         try {
             TaskTechnique taskTechnique = TaskTechnique.valueOf(technique.toUpperCase());
                 return ResponseEntity.ok(employeeService.getTasksByTechnique(taskTechnique));

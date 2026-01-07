@@ -28,21 +28,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements  AdminService {
-    private final UserRepository userRepository;
+    private final UserRepository userRepository; // user repository database layer
 
-    private final TaskRepository taskRepository;
+    private final TaskRepository taskRepository; // task repository database layer
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; // password encoder
 
 
-    private final JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils; // token utilities to handle security
 
 
     private final CommentRepository commentRepository;
 
 
     @Override
-    public List<UserDto> getUsers() {
+    public List<UserDto> getUsers() {     // Returns all users with role EMPLOYEE or ADMIN as DTOs
         return userRepository.findAll()
                 .stream()
                 .filter(user -> user.getUserRole() == UserRole.EMPLOYEE || user.getUserRole() == UserRole.ADMIN)
@@ -52,7 +52,7 @@ public class AdminServiceImpl implements  AdminService {
 
 
     @Override
-    public UserDto updateMyProfile(UpdateUserDTO dto) {
+    public UserDto updateMyProfile(UpdateUserDTO dto) {     // Updates the currently logged-in admin’s own profile with provided fields
         User admin = jwtUtils.getLoggedInUser();
 
         if (admin == null || admin.getUserRole() != UserRole.ADMIN) {
@@ -65,7 +65,7 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public UserDto updateUserById(Long id, UpdateUserDTO dto) {
+    public UserDto updateUserById(Long id, UpdateUserDTO dto) {     // Updates another user’s details by ID, only if the logged-in user is an admin
         User admin = jwtUtils.getLoggedInUser();
         if (admin.getUserRole() != UserRole.ADMIN) {
             throw new EntityNotFoundException("Only admin can update users");
@@ -81,7 +81,7 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public UserDto getUserById(Long id) {
+    public UserDto getUserById(Long id) {     // Fetches a user by ID and returns it as a DTO
         return userRepository.findById(id)
                 .map(User::getUserDto)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -90,7 +90,7 @@ public class AdminServiceImpl implements  AdminService {
 
 
 
-    private void updateFields(User user, UpdateUserDTO dto) {
+    private void updateFields(User user, UpdateUserDTO dto) {     // Helper method to update user fields (name, email, password)
 
         if (dto.getName() != null)
             user.setName(dto.getName());
@@ -103,7 +103,7 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO) {
+    public TaskDTO createTask(TaskDTO taskDTO) {     // Creates a new task assigned to the currently logged-in admin
         User admin = jwtUtils.getLoggedInUser();
 
             Task task = new Task();
@@ -120,7 +120,7 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public List<TaskDTO> getAllTasks() {
+    public List<TaskDTO> getAllTasks() {     // Retrieves all tasks, sorts them by due date descending, and maps to DTOs
         return taskRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Task::getDueDate).reversed())
@@ -131,21 +131,21 @@ public class AdminServiceImpl implements  AdminService {
     @Override
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
-    }
+    }     // Deletes a task by ID
 
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteUserById(Long id) {     // Deletes a user by ID
         userRepository.deleteById(id);
     }
 
     @Override
-    public TaskDTO getTaskById(Long id) {
+    public TaskDTO getTaskById(Long id) {     // Retrieves a task by ID and returns as DTO; returns null if not found
         Optional<Task> optionalTask = taskRepository.findById(id);
         return optionalTask.map(Task::getTaskDTO).orElse(null);
     }
 
     @Override
-    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
+    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {     // Updates an existing task’s details and assigned employee
         Optional<Task> optionalTask = taskRepository.findById(id);
         Optional<User> optionalUser = userRepository.findById(taskDTO.getEmployeeId());
         if(optionalTask.isPresent() && optionalUser.isPresent()){
@@ -164,7 +164,7 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public CommentDTO updateComment(Long commentId, String content) {
+    public CommentDTO updateComment(Long commentId, String content) {     // Updates a comment’s content if the logged-in user is the author or an admin
         User user = jwtUtils.getLoggedInUser();
 
         Comment comment = commentRepository.findById(commentId)
@@ -180,7 +180,7 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId) {     // Deletes a comment if the logged-in user is the author or an admin
         User user = jwtUtils.getLoggedInUser();
 
         Comment comment = commentRepository.findById(commentId)
@@ -196,7 +196,7 @@ public class AdminServiceImpl implements  AdminService {
 
 
     @Override
-    public List<TaskDTO> searchTasksByUserTitle(String title) {
+    public List<TaskDTO> searchTasksByUserTitle(String title) {     // Searches tasks by title substring, sorts by due date descending, returns DTOs
         return taskRepository.findAllByTitleContaining(title)
                 .stream()
                 .sorted(Comparator.comparing(Task::getDueDate).reversed())
@@ -208,7 +208,7 @@ public class AdminServiceImpl implements  AdminService {
 
 
     @Override
-    public CommentDTO createComment(Long taskId, String content) {
+    public CommentDTO createComment(Long taskId, String content) {     // Creates a new comment on a task for the currently logged-in user
       Optional<Task> optionalTask = taskRepository.findById(taskId);
       User user = jwtUtils.getLoggedInUser();
       if(optionalTask.isPresent() && user != null ){
@@ -224,12 +224,12 @@ public class AdminServiceImpl implements  AdminService {
     }
 
     @Override
-    public List<CommentDTO> getCommentsByTaskId(Long taskId) {
+    public List<CommentDTO> getCommentsByTaskId(Long taskId) {     // Retrieves all comments for a given task ID and returns as DTOs
         return commentRepository.findAllByTaskId(taskId).stream().map(Comment::getCommentDTO).collect(Collectors.toList());
     }
 
 
-    private TaskStatus mapStringToTaskStatus(String status) {
+    private TaskStatus mapStringToTaskStatus(String status) {     // Maps a string to a TaskStatus enum value
         return switch (status) {
             case "PENDING" -> TaskStatus.PENDING;
             case "IN_PROGRESS" -> TaskStatus.IN_PROGRESS;

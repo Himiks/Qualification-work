@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Entity
 @Data
-public class Task {
+public class Task { // task entity for the database
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

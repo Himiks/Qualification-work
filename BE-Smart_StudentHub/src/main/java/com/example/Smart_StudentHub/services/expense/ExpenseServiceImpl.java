@@ -27,7 +27,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 
     @Override
-    public List<ExpenseDTO> uploadExcel(MultipartFile file, Long userId) throws Exception {
+    public List<ExpenseDTO> uploadExcel(MultipartFile file, Long userId) throws Exception {     // Reads an Excel file and uploads expense records for a specific user.
+        // Handles different date and number formats, checks for duplicates, and saves valid rows to the database.
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new Exception("User not found"));
 
@@ -101,13 +102,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
 
-    private String getCellString(Cell cell, DataFormatter formatter) {
+    private String getCellString(Cell cell, DataFormatter formatter) {     // Returns the string value of a cell, safely handling nulls and trimming whitespace.
         if (cell == null) return "";
         return formatter.formatCellValue(cell).trim();
     }
 
 
-    private Double parseDoubleLenient(String s) {
+    private Double parseDoubleLenient(String s) {     // Converts a string to a Double, cleaning unwanted characters and handling parsing errors gracefully.
         if (s == null || s.isBlank()) return 0.0;
 
         String cleaned = s.replaceAll("[^0-9,\\.-]", "").replace(",", ".");
@@ -121,7 +122,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
 
-    private Date parseDateString(String dateStr) {
+    private Date parseDateString(String dateStr) {     // Converts a string or Excel serial number to a java.util.Date object.     // Tries multiple common date formats and Excel serial dates.
         String[] patterns = new String[] { "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "yyyy-MM-dd", "MM/dd/yyyy" };
         for (String p : patterns) {
             try {
@@ -141,7 +142,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
 
-    private boolean isRowEmpty(Row row) {
+    private boolean isRowEmpty(Row row) {     // Checks whether a row in the Excel sheet is empty (no data in the first 4 columns).
         if (row == null) return true;
         DataFormatter f = new DataFormatter();
         for (int c = 0; c <= 3; c++) {
@@ -154,7 +155,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseDTO> getAllExpensesByUser(Long userId) {
+    public List<ExpenseDTO> getAllExpensesByUser(Long userId) {     // Returns all expenses for a given user as DTOs.
         return expenseRepository.findByUserId(userId)
                 .stream()
                 .map(Expense::getExpenseDTO)
@@ -162,7 +163,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseDTO> getExpensesByCategory(Long userId, String category) {
+    public List<ExpenseDTO> getExpensesByCategory(Long userId, String category) {     // Returns all expenses for a user filtered by a specific category as DTOs.
         return expenseRepository.findAllByUserIdAndCategory(userId, category)
                 .stream()
                 .map(Expense::getExpenseDTO)
@@ -170,7 +171,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseDTO> getExpensesByDateRange(Long userId, Date start, Date end) {
+    public List<ExpenseDTO> getExpensesByDateRange(Long userId, Date start, Date end) {     // Returns all expenses for a user within a specific date range as DTOs.
         return expenseRepository.findAllByUserIdAndDateBetween(userId, start, end)
                 .stream()
                 .map(Expense::getExpenseDTO)
@@ -178,7 +179,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public void deleteExpense(Long expenseId) throws Exception {
+    public void deleteExpense(Long expenseId) throws Exception {     // Deletes a specific expense by its ID; throws exception if not found.
         Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new Exception("Expense not found"));
         expenseRepository.delete(expense);

@@ -160,5 +160,70 @@ class FolderControllerTest {
     }
 
 
+    @Test
+    void createFolder_withoutName_throwsException() throws IOException {
+        FolderDTO folderDTO = new FolderDTO();
+        folderDTO.setName("");
+        folderDTO.setUserId(1L);
+
+        when(folderService.createFolder(folderDTO))
+                .thenThrow(new RuntimeException("Folder name cannot be empty"));
+
+        Exception exception = assertThrows(RuntimeException.class, () -> folderController.createFolder(folderDTO));
+        assertEquals("Folder name cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void createPublicFolder_success() throws Exception {
+        FolderDTO folderDTO = new FolderDTO();
+        folderDTO.setName("Public Folder");
+        folderDTO.setUserId(1L);
+        folderDTO.setPublic(true);
+
+        FolderDTO savedDTO = new FolderDTO();
+        savedDTO.setId(2L);
+        savedDTO.setName("Public Folder");
+        savedDTO.setPublic(true);
+
+        when(folderService.createFolder(folderDTO)).thenReturn(savedDTO);
+
+        FolderDTO result = folderController.createFolder(folderDTO);
+        assertTrue(result.isPublic());
+        assertEquals(savedDTO.getId(), result.getId());
+        verify(folderService, times(1)).createFolder(folderDTO);
+    }
+
+    @Test
+    void createPrivateFolder_success() throws Exception {
+        FolderDTO folderDTO = new FolderDTO();
+        folderDTO.setName("Private Folder");
+        folderDTO.setUserId(1L);
+        folderDTO.setPublic(false);
+
+        FolderDTO savedDTO = new FolderDTO();
+        savedDTO.setId(3L);
+        savedDTO.setName("Private Folder");
+        savedDTO.setPublic(false);
+
+        when(folderService.createFolder(folderDTO)).thenReturn(savedDTO);
+
+        FolderDTO result = folderController.createFolder(folderDTO);
+        assertFalse(result.isPublic());
+        assertEquals(savedDTO.getId(), result.getId());
+        verify(folderService, times(1)).createFolder(folderDTO);
+    }
+
+    @Test
+    void uploadFile_emptyFile_throwsException() throws IOException {
+        MultipartFile emptyFile = new MockMultipartFile("file", "", "text/plain", new byte[0]);
+
+        when(fileService.uploadFile(1L, emptyFile))
+                .thenThrow(new RuntimeException("File is empty"));
+
+        Exception exception = assertThrows(RuntimeException.class, () -> folderController.uploadFile(1L, emptyFile));
+        assertEquals("File is empty", exception.getMessage());
+    }
+
+
 
 }

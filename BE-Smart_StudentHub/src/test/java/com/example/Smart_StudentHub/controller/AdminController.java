@@ -253,4 +253,122 @@ class AdminControllerTest {
 
         assertEquals(204, response.getStatusCodeValue());
     }
+
+    @Test
+    void createTask_emptyTitleOrDescription_returnsBadRequest() {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTitle("");
+        taskDTO.setDescription("");
+
+        when(adminService.createTask(taskDTO)).thenReturn(null);
+
+        ResponseEntity<TaskDTO> response = adminController.createTask(taskDTO);
+
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    void updateTask_emptyTitleOrDescription_returnsNotFound() {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTitle("");
+        taskDTO.setDescription("");
+
+        when(adminService.updateTask(1L, taskDTO)).thenReturn(null);
+
+        ResponseEntity<?> response = adminController.updateTask(1L, taskDTO);
+
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void assignTechnique_success() {
+
+        Long techniqueId = 1L;
+        TechniqueDTO dto = new TechniqueDTO();
+        dto.setName("Pomodoro");
+        dto.setDescription("Time management technique");
+
+        when(techniqueService.updateTechnique(techniqueId, dto)).thenReturn(dto);
+
+        ResponseEntity<TechniqueDTO> response = adminController.updateTechnique(techniqueId, dto);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Pomodoro", response.getBody().getName());
+        assertEquals("Time management technique", response.getBody().getDescription());
+
+        verify(techniqueService, times(1)).updateTechnique(techniqueId, dto);
+    }
+
+    @Test
+    void updateTechnique_Task_success() {
+        Long techniqueId = 1L;
+        TechniqueDTO dto = new TechniqueDTO();
+        dto.setName("Pomodoro");
+        dto.setDescription("Time management technique");
+
+        when(techniqueService.updateTechnique(techniqueId, dto)).thenReturn(dto);
+
+        ResponseEntity<TechniqueDTO> response = adminController.updateTechnique(techniqueId, dto);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+        assertEquals("Pomodoro", response.getBody().getName());
+        assertEquals("Time management technique", response.getBody().getDescription());
+
+        verify(techniqueService, times(1)).updateTechnique(techniqueId, dto);
+    }
+
+
+    @Test
+    void getUsers_accessDenied_forNonAdmin() {
+        when(adminService.getUsers()).thenThrow(new SecurityException("Access denied"));
+
+        SecurityException exception = assertThrows(SecurityException.class, () -> adminController.getUsers());
+
+        assertEquals("Access denied", exception.getMessage());
+        verify(adminService, times(1)).getUsers();
+    }
+
+    @Test
+    void updateUser_invalidEmailOrPassword_throwsError() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setEmail("invalid-email");
+        dto.setPassword("123");
+
+        when(adminService.updateUserById(1L, dto)).thenThrow(new IllegalArgumentException("Invalid email or password"));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> adminController.updateUser(1L, dto));
+
+        assertEquals("Invalid email or password", exception.getMessage());
+        verify(adminService, times(1)).updateUserById(1L, dto);
+    }
+
+    @Test
+    void updateMyProfile_invalidEmailOrPassword_throwsError() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setEmail("invalid-email");
+        dto.setPassword("123");
+        when(adminService.updateMyProfile(dto)).thenThrow(new IllegalArgumentException("Invalid email or password"));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> adminController.updateMyProfile(dto));
+
+        assertEquals("Invalid email or password", exception.getMessage());
+        verify(adminService, times(1)).updateMyProfile(dto);
+    }
+
+    @Test
+    void getUserById_accessDeniedForNonAdmin_throwsError() {
+        when(adminService.getUserById(1L))
+                .thenThrow(new SecurityException("Access denied"));
+
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> adminController.getUserById(1L));
+
+        assertEquals("Access denied", exception.getMessage());
+        verify(adminService, times(1)).getUserById(1L);
+    }
+
+
 }

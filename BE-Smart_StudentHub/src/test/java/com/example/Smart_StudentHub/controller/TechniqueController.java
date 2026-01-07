@@ -55,4 +55,6 @@ class TechniqueControllerTest {
         assertEquals(name, response.getBody().getName());
         verify(techniqueService, times(1)).getTechniqueByName(name);
     }
+
+
 }

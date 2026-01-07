@@ -27,7 +27,7 @@ public class FolderService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    public FolderDTO createFolder(FolderDTO folderDTO) throws IOException {
+    public FolderDTO createFolder(FolderDTO folderDTO) throws IOException {     // Creates a new folder in the database and also creates the corresponding directory on disk.
         Folder folder = folderDTOToEntity(folderDTO);
         folder = folderRepository.save(folder);
 
@@ -37,27 +37,27 @@ public class FolderService {
         return entityToDTO(folder);
     }
 
-    public List<FolderDTO> getAllFolders() throws IOException {
+    public List<FolderDTO> getAllFolders() throws IOException {     // Retrieves all folders from the database and converts them to DTOs.
         return folderRepository.findAll().stream()
                 .map(this::entityToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<FolderDTO> getUserFolders(Long userId) {
+    public List<FolderDTO> getUserFolders(Long userId) {     // Retrieves all folders belonging to a specific user and converts them to DTOs.
         return folderRepository.findByUserId(userId)
                 .stream()
                 .map(this::entityToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<FolderDTO> getPublicFolders() {
+    public List<FolderDTO> getPublicFolders() {     // Retrieves all folders marked as public and converts them to DTOs.
         return folderRepository.findByIsPublicTrue()
                 .stream()
                 .map(this::entityToDTO)
                 .collect(Collectors.toList());
     }
 
-    private FolderDTO entityToDTO(Folder folder) {
+    private FolderDTO entityToDTO(Folder folder) {     // Converts a Folder entity to a FolderDTO, including its list of files if present.
         FolderDTO dto = new FolderDTO();
         dto.setId(folder.getId());
         dto.setName(folder.getName());
@@ -75,7 +75,7 @@ public class FolderService {
         return dto;
     }
 
-    private FileDTO fileToDTO(FileEntity file) {
+    private FileDTO fileToDTO(FileEntity file) {     // Converts a FileEntity object to a FileDTO for returning file info to the client.
         FileDTO dto = new FileDTO();
         dto.setId(file.getId());
         dto.setFileName(file.getFileName());
@@ -85,7 +85,7 @@ public class FolderService {
         return dto;
     }
 
-    private Folder folderDTOToEntity(FolderDTO dto) {
+    private Folder folderDTOToEntity(FolderDTO dto) {     // Converts a FolderDTO to a Folder entity for saving to the database.
         Folder folder = new Folder();
         folder.setName(dto.getName());
         folder.setPublic(dto.isPublic());
@@ -93,7 +93,7 @@ public class FolderService {
         return folder;
     }
 
-    public FolderDTO updateFolder(Long id, FolderDTO dto){
+    public FolderDTO updateFolder(Long id, FolderDTO dto){     // Updates an existing folder’s name and public status, then returns updated DTO.
         Folder folder = folderRepository.findById(id).orElseThrow(() -> new RuntimeException("Folder not found!"));
 
         folder.setName(dto.getName());
@@ -104,7 +104,7 @@ public class FolderService {
     }
 
     @Transactional
-    public void deleteFolder(Long id) throws IOException {
+    public void deleteFolder(Long id) throws IOException {     // Deletes a folder and all its files from disk and the database in a single transaction.
         Folder folder = folderRepository.findById(id).orElseThrow(() -> new RuntimeException("Folder not found!"));
 
         Path path = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString());

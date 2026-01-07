@@ -5,7 +5,7 @@ import com.example.Smart_StudentHub.enums.UserRole;
 import lombok.Data;
 
 @Data
-public class AuthenticationResponse {
+public class AuthenticationResponse { // dto for auth response
     private String jwt;
 
     private Long userId;

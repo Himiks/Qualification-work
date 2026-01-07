@@ -3,23 +3,23 @@ import { useParams } from "react-router-dom";
 import employeeService from "../services/employeeService";
 import { toast } from "react-toastify";
 
-function EmployeeViewTaskDetails() {
-  const { id } = useParams();
-  const [task, setTask] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [comment, setComment] = useState("");
-  const [sending, setSending] = useState(false);
-  const [editingCommentId, setEditingCommentId] = useState(null);
-  const [editingCommentText, setEditingCommentText] = useState("");
-  const [loggedInUserId, setLoggedInUserId] = useState(null);
+function EmployeeViewTaskDetails() { // Employee view task details component
+  const { id } = useParams(); // Get task ID from URL
+  const [task, setTask] = useState(null); // Task state
+  const [comments, setComments] = useState([]); // Comments state
+  const [comment, setComment] = useState(""); // New comment state
+  const [sending, setSending] = useState(false); // Sending comment state
+  const [editingCommentId, setEditingCommentId] = useState(null); // Editing comment ID state
+  const [editingCommentText, setEditingCommentText] = useState(""); // Editing comment text state
+  const [loggedInUserId, setLoggedInUserId] = useState(null); // Logged-in user ID state
 
-  useEffect(() => {
+  useEffect(() => { // Fetch task details, comments, and logged-in user on mount
     fetchTask();
     fetchComments();
     fetchLoggedInUser();
   }, []);
 
-  const fetchTask = async () => {
+  const fetchTask = async () => { // Fetch task details
     try {
       const res = await employeeService.getTaskById(id);
       setTask(res);
@@ -28,7 +28,7 @@ function EmployeeViewTaskDetails() {
     }
   };
 
-  const fetchComments = async () => {
+  const fetchComments = async () => { // Fetch comments for the task
     try {
       const res = await employeeService.getCommentsByTaskId(id);
       setComments(res);
@@ -37,7 +37,7 @@ function EmployeeViewTaskDetails() {
     }
   };
 
-  const fetchLoggedInUser = async () => {
+  const fetchLoggedInUser = async () => { // Fetch logged-in user details
     try {
       const res = await employeeService.getLoggedInUser();
       setLoggedInUserId(res.id);
@@ -46,13 +46,13 @@ function EmployeeViewTaskDetails() {
     }
   };
 
-const handleAddComment = async () => {
+const handleAddComment = async () => { // Add new comment handler
   if (!comment.trim()) return toast.error("Comment cannot be empty");
   try {
     setSending(true);
-    const newComment = await employeeService.createComment(id, comment);
+    const newComment = await employeeService.createComment(id, comment); // API call to create comment
 
-    setComments((prev) => [
+    setComments((prev) => [ //  Update comments state
       ...prev,
       { ...newComment, userId: loggedInUserId }
     ]);
@@ -65,39 +65,40 @@ const handleAddComment = async () => {
   }
 };
 
-  const handleEditComment = (c) => {
-    setEditingCommentId(c.id);
-    setEditingCommentText(c.content);
+  const handleEditComment = (c) => { // Edit comment handler
+    setEditingCommentId(c.id); // Set editing comment ID
+    setEditingCommentText(c.content); // Set editing comment text
   };
 
-  const handleSaveComment = async (commentId) => {
+  const handleSaveComment = async (commentId) => { // Save edited comment handler
     try {
-      await employeeService.updateComment(commentId, editingCommentText);
+      await employeeService.updateComment(commentId, editingCommentText); //  API call to update comment
       setComments((prev) =>
         prev.map((c) =>
-          c.id === commentId ? { ...c, content: editingCommentText } : c
+          c.id === commentId ? { ...c, content: editingCommentText } : c // Update specific comment
         )
       );
-      setEditingCommentId(null);
-      setEditingCommentText("");
+      setEditingCommentId(null); // Clear editing ID
+      setEditingCommentText(""); // Clear editing text
     } catch (err) {
       console.error(err);
       toast.error("Failed to update comment");
     }
   };
 
-  const handleDeleteComment = async (commentId) => {
+  const handleDeleteComment = async (commentId) => { // Delete comment handler
     try {
       await employeeService.deleteComment(commentId);
-      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      setComments((prev) => prev.filter((c) => c.id !== commentId)); // Update comments state
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete comment");
     }
   };
 
-  if (!task) return <div className="flex justify-center items-center h-[60vh] text-gray-500">Loading...</div>;
+  if (!task) return <div className="flex justify-center items-center h-[60vh] text-gray-500">Loading...</div>; // Show loading state
 
+  // Render task details and comments
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
@@ -114,10 +115,10 @@ const handleAddComment = async () => {
         <p className="text-gray-600 leading-relaxed">{task.description}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-sm">
-          <InfoItem icon="fa-calendar-days" label="Due Date" value={new Date(task.dueDate).toLocaleDateString()} />
-          <InfoItem icon="fa-user" label="Employee" value={task.employeeName} />
-          <InfoItem icon="fa-star" label="Priority" value={task.priority} />
-          <InfoItem icon="fa-cog" label="Status" value={task.taskStatus} />
+          <InfoItem icon="fa-calendar-days" label="Due Date" value={new Date(task.dueDate).toLocaleDateString()} /> {/* Format due date */}
+          <InfoItem icon="fa-user" label="User" value={task.employeeName} /> {/* Assigned user */}
+          <InfoItem icon="fa-star" label="Priority" value={task.priority} /> {/* Task priority */}
+          <InfoItem icon="fa-cog" label="Status" value={task.taskStatus} /> {/* Task status */}
         </div>
       </div>
 
@@ -128,37 +129,37 @@ const handleAddComment = async () => {
 
         <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
           {comments.length === 0 && <p className="text-gray-500 italic text-center">No comments yet. Be the first to comment.</p>}
-          {comments.map((c) => (
+          {comments.map((c) => ( // Map through comments
             <div key={c.id} className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex justify-between items-start">
               {editingCommentId === c.id ? (
                 <div className="flex-1 flex gap-2">
                   <input
                     type="text"
                     value={editingCommentText}
-                    onChange={(e) => setEditingCommentText(e.target.value)}
+                    onChange={(e) => setEditingCommentText(e.target.value)} // Update editing text
                     className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
-                  <button onClick={() => handleSaveComment(c.id)} className="text-green-500 hover:text-green-700" title="Save">
+                  <button onClick={() => handleSaveComment(c.id)} className="text-green-500 hover:text-green-700" title="Save"> {/* Save edited comment */}
                     <i className="fa-solid fa-check"></i>
                   </button>
-                  <button onClick={() => setEditingCommentId(null)} className="text-gray-400 hover:text-gray-600" title="Cancel">
+                  <button onClick={() => setEditingCommentId(null)} className="text-gray-400 hover:text-gray-600" title="Cancel"> {/* Cancel editing */}
                     <i className="fa-solid fa-xmark"></i>
                   </button>
                 </div>
-              ) : (
+              ) : ( // Display comment view
                 <>
                   <div className="flex-1">
-                    <p className="text-gray-800">{c.content}</p>
+                    <p className="text-gray-800">{c.content}</p> {/* Comment content */}
                     <p className="text-xs text-gray-500 mt-2">
-                      <i className="fa-regular fa-clock mr-1"></i> {new Date(c.createdAt).toLocaleString()}
+                      <i className="fa-regular fa-clock mr-1"></i> {new Date(c.createdAt).toLocaleString()} {/* Format comment date */}
                     </p>
                   </div>
                   {loggedInUserId === c.userId && (
                     <div className="flex gap-2">
-                      <button onClick={() => handleEditComment(c)} className="text-blue-500 hover:text-blue-700" title="Edit Comment">
+                      <button onClick={() => handleEditComment(c)} className="text-blue-500 hover:text-blue-700" title="Edit Comment"> {/* Edit comment */}
                         <i className="fa-solid fa-pen"></i>
                       </button>
-                      <button onClick={() => handleDeleteComment(c.id)} className="text-red-500 hover:text-red-700" title="Delete Comment">
+                      <button onClick={() => handleDeleteComment(c.id)} className="text-red-500 hover:text-red-700" title="Delete Comment"> {/* Delete comment */}
                         <i className="fa-solid fa-trash"></i>
                       </button>
                     </div>
@@ -173,12 +174,12 @@ const handleAddComment = async () => {
           <input
             type="text"
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e) => setComment(e.target.value)} // New comment input
             placeholder="Write a comment..."
             className="flex-1 border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <button
-            onClick={handleAddComment}
+            onClick={handleAddComment} // Add comment button
             disabled={sending}
             className={`px-5 rounded-xl text-white font-semibold transition ${sending ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}
           >
@@ -190,7 +191,7 @@ const handleAddComment = async () => {
   );
 }
 
-function InfoItem({ icon, label, value }) {
+function InfoItem({ icon, label, value }) { // Info item component
   return (
     <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl p-3">
       <i className={`fa-solid ${icon} text-blue-500 text-lg`}></i>

@@ -53,11 +53,7 @@ class ExpenseControllerTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
-    @Test
-    void getAllExpensesByUser_testEndpoint() {
-        ResponseEntity<?> response = expenseController.getAllExpensesByUser();
-        assertEquals("Hello World", response.getBody());
-    }
+
 
     @Test
     void getAllExpensesByUser_success() {
@@ -115,4 +111,46 @@ class ExpenseControllerTest {
         assertEquals(404, response.getStatusCodeValue());
         verify(expenseService, times(1)).deleteExpense(1L);
     }
+
+    @Test
+    void uploadExpense_negativeAmount_throwsException() throws Exception {
+        MultipartFile file = new MockMultipartFile("file", "expenses.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                new byte[]{});
+
+        when(expenseService.uploadExcel(file, 1L))
+                .thenThrow(new RuntimeException("Expense amount cannot be negative"));
+
+        ResponseEntity<List<ExpenseDTO>> response = expenseController.uploadExpense(1L, file);
+
+        assertEquals(400, response.getStatusCodeValue());
+    }
+    @Test
+    void uploadExpense_emptyFile_returnsEmptyList() throws Exception {
+        MultipartFile file = new MockMultipartFile("file", "empty.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                new byte[]{});
+
+        when(expenseService.uploadExcel(file, 1L)).thenReturn(List.of());
+
+        ResponseEntity<List<ExpenseDTO>> response = expenseController.uploadExpense(1L, file);
+
+        assertTrue(response.getBody().isEmpty());
+        verify(expenseService, times(1)).uploadExcel(file, 1L);
+    }
+
+    @Test
+    void getExpensesByDateRange_invalidDates_throwsException() throws Exception {
+        Date start = new Date();
+        Date end = new Date(start.getTime() - 1000);
+
+        when(expenseService.getExpensesByDateRange(1L, start, end))
+                .thenThrow(new RuntimeException("Invalid date range"));
+
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> expenseController.getExpensesByDateRange(1L, start, end));
+        assertEquals("Invalid date range", exception.getMessage());
+    }
+
+
 }

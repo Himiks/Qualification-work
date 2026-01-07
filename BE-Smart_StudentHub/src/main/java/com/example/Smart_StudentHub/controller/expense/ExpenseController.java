@@ -13,14 +13,14 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/expenses") // expense api
 @RequiredArgsConstructor
 public class ExpenseController {
 
-    private final ExpenseService expenseService;
+    private final ExpenseService expenseService; // expense service layer
 
     @PostMapping("/upload/{userId}")
-    public ResponseEntity<List<ExpenseDTO>> uploadExpense(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<List<ExpenseDTO>> uploadExpense(@PathVariable Long userId, @RequestParam("file") MultipartFile file) { // uploads an expense
         try {
             List<ExpenseDTO> expenses = expenseService.uploadExcel(file, userId);
             return ResponseEntity.ok(expenses);
@@ -30,24 +30,19 @@ public class ExpenseController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> getAllExpensesByUser() {
-        return ResponseEntity.ok("Hello World");
-
-    }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<ExpenseDTO>> getAllExpensesByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<ExpenseDTO>> getAllExpensesByUser(@PathVariable Long userId) { // gets all expenses by user
         return ResponseEntity.ok(expenseService.getAllExpensesByUser(userId));
     }
 
     @GetMapping("/{userId}/category")
-    public ResponseEntity<List<ExpenseDTO>>  getAllExpensesByCategory(@PathVariable Long userId, @RequestParam String category) {
+    public ResponseEntity<List<ExpenseDTO>>  getAllExpensesByCategory(@PathVariable Long userId, @RequestParam String category) { // gets all expenses of category
         return ResponseEntity.ok(expenseService.getExpensesByCategory(userId, category));
     }
 
     @GetMapping("/{userId}/range")
-    public ResponseEntity<List<ExpenseDTO>> getExpensesByDateRange(
+    public ResponseEntity<List<ExpenseDTO>> getExpensesByDateRange( // gets expenses by date range
             @PathVariable Long userId,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date start,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date end){
@@ -56,7 +51,7 @@ public class ExpenseController {
 
 
     @DeleteMapping("/{expenseId}")
-    public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId) {
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId) { // deletes expense
         try {
             expenseService.deleteExpense(expenseId);
             return ResponseEntity.noContent().build();

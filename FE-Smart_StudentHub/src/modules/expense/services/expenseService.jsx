@@ -4,13 +4,13 @@ import storageService from "../../../auth/services/storageService";
 const BASE_URL = "http://localhost:8080/api/expenses";
 
 
-const authHeaders = () => {
+const authHeaders = () => { // Helper to get auth headers
     const token = storageService.getToken();
     return { Authorization: `Bearer ${token}` };
 };
 
 
-const uploadExpenses = async(file, userId) => {
+const uploadExpenses = async(file, userId) => { // Upload expenses file
     const form = new FormData();
     form.append("file", file);
     const response = await axios.post(
@@ -23,7 +23,7 @@ const uploadExpenses = async(file, userId) => {
 };
 
 
-const getAllExpensesByUser = async(userId) => {
+const getAllExpensesByUser = async(userId) => { // Fetch all expenses for a user
     const response = await axios.get(
         `${BASE_URL}/${userId}`, {
             headers: authHeaders(),
@@ -32,7 +32,7 @@ const getAllExpensesByUser = async(userId) => {
 };
 
 
-const getExpenseByCategory = async(userId, category) => {
+const getExpenseByCategory = async(userId, category) => { // Fetch expenses by category
     const response = await axios.get(
         `${BASE_URL}/${userId}/category`, {
             headers: authHeaders(),
@@ -43,7 +43,7 @@ const getExpenseByCategory = async(userId, category) => {
 
 
 
-const getExpenseByRange = async(userId, start, end) => {
+const getExpenseByRange = async(userId, start, end) => { // Fetch expenses by date range
     const response = await axios.get(
         `${BASE_URL}/${userId}/range`, {
             headers: authHeaders(),
@@ -53,7 +53,7 @@ const getExpenseByRange = async(userId, start, end) => {
 };
 
 
-const deleteExpense = async (expenseId) => {
+const deleteExpense = async (expenseId) => { // Delete an expense by ID
     const response = await axios.delete(`${BASE_URL}/${expenseId}`, {
         headers: authHeaders()
     });

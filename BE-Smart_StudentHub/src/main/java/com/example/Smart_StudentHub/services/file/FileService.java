@@ -29,7 +29,7 @@ public class FileService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    public FileDTO uploadFile(Long folderId, MultipartFile file) throws IOException {
+    public FileDTO uploadFile(Long folderId, MultipartFile file) throws IOException {     // Uploads a file to a specific folder on disk and saves metadata in the database.     // Creates folder directories if they don’t exist and replaces the file if it already exists.
         Folder folder = folderRepository.findById(folderId).orElseThrow(() -> new RuntimeException("Folder not found"));
 
         Path folderPath = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString());
@@ -52,14 +52,14 @@ public class FileService {
     }
 
 
-    public List<FileDTO> getFilesInFolder(Long folderId){
+    public List<FileDTO> getFilesInFolder(Long folderId){     // Retrieves all files in a specific folder and converts them to DTOs for frontend use.
         return fileRepository.findByFolderId(folderId)
                 .stream()
                 .map(this::entityToDTO)
                 .collect(Collectors.toList());
     }
 
-    private FileDTO entityToDTO(FileEntity entity) {
+    private FileDTO entityToDTO(FileEntity entity) {     // Converts a FileEntity object to a FileDTO object for returning to API clients.
         FileDTO dto = new FileDTO();
         dto.setId(entity.getId());
         dto.setFileName(entity.getFileName());
@@ -69,7 +69,7 @@ public class FileService {
         return dto;
     }
 
-    public FileDTO renameFile(Long id, String newName) throws IOException {
+    public FileDTO renameFile(Long id, String newName) throws IOException {    // Renames a file both on disk and in the database, ensuring the new name is valid.
         FileEntity file = fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File not found!"));
 
         if (newName.contains("..") || newName.contains("/")) {
@@ -90,7 +90,8 @@ public class FileService {
     }
 
     @Transactional
-    public void deleteFile(Long id) throws IOException {
+    public void deleteFile(Long id) throws IOException {// Deletes a file from both disk and database in a single transaction.
+        // Ensures cleanup of storage even if deletion in DB succeeds or fails.
         FileEntity file = fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File not found!"));
 
         Folder folder = file.getFolder();

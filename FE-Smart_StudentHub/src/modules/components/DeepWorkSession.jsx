@@ -1,93 +1,94 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-const GOAL_TYPES = [
+const GOAL_TYPES = [ // Define goal types with associated colors
   { type: "Focus Work", color: "bg-indigo-500" },
   { type: "Break", color: "bg-green-500" },
   { type: "Other", color: "bg-yellow-400" },
 ];
 
-function DeepWorkPlanner() {
-  const [timeLeft, setTimeLeft] = useState(90 * 60);
-  const [isActive, setIsActive] = useState(false);
-  const [audio] = useState(new Audio("/sounds/focus.mp3"));
-  const [goals, setGoals] = useState([]);
-  const [newGoal, setNewGoal] = useState({ type: GOAL_TYPES[0].type, description: "" });
+function DeepWorkPlanner() { // Main Deep Work Planner component
+  const [timeLeft, setTimeLeft] = useState(90 * 60); // 90 minutes default
+  const [isActive, setIsActive] = useState(false); // Timer active state
+  const [audio] = useState(new Audio("/sounds/focus.mp3")); // Background audio
+  const [goals, setGoals] = useState([]); // List of goals
+  const [newGoal, setNewGoal] = useState({ type: GOAL_TYPES[0].type, description: "" }); // New goal state
 
-  const LOCAL_STORAGE_KEY = "deepWorkGoals";
+  const LOCAL_STORAGE_KEY = "deepWorkGoals"; // Local storage key for goals
 
   useEffect(() => {
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (stored) {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY); // Load goals from local storage
+    if (stored) { // If goals exist, parse and set them
       try {
-        setGoals(JSON.parse(stored));
+        setGoals(JSON.parse(stored)); // Parse stored goals
       } catch {
         setGoals([]);
       }
     }
   }, []);
 
-  const saveGoals = (updatedGoals) => {
+  const saveGoals = (updatedGoals) => { // Save goals to state and local storage
     setGoals(updatedGoals);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedGoals));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedGoals)); // Persist goals
   };
 
-  useEffect(() => {
+  useEffect(() => { // Timer effect
     let interval;
-    if (isActive && timeLeft > 0) {
-      interval = setInterval(() => setTimeLeft((t) => t - 1), 1000);
-    } else if (timeLeft === 0) {
+    if (isActive && timeLeft > 0) { // Start countdown
+      interval = setInterval(() => setTimeLeft((t) => t - 1), 1000); // Decrement every second
+    } else if (timeLeft === 0) { // Timer completed
       setIsActive(false);
       audio.pause();
       toast.success("Deep Work session completed!");
     }
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Cleanup on unmount or state change
   }, [isActive, timeLeft]);
 
-  const toggleSession = () => {
+  const toggleSession = () => { // Start/stop session and audio
     if (isActive) {
-      setIsActive(false);
-      audio.pause();
+      setIsActive(false); // Stop session
+      audio.pause(); // Pause audio
     } else {
       setIsActive(true);
       audio.loop = true;
-      audio.play().catch(() => console.log("Audio playback prevented"));
+      audio.play().catch(() => console.log("Audio playback prevented")); // Play audio
     }
   };
 
-  const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
+  const formatTime = (seconds) => { // Format seconds to MM:SS
+    const m = Math.floor(seconds / 60); // Minutes
+    const s = seconds % 60; // Seconds
+    return `${m}:${s.toString().padStart(2, "0")}`; // MM:SS format
   };
 
-  const addGoal = () => {
-    if (!newGoal.description.trim()) return;
-    saveGoals([...goals, { ...newGoal, done: false }]);
-    setNewGoal({ type: GOAL_TYPES[0].type, description: "" });
+  const addGoal = () => { // Add new goal
+    if (!newGoal.description.trim()) return; // Ignore empty descriptions
+    saveGoals([...goals, { ...newGoal, done: false }]); // Save updated goals
+    setNewGoal({ type: GOAL_TYPES[0].type, description: "" }); // Reset new goal input
   };
 
-  const toggleGoal = (index) => {
-    const updated = goals.map((g, i) =>
-      i === index ? { ...g, done: !g.done } : g
+  const toggleGoal = (index) => { // Toggle goal completion
+    const updated = goals.map((g, i) => //  Update specific goal
+      i === index ? { ...g, done: !g.done } : g // Leave others unchanged
     );
     saveGoals(updated);
   };
 
-  const removeGoal = (index) => {
-    const updated = goals.filter((_, i) => i !== index);
+  const removeGoal = (index) => { // Remove goal
+    const updated = goals.filter((_, i) => i !== index); // Filter out the goal to remove
     saveGoals(updated);
   };
 
+  // Render component
   return (
     <div className="w-full max-w-3xl mx-auto p-6 space-y-6">
       <div className="flex flex-col items-center bg-indigo-50 rounded-2xl shadow-md p-6 w-full">
         <h2 className="text-2xl font-bold text-indigo-700 mb-2">Deep Work Timer</h2>
         <p className="text-3xl font-mono font-semibold text-gray-800 mb-4 border rounded-lg px-6 py-2 bg-white shadow-sm">
-          {formatTime(timeLeft)}
+          {formatTime(timeLeft)} {/* Display formatted time */}
         </p>
         <button
-          onClick={toggleSession}
+          onClick={toggleSession} // Start/stop session
           className={`px-6 py-2 rounded-xl text-white font-semibold shadow-md transition ${
             isActive ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
           }`}
@@ -97,14 +98,14 @@ function DeepWorkPlanner() {
       </div>
 
       <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700 text-center">Add Goal</h3>
+        <h3 className="text-xl font-semibold text-gray-700 text-center">Add Goal</h3> {/* Add Goal Section */}
         <div className="flex gap-2 mb-4">
           <select
             value={newGoal.type}
-            onChange={(e) => setNewGoal({ ...newGoal, type: e.target.value })}
+            onChange={(e) => setNewGoal({ ...newGoal, type: e.target.value })} // Update goal type
             className="flex-1 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            {GOAL_TYPES.map((g) => (
+            {GOAL_TYPES.map((g) => ( // Goal type options
               <option key={g.type} value={g.type}>{g.type}</option>
             ))}
           </select>
@@ -112,11 +113,11 @@ function DeepWorkPlanner() {
             type="text"
             placeholder="Goal description"
             value={newGoal.description}
-            onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
+            onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })} // Update goal description
             className="flex-2 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
           <button
-            onClick={addGoal}
+            onClick={addGoal} // Add goal handler
             className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold transition"
           >
             Add
@@ -127,7 +128,7 @@ function DeepWorkPlanner() {
           {goals.length === 0 ? (
             <p className="text-gray-400 italic text-center">No goals yet. Add one above!</p>
           ) : (
-            goals.map((goal, i) => {
+            goals.map((goal, i) => { // Render each goal
               const color = GOAL_TYPES.find((b) => b.type === goal.type)?.color;
               return (
                 <div
@@ -137,14 +138,14 @@ function DeepWorkPlanner() {
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
-                      checked={goal.done}
-                      onChange={() => toggleGoal(i)}
+                      checked={goal.done} // Toggle goal completion
+                      onChange={() => toggleGoal(i)} // Toggle handler
                       className="w-5 h-5 accent-white"
                     />
-                    <span className={`${goal.done ? "line-through opacity-80" : ""}`}>{goal.description}</span>
+                    <span className={`${goal.done ? "line-through opacity-80" : ""}`}>{goal.description}</span> {/* Goal description */}
                   </div>
                   <button
-                    onClick={() => removeGoal(i)}
+                    onClick={() => removeGoal(i)} // Remove goal handler
                     className="text-white font-bold hover:text-red-200"
                   >
                     ✕

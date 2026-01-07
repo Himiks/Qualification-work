@@ -7,7 +7,7 @@ import com.example.Smart_StudentHub.dto.UserDto;
 
 import java.util.List;
 
-public interface AdminService {
+public interface AdminService { // admin service
 
     List<UserDto> getUsers();
 

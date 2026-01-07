@@ -1,10 +1,11 @@
-package com.example.Smart_StudentHub.services.expense;
+package com.example.Smart_StudentHub.service;
 
 import com.example.Smart_StudentHub.dto.ExpenseDTO;
 import com.example.Smart_StudentHub.entities.Expense;
 import com.example.Smart_StudentHub.entities.User;
 import com.example.Smart_StudentHub.repositories.ExpenseRepository;
 import com.example.Smart_StudentHub.repositories.UserRepository;
+import com.example.Smart_StudentHub.services.expense.ExpenseServiceImpl;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;

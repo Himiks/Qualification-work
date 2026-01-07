@@ -6,14 +6,14 @@ const BASE_URL = "http://localhost:8080/api/employee";
 
 
 
-const getAllTasksByTechniqueName = async (techniqueName) => {
+const getAllTasksByTechniqueName = async (techniqueName) => { // Fetch tasks by technique name
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(`${BASE_URL}/tasks/technique/${encodeURIComponent(techniqueName)}`, { headers });
   return response.data;
 };
 
-const getAllTasksByUserId = async () => {
+const getAllTasksByUserId = async () => { // Fetch all tasks for the logged-in user
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(`${BASE_URL}/tasks`, { headers });
@@ -21,7 +21,7 @@ const getAllTasksByUserId = async () => {
 };
 
 
-const postTask = async (taskData) => {
+const postTask = async (taskData) => { // Create a new task
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.post(`${BASE_URL}/task`, taskData, { headers });
@@ -29,14 +29,14 @@ const postTask = async (taskData) => {
 };
 
 
-const deleteTask = async (id) => {
+const deleteTask = async (id) => { // Delete a task by ID
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.delete(`${BASE_URL}/task/${id}`, { headers });
   return response.data;
 };
 
-const updateProfile = async (employeeData) => {
+const updateProfile = async (employeeData) => { // Update employee profile
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.put(`${BASE_URL}/profile`, employeeData, { headers });
@@ -44,28 +44,28 @@ const updateProfile = async (employeeData) => {
 }
 
 
-const searchTask = async (title) => {
+const searchTask = async (title) => { // Search tasks by title
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(`${BASE_URL}/tasks/search/${title}`, { headers });
   return response.data;
 };
 
-const updateTask = async (id, taskData) => {
+const updateTask = async (id, taskData) => { // Update a task by ID
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.put(`${BASE_URL}/task/${id}`, taskData, { headers });
   return response.data;
 };
 
-const getCommentsByTaskId = async (taskId) => {
+const getCommentsByTaskId = async (taskId) => { // Fetch comments for a task
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(`${BASE_URL}/comments/${taskId}`, { headers });
   return response.data;
 };
 
-const createComment = async (taskId, content) => {
+const createComment = async (taskId, content) => { // Create a comment for a task
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.post(
@@ -76,7 +76,7 @@ const createComment = async (taskId, content) => {
   return response.data;
 };
 
-const getTaskById = async (id) => {
+const getTaskById = async (id) => { // Fetch a task by ID
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(`${BASE_URL}/task/${id}`, { headers });
@@ -84,7 +84,7 @@ const getTaskById = async (id) => {
 };
 
 
-const updateComment = async (id, content) => {
+const updateComment = async (id, content) => { // Update a comment by ID
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   const res = await axios.put(
@@ -95,7 +95,7 @@ const updateComment = async (id, content) => {
   return res.data;
 };
 
-const deleteComment = async (id) => {
+const deleteComment = async (id) => { // Delete a comment by ID
   const token = storageService.getToken();
   const headers = { Authorization: `Bearer ${token}` };
   await axios.delete(`${BASE_URL}/comment/${id}`, { headers });

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FolderRepository extends JpaRepository<Folder, Long> {
+public interface FolderRepository extends JpaRepository<Folder, Long> { // folder database interface
     List<Folder> findByUserId(Long userId);
     List<Folder> findByIsPublicTrue();
 }

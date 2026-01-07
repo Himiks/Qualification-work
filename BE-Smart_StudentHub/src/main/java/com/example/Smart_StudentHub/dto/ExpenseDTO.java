@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ExpenseDTO {
+public class ExpenseDTO { // dto for expense
     private Long id;
     private Date date;
     private String category;
