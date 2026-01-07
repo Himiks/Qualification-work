@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepository;     // Repository used to fetch user data from the database
 
 
     @Override
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {         // Provides a Spring Security UserDetailsService to load users by username (email)
         return new UserDetailsService() {
+            // Fetches the user from the database using email.
+            // Throws UsernameNotFoundException if user does not exist.
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 return userRepository.findFirstByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User is not found"));

@@ -1,0 +1,234 @@
+package com.example.Smart_StudentHub.services.employee;
+
+import com.example.Smart_StudentHub.dto.CommentDTO;
+import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.dto.UpdateUserDTO;
+import com.example.Smart_StudentHub.dto.UserDto;
+import com.example.Smart_StudentHub.entities.Comment;
+import com.example.Smart_StudentHub.entities.Task;
+import com.example.Smart_StudentHub.entities.User;
+import com.example.Smart_StudentHub.enums.TaskStatus;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
+import com.example.Smart_StudentHub.enums.UserRole;
+import com.example.Smart_StudentHub.repositories.CommentRepository;
+import com.example.Smart_StudentHub.repositories.TaskRepository;
+import com.example.Smart_StudentHub.repositories.UserRepository;
+import com.example.Smart_StudentHub.utils.JwtUtils;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class EmployeeServiceImpl implements EmployeeService {
+    private final TaskRepository taskRepository;
+
+    private final JwtUtils jwtUtils;
+
+    private final UserRepository userRepository;
+
+    private final CommentRepository commentRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+
+
+    @Override
+    public List<TaskDTO> getTaskByUserId() {     // Retrieves all tasks assigned to the currently logged-in user, sorted by due date descending
+        User user = jwtUtils.getLoggedInUser();
+        if(user != null){
+            return taskRepository.findAllByUserId(user.getId())
+                    .stream()
+                    .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                    .map(Task::getTaskDTO)
+                    .collect(Collectors.toList());
+        }
+        throw new EntityNotFoundException("User not found");
+    }
+
+
+
+
+    @Override
+    public TaskDTO createTask(TaskDTO taskDTO) { //      Creates a new task assigned to the currently logged-in user
+        User user = jwtUtils.getLoggedInUser(); //     Sets default task status to IN_PROGRESS
+
+        if(user != null){
+            Task task = new Task();
+            task.setTitle(taskDTO.getTitle());
+            task.setDescription(taskDTO.getDescription());
+            task.setPriority(taskDTO.getPriority());
+            task.setDueDate(taskDTO.getDueDate());
+            task.setTaskStatus(TaskStatus.IN_PROGRESS);
+            task.setUser(user);
+            task.setTechnique(TaskTechnique.valueOf(String.valueOf(taskDTO.getTechnique())));
+            return taskRepository.save(task).getTaskDTO();
+
+        }
+
+        return null;
+    }
+
+    public UserDto updateMyProfile(UpdateUserDTO dto) {     // Updates the currently logged-in user’s profile (name, email, password)
+        User user = jwtUtils.getLoggedInUser();
+        if (user == null) return null;
+
+        if (dto.getName() != null) user.setName(dto.getName());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        userRepository.save(user);
+        return user.getUserDto();
+    }
+
+
+    @Override
+    public List<TaskDTO> getAllTasks() {     // Retrieves all tasks in the system, sorted by due date descending
+        return taskRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                .map(Task::getTaskDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteTask(Long id) {     // Deletes a task by ID
+        taskRepository.deleteById(id);
+    }
+    @Override
+    public List<TaskDTO> getTasksByTechnique(TaskTechnique technique) {     // Retrieves tasks for the logged-in user filtered by a specific technique
+
+        User user = jwtUtils.getLoggedInUser();
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+
+        return taskRepository.findAllByUserIdAndTechnique(user.getId(), technique)
+                .stream()
+                .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                .map(Task::getTaskDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDTO updateComment(Long commentId, String content) {     // Updates a comment’s content if the logged-in user is the author or an admin
+        User user = jwtUtils.getLoggedInUser();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(user.getId())
+                && user.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        comment.setContent(content);
+        return commentRepository.save(comment).getCommentDTO();
+    }
+
+    @Override
+    public void deleteComment(Long commentId) {     // Deletes a comment if the logged-in user is the author or an admin
+        User user = jwtUtils.getLoggedInUser();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(user.getId())
+                && user.getUserRole() != UserRole.ADMIN) {
+            throw new EntityNotFoundException("Access denied");
+        }
+
+        commentRepository.delete(comment);
+    }
+
+
+
+    @Override
+    public TaskDTO getTaskById(Long id) {     // Retrieves a task by ID and returns it as a DTO; returns null if not found
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        return optionalTask.map(Task::getTaskDTO).orElse(null);
+    }
+
+    @Override
+    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {     // Updates an existing task’s details for the logged-in user
+        Optional<Task> optionalTask = taskRepository.findById(id);
+            Task task = optionalTask.get();
+            task.setTitle(taskDTO.getTitle());
+            task.setDescription(taskDTO.getDescription());
+            task.setPriority(taskDTO.getPriority());
+            task.setDueDate(taskDTO.getDueDate());
+            task.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDTO.getTaskStatus())));
+            task.setTechnique(TaskTechnique.valueOf(String.valueOf(taskDTO.getTechnique())));
+        return taskRepository.save(task).getTaskDTO();
+
+
+    }
+
+
+    @Override
+    public CommentDTO createComment(Long taskId, String content) {     // Creates a new comment for a task for the currently logged-in user
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        User user = jwtUtils.getLoggedInUser();
+        if(optionalTask.isPresent() && user != null ){
+            Comment comment = new Comment();
+            comment.setCreatedAt(new Date());
+            comment.setContent(content);
+            comment.setTask(optionalTask.get());
+            comment.setUser(user);
+            return commentRepository.save(comment).getCommentDTO();
+
+        }
+        throw new EntityNotFoundException("Task not found");
+    }
+
+
+
+    @Override
+    public List<TaskDTO> searchTasksByUserTitle(String title) {     // Searches tasks by title for the logged-in user (or all tasks if admin)
+        User user = jwtUtils.getLoggedInUser();
+
+        if(user == null){
+            throw new EntityNotFoundException("User not found");
+        }
+        boolean isAdmin = user.getUserRole() == UserRole.ADMIN;
+        List<Task> tasks;
+
+        if(isAdmin){
+            tasks = taskRepository.findAllByTitleContaining(title);
+        }else{
+            tasks = taskRepository.findAllByUserIdAndTitleContaining(user.getId(), title);
+        }
+
+        return tasks.stream()
+                .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                .map(Task::getTaskDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CommentDTO> getCommentsByTaskId(Long taskId) {     // Retrieves all comments for a given task ID and returns them as DTOs
+        return commentRepository.findAllByTaskId(taskId).stream().map(Comment::getCommentDTO).collect(Collectors.toList());
+    }
+
+
+    private TaskStatus mapStringToTaskStatus(String status) {     // Maps a string to a TaskStatus enum value
+        return switch (status) {
+            case "PENDING" -> TaskStatus.PENDING;
+            case "IN_PROGRESS" -> TaskStatus.IN_PROGRESS;
+            case "COMPLETED" -> TaskStatus.COMPLETED;
+            case "DEFERRED" -> TaskStatus.DEFERRED;
+            default -> TaskStatus.CANCELLED;
+        };
+    }
+}

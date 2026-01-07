@@ -1,0 +1,42 @@
+package com.example.Smart_StudentHub.services.employee;
+
+import com.example.Smart_StudentHub.dto.CommentDTO;
+import com.example.Smart_StudentHub.dto.TaskDTO;
+import com.example.Smart_StudentHub.dto.UpdateUserDTO;
+import com.example.Smart_StudentHub.dto.UserDto;
+import com.example.Smart_StudentHub.enums.TaskTechnique;
+
+import java.util.List;
+
+public interface EmployeeService { // employee service layer
+
+  List<TaskDTO> getTaskByUserId();
+
+
+  TaskDTO updateTask(Long id,TaskDTO taskDTO);
+
+
+  CommentDTO createComment(Long taskId, String comment);
+
+  List<CommentDTO> getCommentsByTaskId(Long taskId);
+
+  TaskDTO getTaskById(Long id);
+
+  List<TaskDTO> searchTasksByUserTitle(String title);
+
+  TaskDTO createTask(TaskDTO taskDTO);
+
+  List<TaskDTO> getAllTasks();
+
+  void deleteTask(Long id);
+
+  UserDto updateMyProfile(UpdateUserDTO dto);
+
+  List<TaskDTO> getTasksByTechnique(TaskTechnique technique);
+
+  CommentDTO updateComment(Long commentId, String content);
+
+  void deleteComment(Long commentId);
+
+
+}
