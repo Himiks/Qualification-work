@@ -164,11 +164,11 @@ class AuthControllerTest {
     }
 
     @Test
-    void signupUser_invalidEmail() {
+    void signupUser_invalidPassword() {
         SignupRequest request = new SignupRequest();
-        request.setEmail("invalid-email");
+        request.setEmail("email");
         request.setName("Test User");
-        request.setPassword("password");
+        request.setPassword("inavlid-password");
 
         when(authService.hasUserWithEmail(request.getEmail())).thenReturn(false);
 

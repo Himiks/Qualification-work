@@ -6,11 +6,11 @@ export default function TaskCard({ task }) {
     id: task.id, // Unique identifier for the draggable item
   });
 
-  const cardRef = useRef(null); // Reference to the card element
-  const [size, setSize] = useState({ width: 0, height: 0 }); // State to store card size
+  const cardRef = useRef(null); // Reference to the card element DOM creates a mutable reference object that persists across renders
+  const [size, setSize] = useState({ width: 0, height: 0 }); // State to store card size, not not resize during drag
 
   useLayoutEffect(() => { // Measure card size when not dragging
-    if (cardRef.current && !isDragging) { // only measure when not dragging
+    if (cardRef.current && !isDragging) { // only measure when not dragging will hold the actual DOM element of the task card
       const rect = cardRef.current.getBoundingClientRect(); // get size
       setSize({ width: rect.width, height: rect.height }); // update state
     } // if dragging, size remains unchanged
@@ -30,11 +30,11 @@ export default function TaskCard({ task }) {
   return (
     <div
       ref={(node) => { // Set both dnd-kit and local refs
-        setNodeRef(node);
-        cardRef.current = node;
+        setNodeRef(node); // for dnd-kit to track the draggable item
+        cardRef.current = node; // used for measuring cards size
       }}
-      {...attributes}
-      {...listeners}
+      {...attributes} // Spread dnd-kit attributes
+      {...listeners} // Spread dnd-kit event listeners
       style={style}
       className={`rounded-xl bg-indigo-50 p-4 shadow-sm cursor-grab hover:shadow-md hover:bg-indigo-100 active:cursor-grabbing transition-all ${
         isDragging ? "scale-105 shadow-xl ring-2 ring-indigo-400" : ""

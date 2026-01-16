@@ -62,7 +62,7 @@ export default function Eisenhower() { // Eisenhower matrix component
   }, []); // Empty dependency array to run once on mount
 
   async function handleDragEnd(event) { // Handle drag end event
-    const { active, over } = event;
+    const { active, over } = event; // active the item being dragged and over the drop target
     if (!over) return;
 
     const taskId = active.id; // ID of dragged task

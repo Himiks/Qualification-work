@@ -23,7 +23,7 @@ function AdminUpdateTask() {
     technique: "NONE",
   });
 
-  const priorities = ["LOW", "MEDIUM", "HIGH"]; // Priority options
+  const priorities = ["LOW", "MEDIUM", "HIGH", "MINOR"]; // Priority options
   const statuses = ["PENDING", "IN_PROGRESS", "DEFERRED", "COMPLETED", "CANCELLED"]; // Status options
 
   useEffect(() => { // Fetch task, users, and techniques on mount

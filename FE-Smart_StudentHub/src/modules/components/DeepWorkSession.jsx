@@ -82,54 +82,78 @@ function DeepWorkPlanner() { // Main Deep Work Planner component
   // Render component
   return (
     <div className="w-full max-w-3xl mx-auto p-6 space-y-6">
+      {/* Timer */}
       <div className="flex flex-col items-center bg-indigo-50 rounded-2xl shadow-md p-6 w-full">
-        <h2 className="text-2xl font-bold text-indigo-700 mb-2">Deep Work Timer</h2>
+        <h2 className="text-2xl font-bold text-indigo-700 mb-2">
+          Deep Work Timer
+        </h2>
         <p className="text-3xl font-mono font-semibold text-gray-800 mb-4 border rounded-lg px-6 py-2 bg-white shadow-sm">
-          {formatTime(timeLeft)} {/* Display formatted time */}
+          {formatTime(timeLeft)}
         </p>
         <button
-          onClick={toggleSession} // Start/stop session
+          onClick={toggleSession}
           className={`px-6 py-2 rounded-xl text-white font-semibold shadow-md transition ${
-            isActive ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+            isActive
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-green-500 hover:bg-green-600"
           }`}
         >
           {isActive ? "Stop" : "Start"}
         </button>
       </div>
 
+      {/* Add Goal */}
       <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700 text-center">Add Goal</h3> {/* Add Goal Section */}
-        <div className="flex gap-2 mb-4">
+        <h3 className="text-xl font-semibold text-gray-700 text-center">
+          Add Goal
+        </h3>
+
+        {/* Inputs */}
+        <div className="flex gap-2">
           <select
             value={newGoal.type}
-            onChange={(e) => setNewGoal({ ...newGoal, type: e.target.value })} // Update goal type
+            onChange={(e) =>
+              setNewGoal({ ...newGoal, type: e.target.value })
+            }
             className="flex-1 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            {GOAL_TYPES.map((g) => ( // Goal type options
-              <option key={g.type} value={g.type}>{g.type}</option>
+            {GOAL_TYPES.map((g) => (
+              <option key={g.type} value={g.type}>
+                {g.type}
+              </option>
             ))}
           </select>
+
           <input
             type="text"
             placeholder="Goal description"
             value={newGoal.description}
-            onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })} // Update goal description
-            className="flex-2 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            onChange={(e) =>
+              setNewGoal({ ...newGoal, description: e.target.value })
+            }
+            className="flex-1 rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          <button
-            onClick={addGoal} // Add goal handler
-            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold transition"
-          >
-            Add
-          </button>
         </div>
 
+        {/* Button BELOW inputs (same as Time Blocking) */}
+        <button
+          onClick={addGoal}
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold transition"
+        >
+          Add Goal
+        </button>
+
+        {/* Goals List */}
         <div className="space-y-3">
           {goals.length === 0 ? (
-            <p className="text-gray-400 italic text-center">No goals yet. Add one above!</p>
+            <p className="text-gray-400 italic text-center">
+              No goals yet. Add one above!
+            </p>
           ) : (
-            goals.map((goal, i) => { // Render each goal
-              const color = GOAL_TYPES.find((b) => b.type === goal.type)?.color;
+            goals.map((goal, i) => {
+              const color = GOAL_TYPES.find(
+                (b) => b.type === goal.type
+              )?.color;
               return (
                 <div
                   key={i}
@@ -138,14 +162,20 @@ function DeepWorkPlanner() { // Main Deep Work Planner component
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
-                      checked={goal.done} // Toggle goal completion
-                      onChange={() => toggleGoal(i)} // Toggle handler
+                      checked={goal.done}
+                      onChange={() => toggleGoal(i)}
                       className="w-5 h-5 accent-white"
                     />
-                    <span className={`${goal.done ? "line-through opacity-80" : ""}`}>{goal.description}</span> {/* Goal description */}
+                    <span
+                      className={
+                        goal.done ? "line-through opacity-80" : ""
+                      }
+                    >
+                      {goal.description}
+                    </span>
                   </div>
                   <button
-                    onClick={() => removeGoal(i)} // Remove goal handler
+                    onClick={() => removeGoal(i)}
                     className="text-white font-bold hover:text-red-200"
                   >
                     ✕
@@ -159,5 +189,6 @@ function DeepWorkPlanner() { // Main Deep Work Planner component
     </div>
   );
 }
+
 
 export default DeepWorkPlanner;

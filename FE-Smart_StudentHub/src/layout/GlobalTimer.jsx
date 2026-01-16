@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from "react";
 
-function timeToMinutes(time) { // time format "HH:MM"
+function timeToMinutes(time) { // convert "HH:MM" to minutes since midnight
   const [h, m] = time.split(":").map(Number);
+
+  if (
+    Number.isNaN(h) ||
+    Number.isNaN(m) ||
+    h < 0 ||
+    h > 23 ||
+    m < 0 ||
+    m > 59
+  ) {
+    throw new Error("Invalid time format. Use HH:MM (00:00–23:59)");
+  }
+
   return h * 60 + m;
 }
+
 
 function getNowMinutes() { // current time in minutes since midnight
   const now = new Date();

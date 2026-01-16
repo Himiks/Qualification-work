@@ -28,8 +28,20 @@ public class FileService {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+    private static final long MAX_FILE_SIZE = 200L * 1024 * 1024; // 200 MB
+
 
     public FileDTO uploadFile(Long folderId, MultipartFile file) throws IOException {     // Uploads a file to a specific folder on disk and saves metadata in the database.     // Creates folder directories if they don’t exist and replaces the file if it already exists.
+
+
+        if (file.isEmpty()) {
+            throw new RuntimeException("File is empty");
+        }
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException("File size exceeds the maximum limit of 200 MB");
+        }
+
         Folder folder = folderRepository.findById(folderId).orElseThrow(() -> new RuntimeException("Folder not found"));
 
         Path folderPath = Paths.get(uploadDir, folder.getUserId().toString(), folder.getId().toString());
