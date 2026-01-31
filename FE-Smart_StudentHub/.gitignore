@@ -33,7 +33,5 @@ yarn.lock
 .env.test.local
 .env.production.local
 .cache
-package.json
 node_modules
 package-lock.json
-package.json

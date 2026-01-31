@@ -9,6 +9,22 @@ on:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.1
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: smart_student_hub
+          MYSQL_USER: appuser
+          MYSQL_PASSWORD: apppassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout backend code
         uses: actions/checkout@v3
@@ -18,6 +34,16 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 --silent; then
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
 
       - name: Install backend dependencies
         run: |
@@ -52,7 +78,7 @@ jobs:
 
   build-and-push:
     runs-on: ubuntu-latest
-    needs: [backend-tests, frontend-tests]  
+    needs: [backend-tests, frontend-tests]
 
     steps:
       - name: Checkout code
